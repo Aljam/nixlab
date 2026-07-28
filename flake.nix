@@ -1,5 +1,5 @@
 {
-  description = "Unified NixOS Fleet Flake (Navi, Oryx, and PowerEdge Rack)";
+  description = "Unified NixOS Fleet Flake (Navi, Oryx, Rack, and User Configs)";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -20,7 +20,6 @@
       # PERSONAL MACHINES
       # ------------------------------------
       
-      # Primary Desktop
       navi = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs; };
@@ -33,7 +32,6 @@
         ];
       };
 
-      # System76 Laptop
       oryx = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs; };
@@ -50,7 +48,6 @@
       # SERVER RACK (HEADLESS)
       # ------------------------------------
 
-      # Dell PowerEdge R730 (VMs & Databases)
       r730 = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs; };
@@ -61,7 +58,6 @@
         ];
       };
 
-      # Dell PowerEdge R730xd (Massive Media Pool)
       r730xd = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs; };
@@ -72,7 +68,6 @@
         ];
       };
 
-      # Dell PowerEdge R820 (Currently Sidelined)
       r820 = nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = { inherit inputs; };
@@ -85,11 +80,13 @@
       
     };
 
-    # Shared Home Manager Configuration
+    # Standalone Home Manager Configuration pointing to /users/
     homeConfigurations.aljam = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.${system};
       extraSpecialArgs = { inherit inputs; };
-      # modules = [ ./home.nix ];
+      modules = [
+        ./users/aljam/home.nix
+      ];
     };
   };
 }
