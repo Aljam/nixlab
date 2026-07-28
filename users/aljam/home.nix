@@ -15,6 +15,13 @@
     jq
     tldr
 
+    # Python & Pip Management
+    python3
+    python3Packages.pip
+    python3Packages.virtualenv
+    python3Packages.setuptools
+    python3Packages.wheel
+
     # GUI Applications & Software
     ungoogled-chromium
     kdePackages.kate
