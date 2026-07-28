@@ -22,17 +22,6 @@
     vim
     cifs-utils
     kitty.terminfo # Fixes SSH terminal issues when connecting from Kitty
-
-    # Python & Pip Management
-    python3
-    python3Packages.pip
-    python3Packages.virtualenv
-    python3Packages.setuptools
-    python3Packages.wheel
-
-    nodejs  
-    nodePackages.npm
-
     lm_sensors
     iotop
     nvd
