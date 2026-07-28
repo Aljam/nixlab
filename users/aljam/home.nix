@@ -5,9 +5,10 @@
   home.homeDirectory = "/home/aljam";
   home.stateVersion = "23.11";
 
+  xdg.enable = true;
+
   # Your Common Dev Tools & GUI Applications
   home.packages = with pkgs; [
-    # CLI / Dev Tools
     bat
     eza
     fzf
@@ -16,8 +17,6 @@
     tldr
     fd
     lazygit
-
-    # GUI Applications & Software
     ungoogled-chromium
     kdePackages.kate
     deadbeef-with-plugins
