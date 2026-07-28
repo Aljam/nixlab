@@ -50,6 +50,16 @@
       };
     };
 
+      r820 = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/r820/configuration.nix
+          ./hosts/r820/hardware-configuration.nix
+          # ./modules/common-server.nix
+        ];
+      };
+
     homeConfigurations.aljam = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.${system};
       extraSpecialArgs = { inherit inputs; };
