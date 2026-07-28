@@ -13,6 +13,7 @@
 
   # Essential system packages across desktop/laptop systems
   environment.systemPackages = with pkgs; [
+    home-manager
     git
     htop
     wget
