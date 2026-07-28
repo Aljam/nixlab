@@ -69,16 +69,13 @@
   # Git Configuration
   programs.git = {
     enable = true;
-    userName  = "Aljam";
-    userEmail = "aljam@live.ca";
-    
-    extraConfig = {
-      commit.gpgsign = true;
-      gpg.format = "ssh";
-      user.signingkey = "~/.ssh/id_ed25519.pub"; 
-      init.defaultBranch = "main";
-      pull.rebase = true;
+    user = {
+      name  = "Aljam";
+      email = "aljam@live.ca";
+      signingkey = "~/.ssh/id_ed25519.pub";
     };
+    commit.gpgsign = true;
+    gpg.format = "ssh";
   };
 
   # OBS Studio Configuration
