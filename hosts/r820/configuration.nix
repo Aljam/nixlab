@@ -72,5 +72,5 @@
   # Keep your physical NIC completely standard so the host R820 retains internet/SSH access
   networking.interfaces."eno1".useDHCP = true;
   # Do not change this value
-  system.stateVersion = "24.05"; 
+  system.stateVersion = "23.11"; 
 }
