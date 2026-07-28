@@ -43,6 +43,7 @@
     lm_sensors
     tmux
     htop
+    nvtopPackages.full
   ];
 
   hardware.dell-fan-control.enable = true;
