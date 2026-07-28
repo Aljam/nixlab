@@ -1,0 +1,43 @@
+{ lib, ... }: {
+  boot.zfs.devNodes = "/dev/disk/by-id";
+
+  disko.devices = {
+    disk = {
+      disk0 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...1"; }; # Replace with actual disk ID
+      disk1 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...2"; };
+      disk2 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...3"; };
+      disk3 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...4"; };
+      disk4 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...5"; };
+      disk5 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...6"; };
+      disk6 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...7"; };
+      disk7 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...8"; };
+    };
+    zpool = {
+      r730pool = {
+        type = "zpool";
+        mode = {
+          # Define 4 mirrored VDEVs (pairs)
+          val = "mirror disk0 disk1 mirror disk2 disk3 mirror disk4 disk5 mirror disk6 disk7";
+        };
+        rootFsOptions = {
+          compression = "lz4";
+          mountpoint = "none";
+        };
+        datasets = {
+          root = {
+            type = "zfs_fs";
+            mountpoint = "/";
+          };
+          nix = {
+            type = "zfs_fs";
+            mountpoint = "/nix";
+          };
+          home = {
+            type = "zfs_fs";
+            mountpoint = "/home";
+          };
+        };
+      };
+    };
+  };
+}
