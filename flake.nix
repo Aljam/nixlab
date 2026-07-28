@@ -48,7 +48,6 @@
           ./hosts/r730xd/configuration.nix
         ];
       };
-    };
 
       r820 = nixpkgs.lib.nixosSystem {
         inherit system;
@@ -59,6 +58,7 @@
           # ./modules/common-server.nix
         ];
       };
+    };
 
     homeConfigurations.aljam = home-manager.lib.homeManagerConfiguration {
       pkgs = nixpkgs.legacyPackages.${system};
