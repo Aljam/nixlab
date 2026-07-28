@@ -36,11 +36,6 @@
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  ### GUI (KDE Plasma)
-  services.xserver.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
   ### Virtualisation & Networking Scripts
   programs.virt-manager.enable = true;
   virtualisation = {
