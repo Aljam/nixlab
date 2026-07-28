@@ -11,6 +11,18 @@
   networking.hostName = "r730xd";
   networking.hostId = "d4e5f6g7"; # ZFS strictly requires a unique 8-character hex string for every machine
 
+  # --- NEW: Storage & GPU Monitoring ---
+  environment.systemPackages = with pkgs; [
+    smartmontools
+    nvtopPackages.full
+  ];
+
+  # Enable the SMART monitoring daemon for the ZFS drives
+  services.smartd = {
+    enable = true;
+    autodetect = true;
+  };
+
   # 1. The Shared Media Group
   # This guarantees all media services can freely read/write to your ZFS pool without Linux permission conflicts.
   users.groups.media = {};
