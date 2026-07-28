@@ -45,6 +45,8 @@
     htop
   ];
 
+  hardware.dell-fan-control.enable = true;
+
   # System User
   users.users.aljam = {
     isNormalUser = true;
