@@ -32,6 +32,15 @@
 
     nodejs  
     nodePackages.npm
+
+    lm_sensors
+    iotop
+    nvd
+    nix-tree
+    iperf3
+    nmap
+    tcpdump
+    duf
   ];
 
   # Networking baseline
