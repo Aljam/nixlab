@@ -5,7 +5,7 @@
     ./hardware-configuration.nix
     ./disko-config.nix
     ../../modules/common.nix
-    ../../modules/common.nix
+    ../../modules/dell-fans.nix
   ];
 
   networking.hostName = "r730xd";
