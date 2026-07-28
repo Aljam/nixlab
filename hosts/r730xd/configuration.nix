@@ -100,5 +100,9 @@
 
   hardware.dell-fan-control.enable = true;
 
+  # ZFS Maintenance
+  services.zfs.autoScrub.enable = true;
+  services.zfs.autoScrub.interval = "weekly";
+
   system.stateVersion = "23.11";
 }
