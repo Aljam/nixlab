@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ./disko-config.nix
     ../../modules/common.nix
+    ../../modules/common.nix
   ];
 
   networking.hostName = "r730xd";
@@ -85,4 +86,5 @@
     SupplementaryGroups = [ "render" "video" ];
   };
 
+  hardware.dell-fan-control.enable = true;
 }
