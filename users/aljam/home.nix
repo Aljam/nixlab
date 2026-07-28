@@ -14,6 +14,8 @@
     ripgrep
     jq
     tldr
+    fd
+    lazygit
 
     # GUI Applications & Software
     ungoogled-chromium
@@ -92,6 +94,18 @@
       obs-command-source
       obs-retro-effects
     ];
+  };
+
+  # Smart directory jumping
+  programs.zoxide = {
+    enable = true;
+    enableFishIntegration = true;
+  };
+
+  # Automatic Nix development environments
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
   };
 
   programs.home-manager.enable = true;
