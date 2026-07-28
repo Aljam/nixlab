@@ -3,16 +3,43 @@
 {
   home.username = "aljam";
   home.homeDirectory = "/home/aljam";
-  home.stateVersion = "23.11"; # Match this to your initial install version
+  home.stateVersion = "23.11";
 
-  # Your Common Dev Tools
+  # Your Common Dev Tools & GUI Applications
   home.packages = with pkgs; [
-    bat        # Better cat
-    eza        # Better ls
-    fzf        # Command-line fuzzy finder
-    ripgrep    # Better grep
-    jq         # JSON processor
-    tldr       # Simplified man pages
+    # CLI / Dev Tools
+    bat
+    eza
+    fzf
+    ripgrep
+    jq
+    tldr
+
+    # GUI Applications & Software
+    ungoogled-chromium
+    kdePackages.kate
+    deadbeef-with-plugins
+    discord
+    betterdiscordctl
+    telegram-desktop
+    mpv
+    kitty
+    obsidian
+    librewolf
+    gimp
+    krita
+    obs-studio
+    blender
+    qbittorrent
+    inkscape
+    audacity
+    super-slicer
+    davinci-resolve
+    element-desktop
+    libreoffice-qt
+    hunspell
+    hunspellDicts.en_US
+    hyphenDicts.en_US
   ];
 
   # Kitty Terminal Configuration
@@ -34,29 +61,24 @@
     shellAliases = {
       ls = "eza --icons";
       cat = "bat";
-      # The Client-Side Kitty SSH Fix
       ssh = "kitty +kitten ssh"; 
     };
   };
 
-# Git Configuration
+  # Git Configuration
   programs.git = {
     enable = true;
-    userName  = "Aljam";                     # Replace with your actual Git username
-    userEmail = "aljam@live.ca";    # Replace with your actual Git email
+    userName  = "Aljam";
+    userEmail = "aljam@live.ca";
     
     extraConfig = {
-      # Enforce SSH signing for all commits
       commit.gpgsign = true;
       gpg.format = "ssh";
       user.signingkey = "~/.ssh/id_ed25519.pub"; 
-      
-      # Quality of life settings
       init.defaultBranch = "main";
       pull.rebase = true;
     };
   };
 
-  # Let Home Manager install and manage itself
   programs.home-manager.enable = true;
 }
