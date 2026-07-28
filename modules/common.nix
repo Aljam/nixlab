@@ -6,7 +6,7 @@
 
   # Set global timezone and locale
   time.timeZone = "America/Toronto";
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_CA.UTF-8";
 
   # Enable Flakes globally
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -15,6 +15,12 @@
   environment.systemPackages = with pkgs; [
     git
     htop
+    wget
+    curl
+    yt-dlp
+    ffmpeg
+    vim
+    cifs-utils
     kitty.terminfo # Fixes SSH terminal issues when connecting from Kitty
   ];
 
