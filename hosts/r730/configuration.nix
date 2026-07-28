@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/common.nix
+    ../../modules/dell-fans.nix
   ];
 
   networking.hostName = "r730";
