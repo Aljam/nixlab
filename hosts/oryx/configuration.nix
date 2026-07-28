@@ -27,11 +27,6 @@
     };
   };
 
-  ### GUI (KDE Plasma)
-  services.xserver.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
   ### Nvidia & System76 Hardware Specifics
   hardware.nvidia = {
     open = false;
