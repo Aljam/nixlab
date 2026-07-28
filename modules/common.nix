@@ -41,4 +41,13 @@
     enable = true;
     powerOnBoot = true;
   };
+
+  # Enable SSH fleet-wide
+  services.openssh = {
+    enable = true;
+    # Require keys instead of passwords (highly recommended)
+    settings.PasswordAuthentication = false;
+    settings.KbdInteractiveAuthentication = false;
+  };
+
 }
