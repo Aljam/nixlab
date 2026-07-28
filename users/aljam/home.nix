@@ -68,15 +68,25 @@
 
   # Git Configuration
   programs.git = {
-    enable = true;
-    user = {
-      name  = "Aljam";
-      email = "aljam@live.ca";
-      signingkey = "~/.ssh/id_ed25519.pub";
+      enable = true;
+      
+      # All Git configurations must live INSIDE these curly braces
+      settings = {
+        user = {
+          name = "Aljam";
+          email = "aljam@live.ca";
+          signingkey = "~/.ssh/id_ed25519.pub";
+        };
+  
+        commit = {
+          gpgsign = true;
+        };
+  
+        gpg = {
+          format = "ssh";
+        };
+      };
     };
-    commit.gpgsign = true;
-    gpg.format = "ssh";
-  };
 
   # OBS Studio Configuration
   programs.obs-studio = {
