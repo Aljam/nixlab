@@ -57,5 +57,14 @@
     ];
   };
 
+  # Automatic Garbage Collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+
+  # Automatically optimize the Nix store (deduplicates identical files)
+  nix.optimise.automatic = true;
 
 }
