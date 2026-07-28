@@ -1,4 +1,9 @@
- ### Desktop Programs & Gaming
+  ### GUI (KDE Plasma)
+  services.xserver.enable = true;
+  services.displayManager.sddm.enable = true;
+  services.desktopManager.plasma6.enable = true;
+
+  ### Desktop Programs & Gaming
   programs = {
     kdeconnect.enable = true;
     gamemode.enable = true;
