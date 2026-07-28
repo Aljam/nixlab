@@ -100,5 +100,5 @@
 
   hardware.dell-fan-control.enable = true;
 
-  system.stateVersion = "23.11"
+  system.stateVersion = "23.11";
 }
