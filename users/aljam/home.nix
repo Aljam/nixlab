@@ -28,7 +28,6 @@
     librewolf
     gimp
     krita
-    obs-studio
     blender
     qbittorrent
     inkscape
