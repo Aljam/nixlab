@@ -59,4 +59,30 @@
     openFirewall = true;
     group = "media";
   };
+
+  # Enable Hardware Graphics Acceleration
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      nvidia-vaapi-driver
+      vaapiVdpau
+      libvdpau-va-gl
+    ];
+  };
+
+  # Load the Proprietary Nvidia Drivers
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = false; # Use the proprietary, closed-source drivers for the P40
+    nvidiaSettings = false; # Disable the graphical settings menu since this is a headless server
+  };
+
+  # Grant Jellyfin GPU Permissions
+  # This adds Jellyfin to the groups required to access /dev/dri/ where the GPU resides.
+  systemd.services.jellyfin.serviceConfig = {
+    SupplementaryGroups = [ "render" "video" ];
+  };
+
 }
