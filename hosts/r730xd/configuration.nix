@@ -9,7 +9,17 @@
   ];
 
   networking.hostName = "r730xd";
-  networking.hostId = "d4e5f6g7"; # ZFS strictly requires a unique 8-character hex string for every machine
+  networking.hostId = "d2083fdc"; # ZFS strictly requires a unique 8-character hex string for every machine
+
+  # Tell GRUB to use EFI, not legacy BIOS
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  
+  # "nodev" tells GRUB we are using EFI and it doesn't need a raw legacy disk path
+  boot.loader.grub.devices = [ "nodev" ]; 
+  
+  # Highly recommended for Dell PowerEdge servers to prevent the BIOS from "forgetting" the boot entry
+  boot.loader.grub.efiInstallAsRemovable = true;
 
   # --- NEW: Storage & GPU Monitoring ---
   environment.systemPackages = with pkgs; [
@@ -78,7 +88,7 @@
     enable = true;
     extraPackages = with pkgs; [
       nvidia-vaapi-driver
-      vaapiVdpau
+      libva-vdpau-driver
       libvdpau-va-gl
     ];
   };
@@ -87,9 +97,17 @@
   services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
+    # Ensure the driver is enabled
     modesetting.enable = true;
-    open = false; # Use the proprietary, closed-source drivers for the P40
-    nvidiaSettings = false; # Disable the graphical settings menu since this is a headless server
+    
+    # Optional but recommended for headless servers
+    open = false; 
+    nvidiaSettings = true;
+
+    # THIS IS THE CRITICAL LINE
+    # This forces NixOS to use the legacy 535.xx driver branch (or whichever legacy branch you need)
+    # instead of the broken latest/beta drivers.
+    package = config.boot.kernelPackages.nvidiaPackages.production;
   };
 
   # Grant Jellyfin GPU Permissions
