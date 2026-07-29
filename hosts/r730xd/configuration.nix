@@ -58,38 +58,38 @@
   # 3. Jellyfin Media Server
   services.jellyfin = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
     group = "media";
   };
 
   # 4. The Arr Stack
   services.sonarr = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
     group = "media";
   };
 
   services.radarr = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
     group = "media";
   };
 
   services.prowlarr = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
   };
 
   # 5. Jellyseerr (For requesting media)
   services.jellyseerr = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
   };
 
   # 6. Download Client (qBittorrent)
   services.qbittorrent = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
     group = "media";
   };
 
