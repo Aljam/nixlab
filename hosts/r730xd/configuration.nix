@@ -11,7 +11,7 @@
   networking.hostName = "r730xd";
   networking.hostId = "d2083fdc"; # ZFS strictly requires a unique 8-character hex string for every machine
 
-  networking.interfaces.<your-interface-name>.ipv4.addresses = [ {
+  networking.interfaces.eno1.ipv4.addresses = [ {
     address = "192.168.1.2";
     prefixLength = 24;
   } ];
