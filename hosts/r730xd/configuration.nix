@@ -107,7 +107,7 @@
     # THIS IS THE CRITICAL LINE
     # This forces NixOS to use the legacy 535.xx driver branch (or whichever legacy branch you need)
     # instead of the broken latest/beta drivers.
-    package = config.boot.kernelPackages.nvidiaPackages.production;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
   };
 
   # Grant Jellyfin GPU Permissions
