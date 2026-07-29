@@ -9,6 +9,16 @@
 
   # System Identity
   networking.hostName = "r820";
+
+  # Tell GRUB to use EFI, not legacy BIOS
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  
+  # "nodev" tells GRUB we are using EFI and it doesn't need a raw legacy disk path
+  boot.loader.grub.devices = [ "nodev" ]; 
+  
+  # Highly recommended for Dell PowerEdge servers to prevent the BIOS from "forgetting" the boot entry
+  boot.loader.grub.efiInstallAsRemovable = true;
   
   # ZFS Host ID (Required if you deploy ZFS on this machine)
   # Generate a unique 8-character hex string using `head -c 4 /dev/urandom | od -A none -t x4`
