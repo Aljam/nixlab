@@ -40,7 +40,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.disko.nixosModules.disko
-          ./hosts/r730/hardware.nix
+          ./hosts/r730/hardware-configuration.nix
           ./hosts/r730/disko-config.nix
           ./hosts/r730/configuration.nix
         ];
@@ -51,7 +51,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.disko.nixosModules.disko
-          ./hosts/r730xd/hardware.nix
+          ./hosts/r730xd/hardware-configuration.nix
           ./hosts/r730xd/disko-config.nix
           ./hosts/r730xd/configuration.nix
         ];
