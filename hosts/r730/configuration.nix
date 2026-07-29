@@ -8,6 +8,18 @@
   ];
 
   networking.hostName = "r730";
+  networking.hostId = "acccc16e"; # ZFS strictly requires a unique 8-character hex string for every machine
+
+  # Tell GRUB to use EFI, not legacy BIOS
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  
+  # "nodev" tells GRUB we are using EFI and it doesn't need a raw legacy disk path
+  boot.loader.grub.devices = [ "nodev" ]; 
+  
+  # Highly recommended for Dell PowerEdge servers to prevent the BIOS from "forgetting" the boot entry
+  boot.loader.grub.efiInstallAsRemovable = true;
+
 
   # Server Kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -21,7 +33,7 @@
 
   hardware.nvidia = {
     # Tesla P40 (Pascal architecture) uses the standard stable/production driver package
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
     modesetting.enable = true;
     open = false; # Pascal cards require the proprietary closed-source kernel module
     nvidiaPersistenced = true; # Prevents power-state latency drops during AI training/inference
