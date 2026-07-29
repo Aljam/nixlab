@@ -11,6 +11,13 @@
   networking.hostName = "r730xd";
   networking.hostId = "d2083fdc"; # ZFS strictly requires a unique 8-character hex string for every machine
 
+  networking.interfaces.<your-interface-name>.ipv4.addresses = [ {
+    address = "192.168.1.2";
+    prefixLength = 24;
+  } ];
+  networking.defaultGateway = "192.168.1.1"; # Adjust to your router's IP
+  networking.nameservers = [ "192.168.1.1" ]
+
   # Tell GRUB to use EFI, not legacy BIOS
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
