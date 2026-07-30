@@ -5,16 +5,25 @@
     ./hardware-configuration.nix
     ./disko-config.nix
     ../../modules/common.nix
-    ../../modules/nvidia-headless.nix # <-- Import our new shared module
-    #../../modules/dell-fans.nix
+    ../../modules/server-core.nix     # <-- Injects smartd, tmux, htop, ssh keys
+    ../../modules/nvidia-headless.nix # <-- Injects Tesla P40 GPU drivers
+    ../../modules/media-server.nix    # <-- Injects Jellyfin, Arr stack, UI
   ];
 
+  # --- Hardware & Boot Defaults ---
   boot.kernelPackages = pkgs.linuxPackages_6_1;
   hardware.enableRedistributableFirmware = true;
 
-  # --- Networking & System Identity ---
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.devices = [ "nodev" ]; 
+  boot.loader.grub.efiInstallAsRemovable = true;
+  
+  boot.zfs.forceImportRoot = false;
+
+  # --- System Identity & Networking ---
   networking.hostName = "r730xd";
-  networking.hostId = "d2083fdc";
+  networking.hostId = "d2083fdc"; # Required for ZFS
 
   networking.interfaces.eno1.ipv4.addresses = [
     {
@@ -25,104 +34,6 @@
 
   networking.defaultGateway = "192.168.1.1";
   networking.nameservers = [ "192.168.1.1" "1.1.1.1" ];
-
-  # --- Boot & Loaders ---
-  boot.zfs.forceImportRoot = false;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.devices = [ "nodev" ]; 
-  boot.loader.grub.efiInstallAsRemovable = true;
-
-  # --- Storage & Hardware ---
-  environment.systemPackages = with pkgs; [
-    smartmontools
-  ];
-
-  services.smartd = {
-    enable = true;
-    autodetect = true;
-  };
-
-  services.zfs.autoScrub.enable = true;
-  services.zfs.autoScrub.interval = "weekly";
-
-  # --- Users, Groups & Directories ---
-  users.groups.media = {};
-
-  systemd.tmpfiles.rules = [
-    "d /mnt/media/movies 0770 root media -"
-    "d /mnt/media/tv 0770 root media -"
-    "d /mnt/media/downloads 0770 root media -"
-  ];
-
-  # --- Media & Automation Services ---
-  services.jellyfin = {
-    enable = true;
-    openFirewall = true;
-    group = "media";
-  };
-
-  # Pass device nodes directly into the native Jellyfin service
-  systemd.services.jellyfin.serviceConfig = {
-    SupplementaryGroups = [ "media" "video" "render" ];
-    DeviceAllow = [
-      "/dev/nvidia0 rwm"
-      "/dev/nvidiactl rwm"
-      "/dev/nvidia-uvm rwm"
-      "/dev/nvidia-uvm-tools rwm"
-      "char-drm rwm"
-    ];
-  };
-
-  services.sonarr = { enable = true; openFirewall = true; group = "media"; settings.server.bindAddress = "0.0.0.0"; };
-  services.radarr = { enable = true; openFirewall = true; group = "media"; settings.server.bindAddress = "0.0.0.0"; };
-  services.prowlarr = { enable = true; openFirewall = true; settings.server.bindAddress = "0.0.0.0"; };
-  services.seerr = { enable = true; openFirewall = true; };
-  services.qbittorrent = { enable = true; openFirewall = true; group = "media"; };
-  
-  services.autobrr = {
-    enable = true;
-    secretFile = "/etc/nixos/secrets/autobrr.env";
-    settings = { port = 7474; host = "0.0.0.0"; };
-  };
-  
-  services.recyclarr.enable = true;
-  
-  virtualisation.oci-containers.containers.qbitmanage = {
-    image = "ghcr.io/starbix/qbitmanage:latest";
-    environment = {
-      QBT_RUN = "true";
-      QBT_SCHEDULE = "1440";
-    };
-    volumes = [
-      "/var/lib/qbitmanage:/config"
-      "/mnt/pool/media:/data/media"
-      "/var/lib/qbittorrent:/qbittorrent"
-    ];
-  };
-
-  # --- Dashboard & Service Permissions ---
-  services.homepage-dashboard = {
-    enable = true;
-    openFirewall = true;
-    allowedHosts = "home.derezzed.info,192.168.1.2:8082";
-    services = [
-      {
-        "Media & Requests" = [
-          { Jellyfin = { href = "https://jellyfin.derezzed.info"; description = "Media Streaming"; icon = "jellyfin.png"; }; }
-          { Seerr = { href = "https://seerr.derezzed.info"; description = "Media Requests"; icon = "seerr.png"; }; }
-        ];
-      }
-      {
-        "Automation & Downloads" = [
-          { Sonarr = { href = "https://sonarr.derezzed.info"; description = "TV Shows"; icon = "sonarr.png"; }; }
-          { Radarr = { href = "https://radarr.derezzed.info"; description = "Movies"; icon = "radarr.png"; }; }
-          { Prowlarr = { href = "https://prowlarr.derezzed.info"; description = "Indexers"; icon = "prowlarr.png"; }; }
-          { qBittorrent = { href = "http://192.168.1.2:8080"; description = "Torrents"; icon = "qbittorrent.png"; }; }
-        ];
-      }
-    ];
-  };
 
   system.stateVersion = "23.11";
 }
