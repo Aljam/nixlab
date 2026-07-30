@@ -34,6 +34,10 @@
     "nvidia-drm.modeset=0"
     "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+    # --- TTY & FRAMEBUFFER QUIRKS ---
+    "console=tty0"            # Directs kernel messages to the primary system console
+    "console=ttyS0,115200n8"  # Ensures iDRAC serial redirection works if you use serial logging
+    "fbcon=map:0"             # Forces the framebuffer console to stay mapped to slot 0 (ASPEED)
   ];
   
   boot.blacklistedKernelModules = [ "nouveau" ];
