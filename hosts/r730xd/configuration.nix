@@ -30,7 +30,6 @@
   '';
   
   boot.blacklistedKernelModules = [ "nouveau" "ast" "nvidia_drm" "nvidia_modeset" "nvidia_uvm" ];
-  hardware.dell-fan-control.enable = true;
 
   # Ensure the local text login prompt is explicitly enabled on tty1
   systemd.services."getty@tty1".enable = true;
