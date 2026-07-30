@@ -4,56 +4,40 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/common.nix  
-    ../../modules/desktop.nix
+    ../../modules/desktop.nix # Pulls in generic GRUB, KDE, Steam, Audio
+    ../../modules/aljam.nix   # Pulls in your identity
   ];
 
   networking.hostName = "oryx";
 
-  ### Bootloader (GRUB)
-  boot.loader = {
-    timeout = 10;
-    systemd-boot.enable = false;
-    efi.canTouchEfiVariables = true;
-    grub = {
-      enable = true;
-      efiSupport = true;
-      efiInstallAsRemovable = false;
-      device = "nodev";
-      gfxmodeEfi = "1920x1200";
-      gfxmodeBios = "1920x1200";
-      gfxpayloadEfi = "keep";
-      configurationLimit = 10;
-      timeoutStyle = "menu";
-    };
-  };
+  # --- Oryx-Specific Bootloader Overrides (Laptop Display) ---
+  boot.loader.grub.gfxmodeEfi = "1920x1200";
+  boot.loader.grub.gfxmodeBios = "1920x1200";
+  boot.loader.grub.gfxpayloadEfi = "keep";
 
-  ### Nvidia & System76 Hardware Specifics
-  hardware.nvidia = {
-    open = false;
-    modesetting.enable = true;
-    nvidiaPersistenced = true;
-    powerManagement.enable = true;
-    prime = {
-      sync.enable = true;
-      intelBusId = "PCI:0:2:0";
-      nvidiaBusId = "PCI:1:0:0";
-    };
-  };
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
+  # --- Kernel & Hardware Parameters ---
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.blacklistedKernelModules = [ "nouveau" ];
+  boot.kernelParams = [
+    "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
+    "nvidia.NVreg_EnableGpuFirmware=1"
+    "system76_acpi.brightness_hwmon=1"
+    "nvidia-drm.modeset=1"
+  ];
 
-  boot = {
-    kernelPackages = pkgs.linuxPackages_latest;
-    blacklistedKernelModules = [ "nouveau" ];
-    kernelParams = [
-      "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-      "nvidia.NVreg_EnableGpuFirmware=1"
-      "system76_acpi.brightness_hwmon=1"
-      "nvidia-drm.modeset=1"
-    ];
-  };
+  # --- Graphics & Nvidia PRIME Offloading ---
+  hardware.graphics.enable = true;
+  hardware.graphics.enable32Bit = true;
+
+  hardware.nvidia.open = false;
+  hardware.nvidia.modesetting.enable = true;
+  hardware.nvidia.nvidiaPersistenced = true;
+  hardware.nvidia.powerManagement.enable = true;
+
+  # Explicit Bus IDs for Intel/Nvidia Graphics Switching
+  hardware.nvidia.prime.sync.enable = true;
+  hardware.nvidia.prime.intelBusId = "PCI:0:2:0";
+  hardware.nvidia.prime.nvidiaBusId = "PCI:1:0:0";
 
   environment.sessionVariables = {
     LIBVA_DRIVER_NAME = "nvidia";
@@ -61,24 +45,19 @@
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
   };
 
-  hardware.system76 = {
-    kernel-modules.enable = true;
-    firmware-daemon.enable = true;
-    power-daemon.enable = true;
-  };
+  # --- System76 Quirks & Power Management ---
+  hardware.system76.kernel-modules.enable = true;
+  hardware.system76.firmware-daemon.enable = true;
+  hardware.system76.power-daemon.enable = true;
+
   services.fwupd.enable = true;
+  services.system76-scheduler.enable = true;
 
-  services = {
-    thermald.enable = false;
-    system76-scheduler.enable = true;
-    power-profiles-daemon.enable = false;
-  };
+  # Disable conflicting generic Linux power daemons
+  services.thermald.enable = false;
+  services.power-profiles-daemon.enable = false;
+
   powerManagement.cpuFreqGovernor = "performance";
-
-  users.users.aljam = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
-  };
 
   system.stateVersion = "23.11";
 }
