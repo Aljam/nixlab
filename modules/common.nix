@@ -4,6 +4,9 @@
   # Allow unfree packages fleet-wide
   nixpkgs.config.allowUnfree = true;
 
+  # Fleet-wide default state version
+  system.stateVersion = lib.mkDefault "23.11";
+
   # Set global timezone and locale
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
