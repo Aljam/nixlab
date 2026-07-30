@@ -5,9 +5,7 @@
   home.homeDirectory = "/home/aljam";
   home.stateVersion = "23.11";
 
-  xdg.enable = true;
-
-  # Your Common Dev Tools & GUI Applications
+  # Universal CLI & Dev Tools (Safe for Servers & Desktops)
   home.packages = with pkgs; [
     bat
     eza
@@ -17,40 +15,7 @@
     tldr
     fd
     lazygit
-    ungoogled-chromium
-    kdePackages.kate
-    deadbeef-with-plugins
-    discord
-    betterdiscordctl
-    telegram-desktop
-    mpv
-    kitty
-    obsidian
-    librewolf
-    gimp
-    krita
-    blender
-    qbittorrent
-    inkscape
-    audacity
-    super-slicer
-    davinci-resolve
-    element-desktop
-    libreoffice-qt
-    hunspell
-    hunspellDicts.en_US
-    hyphenDicts.en_US
   ];
-
-  # Kitty Terminal Configuration
-  programs.kitty = {
-    enable = true;
-    settings = {
-      scrollback_lines = 10000;
-      enable_audio_bell = false;
-      update_check_interval = 0;
-    };
-  };
 
   # Fish Shell Configuration
   programs.fish = {
@@ -67,39 +32,22 @@
 
   # Git Configuration
   programs.git = {
-      enable = true;
-      
-      # All Git configurations must live INSIDE these curly braces
-      settings = {
-        user = {
-          name = "Aljam";
-          email = "aljam@live.ca";
-          signingkey = "~/.ssh/id_ed25519.pub";
-        };
-  
-        commit = {
-          gpgsign = true;
-        };
-  
-        gpg = {
-          format = "ssh";
-        };
+    enable = true;
+    settings = {
+      user = {
+        name = "Aljam";
+        email = "aljam@live.ca";
+        signingkey = "~/.ssh/id_ed25519.pub";
+      };
+
+      commit = {
+        gpgsign = true;
+      };
+
+      gpg = {
+        format = "ssh";
       };
     };
-
-  # OBS Studio Configuration
-  programs.obs-studio = {
-    enable = true;
-    plugins = with pkgs.obs-studio-plugins; [
-      wlrobs
-      obs-backgroundremoval
-      obs-pipewire-audio-capture
-      obs-gstreamer
-      obs-vkcapture
-      input-overlay
-      obs-command-source
-      obs-retro-effects
-    ];
   };
 
   # Smart directory jumping
