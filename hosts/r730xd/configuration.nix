@@ -127,7 +127,7 @@
   services.autobrr = {
     enable = true;
     user = "autobrr";
-    group = "autobrr"
+    group = "autobrr";
     settings = {
       port = 7474;
       host = "0.0.0.0";
