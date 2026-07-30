@@ -58,7 +58,7 @@
     modesetting.enable = false;
     open = false; 
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
   hardware.dell-fan-control.enable = true;
