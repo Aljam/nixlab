@@ -10,17 +10,6 @@
 
   # Enable Flakes globally
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
-
-  programs.fish.enable = true;
-
-  users.users.aljam = {
-    isNormalUser = true;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHzrMiro1XD8krk5Kb4EWQ+rGjmgKXha/OuOmUZcopRL navi-desktop"
-    ];
-    extraGroups = [ "wheel" "networkmanager" ]; # "wheel" grants sudo access!
-    shell = pkgs.fish; # Or whichever shell you use
-  };
   
   # Ensure sudo is explicitly enabled fleet-wide (usually default, but good to ensure)
   security.sudo.enable = true;
