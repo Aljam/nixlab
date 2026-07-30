@@ -20,6 +20,7 @@
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
     "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1" # Crucial: Forces driver to accept Tesla/enterprise compute cards
     "nvidia.NVreg_AssignGpus=0" # Forces the driver to scan and grab all discovered slots
+    "nvidia.NVreg_IgnorePowerState=1"
   ];
   
   boot.blacklistedKernelModules = [ "nouveau" "ast" ];
