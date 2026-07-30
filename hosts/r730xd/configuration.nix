@@ -13,8 +13,6 @@
 
   hardware.enableRedistributableFirmware = true;
   nixpkgs.config.nvidia.acceptLicense = true;
-  
-  services.xserver.videoDrivers = [ "nvidia" ];
 
   hardware.nvidia = {
     package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
