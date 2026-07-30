@@ -26,6 +26,12 @@
     "intel_iommu=on"
     "iommu=pt"
   ];
+  
+  boot.initrd.kernelModules = [
+    "vfio_pci"
+    "vfio"
+    "vfio_iommu_type1"
+  ];
 
   boot.extraModprobeConfig = ''
     options vfio-pci ids=10de:1b38
