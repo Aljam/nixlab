@@ -11,6 +11,15 @@
   # Enable Flakes globally
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  users.users.aljam = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" "networkmanager" ]; # "wheel" grants sudo access!
+    shell = pkgs.fish; # Or whichever shell you use
+  };
+  
+  # Ensure sudo is explicitly enabled fleet-wide (usually default, but good to ensure)
+  security.sudo.enable = true;
+  
   # Essential system packages across desktop/laptop systems
   environment.systemPackages = with pkgs; [
     home-manager
