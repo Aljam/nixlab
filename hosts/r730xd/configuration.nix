@@ -17,6 +17,9 @@
     "pcie_aspm=off"  # <--- CRITICAL: Stops the motherboard from dropping slot voltage
     "intel_iommu=on"
     "iommu=pt"
+    "ipmi_si"
+    "ipmi_devintf"
+    "ipmi_msghandler"
   ];
   
   boot.initrd.kernelModules = [
