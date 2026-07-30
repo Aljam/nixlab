@@ -5,49 +5,31 @@
     ./hardware-configuration.nix
     ../../modules/common.nix
     ../../modules/dell-fans.nix
+    ../../modules/nvidia-headless.nix # <-- Import our new shared module
   ];
 
   networking.hostName = "r730";
-  networking.hostId = "acccc16e"; # ZFS strictly requires a unique 8-character hex string for every machine
+  networking.hostId = "acccc16e"; # ZFS requirement
 
-  # Tell GRUB to use EFI, not legacy BIOS
+  # Bootloader
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
-  
-  # "nodev" tells GRUB we are using EFI and it doesn't need a raw legacy disk path
-  boot.loader.grub.devices = [ "nodev" ]; 
-  
-  # Highly recommended for Dell PowerEdge servers to prevent the BIOS from "forgetting" the boot entry
+  boot.loader.grub.devices = [ "nodev" ];
   boot.loader.grub.efiInstallAsRemovable = true;
 
-
-  # Server Kernel
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # ---------------------------------------------------------
-  # DUAL TESLA P40 AI COMPUTE CONFIGURATION
+  # HOST-SPECIFIC AI COMPUTE OVERRIDES
   # ---------------------------------------------------------
-
-  # Enable proprietary drivers for headless compute nodes
-  services.xserver.videoDrivers = [ "nvidia" ];
-
+  
   hardware.nvidia = {
-    # Tesla P40 (Pascal architecture) uses the standard stable/production driver package
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
-    modesetting.enable = true;
-    open = false; # Pascal cards require the proprietary closed-source kernel module
-    nvidiaPersistenced = true; # Prevents power-state latency drops during AI training/inference
+    modesetting.enable = true; # Overrides the module default
+    nvidiaPersistenced = true; # Prevents power-state latency drops during AI training
   };
 
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
-  # Enable global CUDA support for packages compiled in this environment
   nixpkgs.config.cudaSupport = true;
 
-  # Host-level utilities and AI toolchain packages
   environment.systemPackages = with pkgs; [
     cudatoolkit
     linuxPackages.nvidia_x11
@@ -55,7 +37,6 @@
     lm_sensors
     tmux
     htop
-    nvtopPackages.full
   ];
 
   hardware.dell-fan-control.enable = true;
