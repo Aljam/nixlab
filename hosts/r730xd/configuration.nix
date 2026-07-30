@@ -139,6 +139,7 @@
 
   services.autobrr = {
     enable = true;
+    secretFile = "/etc/nixos/secrets/autobrr.env";
     settings = {
       port = 7474;
       host = "0.0.0.0";
