@@ -36,7 +36,7 @@
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
   ];
   
-  boot.blacklistedKernelModules = [ "nouveau" "ast" ];
+  boot.blacklistedKernelModules = [ "nouveau" ];
 
   # Ensure the local text login prompt is explicitly enabled on tty1
   systemd.services."getty@tty1".enable = true;
