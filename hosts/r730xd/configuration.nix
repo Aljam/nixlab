@@ -72,6 +72,7 @@
   };
 
   hardware.nvidia = {
+    enable = true;
     modesetting.enable = false;
     open = false; 
     nvidiaSettings = false;
