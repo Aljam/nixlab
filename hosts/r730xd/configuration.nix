@@ -19,7 +19,7 @@
   ];
 
   networking.defaultGateway = "192.168.1.1";
-  networking.nameservers = [ "192.168.1.1" ];
+  networking.nameservers = [ "192.168.1.1" "1.1.1.1" ];
 
   # Tell GRUB to use EFI, not legacy BIOS
   boot.loader.grub.enable = true;
@@ -31,7 +31,7 @@
   # Highly recommended for Dell PowerEdge servers to prevent the BIOS from "forgetting" the boot entry
   boot.loader.grub.efiInstallAsRemovable = true;
 
-  # --- NEW: Storage & GPU Monitoring ---
+  # --- Storage & GPU Monitoring ---
   environment.systemPackages = with pkgs; [
     smartmontools
     nvtopPackages.full
@@ -60,13 +60,9 @@
     enable = true;
     openFirewall = true;
     group = "media";
-    settings = {
-      server = {
-        bindAddress = "0.0.0.0";
-      };
   };
 
-  # 4. The Arr Stack
+  # 4. The Arr Stack (Explicitly bound to 0.0.0.0 for pfSense / HAProxy)
   services.sonarr = {
     enable = true;
     openFirewall = true;
@@ -75,6 +71,7 @@
       server = {
         bindAddress = "0.0.0.0";
       };
+    };
   };
 
   services.radarr = {
@@ -85,6 +82,7 @@
       server = {
         bindAddress = "0.0.0.0";
       };
+    };
   };
 
   services.prowlarr = {
@@ -94,16 +92,13 @@
       server = {
         bindAddress = "0.0.0.0";
       };
+    };
   };
 
   # 5. Jellyseerr (For requesting media)
   services.jellyseerr = {
     enable = true;
     openFirewall = true;
-    settings = {
-      server = {
-        bindAddress = "0.0.0.0";
-      };
   };
 
   # 6. Download Client (qBittorrent)
@@ -111,10 +106,6 @@
     enable = true;
     openFirewall = true;
     group = "media";
-    settings = {
-      server = {
-        bindAddress = "0.0.0.0";
-      };
   };
 
   # Enable Hardware Graphics Acceleration
