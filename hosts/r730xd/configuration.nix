@@ -5,13 +5,14 @@
     ./hardware-configuration.nix
     ./disko-config.nix
     ../../modules/common.nix
-    ../../modules/dell-fans.nix
+    #../../modules/dell-fans.nix
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_1;
   services.xserver.enable = false;
 
   hardware.enableRedistributableFirmware = true;
+  nixpkgs.config.nvidia.acceptLicense = true;
   
   services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -36,6 +37,7 @@
     "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"
     "nvidia.NVreg_IgnorePowerState=1"
     "nvidia.NVreg_AssignGpus=0"
+    "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
   ];
 
   boot.initrd.kernelModules = [
