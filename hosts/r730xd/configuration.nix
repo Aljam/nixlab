@@ -124,7 +124,10 @@
 
   services.autobrr = {
     enable = true;
-    port = 7474;
+    settings = {
+      port = 7474;
+      host = "0.0.0.0";
+    };
     secretKeyFile = "/var/lib/autobrr/secret"; 
   };
   
