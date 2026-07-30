@@ -22,7 +22,7 @@
     "nvidia.NVreg_AssignGpus=0" # Forces the driver to scan and grab all discovered slots
   ];
   
-  boot.blacklistedKernelModules = [ "nouveau" "ast" "nvidia_drm" "nvidia_modeset" ];
+  boot.blacklistedKernelModules = [ "nouveau" "ast" ];
   hardware.dell-fan-control.enable = true;
 
   # Ensure the local text login prompt is explicitly enabled on tty1
