@@ -1,6 +1,17 @@
 { config, pkgs, ... }:
 
 {
+  # --- Shared GUI Bootloader (GRUB) ---
+  boot.loader.timeout = 5;
+  boot.loader.systemd-boot.enable = false;
+  boot.loader.efi.canTouchEfiVariables = true;
+  
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.efiInstallAsRemovable = false;
+  boot.loader.grub.device = "nodev";
+  boot.loader.grub.configurationLimit = 10;
+  boot.loader.grub.timeoutStyle = "menu";
 
   # Enable NetworkManager
   networking.networkmanager.enable = true;
