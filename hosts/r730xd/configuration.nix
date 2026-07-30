@@ -12,6 +12,7 @@
   services.xserver.enable = false;
 
   hardware.enableRedistributableFirmware = true;
+  nixpkgs.config.nvidia.acceptLicense = true;
 
   boot.kernelParams = [ 
     "nvidia-drm.modeset=0" 
