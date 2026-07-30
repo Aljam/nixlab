@@ -94,6 +94,19 @@
     group = "media";
   };
 
+  systemd.services.jellyfin.serviceConfig = {
+    DeviceAllow = [
+      "/dev/nvidia0 rwm"
+      "/dev/nvidiactl rwm"
+      "/dev/nvidia-uvm rwm"
+      "/dev/nvidia-uvm-tools rwm"
+      "char-drm rwm"
+    ];
+  };
+
+  # Ensure the jellyfin user is added to the video/render groups if needed
+  users.users.jellyfin.extraGroups = [ "video" "render" ];
+
   services.sonarr = {
     enable = true;
     openFirewall = true;
