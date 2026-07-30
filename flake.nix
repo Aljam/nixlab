@@ -1,88 +1,65 @@
 {
-  description = "Unified NixOS Fleet Flake";
+  description = "Aljam's Unified Homelab Flake";
 
-    inputs = {
-      nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-      disko.url = "github:nix-community/disko";
-      disko.inputs.nixpkgs.follows = "nixpkgs";
-      home-manager = {
-        url = "github:nix-community/home-manager/";
-        inputs.nixpkgs.follows = "nixpkgs";
-      };
+  inputs = {
+    # Core OS (Change to nixos-23.11 if you prefer stable over unstable)
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    # Home Manager
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
-  outputs = inputs@{ self, nixpkgs, home-manager, ... }:
+    # Disko (For Declarative ZFS formatting on the R730 & R730xd)
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+  };
+
+  outputs = { self, nixpkgs, home-manager, disko, ... }@inputs:
   let
     system = "x86_64-linux";
-  in
-  {
-    nixosConfigurations = {
-      navi = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/navi/configuration.nix
-          home-manager.nixosModules.home-manager
-        ];
-      };
-
-      oryx = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/oryx/configuration.nix
-          home-manager.nixosModules.home-manager
-        ];
-      };
-
-      r730 = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          inputs.disko.nixosModules.disko
-          ./hosts/r730/hardware-configuration.nix
-          ./hosts/r730/disko-config.nix
-          ./hosts/r730/configuration.nix
-        ];
-      };
-
-      r730xd = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          inputs.disko.nixosModules.disko
-          ./hosts/r730xd/hardware-configuration.nix
-          ./hosts/r730xd/disko-config.nix
-          ./hosts/r730xd/configuration.nix
-        ];
-      };
-
-      r820 = nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit inputs; };
-        modules = [
-          ./hosts/r820/configuration.nix
-          ./hosts/r820/hardware-configuration.nix
-          # ./modules/common-server.nix
-        ];
-      };
-    };
-
-    nix.settings = {
-      experimental-features = [ "nix-command" "flakes" ];
-      substituters = [ "https://cache.nixos-cuda.org" ];
-      trusted-public-keys = [ "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M=" ];
-    };
-
-    homeConfigurations.aljam = home-manager.lib.homeManagerConfiguration {
-      pkgs = import nixpkgs {
-        inherit system;
-        config.allowUnfree = true;
-      };
-      extraSpecialArgs = { inherit inputs; };
+    
+    # --- The Magic Helper Function ---
+    # This function automatically injects inputs, passes Home Manager to your user,
+    # and targets the correct configuration folder based solely on the hostname.
+    mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
+      inherit system;
+      specialArgs = { inherit inputs; }; # Passes your inputs to all modules
       modules = [
-        ./users/aljam/home.nix
-      ];
+        ./hosts/${hostname}/configuration.nix
+        
+        # Globally enforce Home Manager for the 'aljam' user across all hosts
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.users.aljam = import ./users/aljam/home.nix;
+        }
+      ] ++ extraModules;
+    };
+
+  in {
+    nixosConfigurations = {
+      # --- Personal Machines ---
+      navi = mkHost { hostname = "navi"; };
+      oryx = mkHost { hostname = "oryx"; };
+      
+      # --- Server Rack ---
+      r820 = mkHost { hostname = "r820"; };
+
+      # Servers requiring Disko for ZFS provisioning
+      r730 = mkHost { 
+        hostname = "r730"; 
+        extraModules = [ disko.nixosModules.disko ]; 
+      };
+      
+      r730xd = mkHost { 
+        hostname = "r730xd"; 
+        extraModules = [ disko.nixosModules.disko ]; 
+      };
     };
   };
 }
