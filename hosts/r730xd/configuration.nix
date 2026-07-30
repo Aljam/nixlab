@@ -108,24 +108,41 @@
   ];
 
   # --- Media & Automation Services ---
-  services.jellyfin = {
-    enable = true;
-    openFirewall = true;
-    group = "media";
+  # 1. Enable Docker and the Nvidia Container Toolkit
+  virtualisation.docker.enable = true;
+  hardware.nvidia-container-toolkit.enable = true;
+
+  # 2. Declare the Jellyfin Container
+  virtualisation.oci-containers = {
+    backend = "docker";
+    containers.jellyfin = {
+      image = "jellyfin/jellyfin:latest";
+      autoStart = true;
+      ports = [ "8096:8096" ];
+      
+      # Map your ZFS media pool and config directories
+      volumes = [
+        "/mnt/media:/media"
+        "/var/lib/jellyfin/config:/config"
+        "/var/lib/jellyfin/cache:/cache"
+      ];
+      
+      # 3. The VFIO Passthrough Configuration
+      environment = {
+        # Tell the Nvidia toolkit inside the container to grab the raw card
+        NVIDIA_VISIBLE_DEVICES = "all";
+        NVIDIA_DRIVER_CAPABILITIES = "compute,video,utility";
+      };
+      
+      # Force Docker to use the Nvidia runtime bridge
+      extraOptions = [
+        "--runtime=nvidia"
+      ];
+    };
   };
 
-  systemd.services.jellyfin.serviceConfig = {
-    DeviceAllow = [
-      "/dev/nvidia0 rwm"
-      "/dev/nvidiactl rwm"
-      "/dev/nvidia-uvm rwm"
-      "/dev/nvidia-uvm-tools rwm"
-      "char-drm rwm"
-    ];
-  };
-
-  # Ensure the jellyfin user is added to the video/render groups if needed
-  users.users.jellyfin.extraGroups = [ "video" "render" ];
+  # 4. Ensure the host firewall allows the Jellyfin port
+  networking.firewall.allowedTCPPorts = [ 8096 ];
 
   services.sonarr = {
     enable = true;
