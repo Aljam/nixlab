@@ -8,6 +8,7 @@
         ../../modules/aljam.nix # Gets you your identity
         ../../modules/libvirt.nix    # Gets you VMs!
         ../../modules/nas-mount.nix  # Gets you your network share!
+        ../../modules/graphics.nix
       ];
     
     networking.hostName = "navi";
