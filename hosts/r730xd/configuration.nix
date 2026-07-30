@@ -113,6 +113,7 @@
   services.homepage-dashboard = {
     enable = true;
     openFirewall = true;
+    allowedHosts = "home.derezzed.info,192.168.1.2:8082"
     services = [
       {
         "Media & Requests" = [
