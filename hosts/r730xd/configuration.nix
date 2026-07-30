@@ -9,6 +9,12 @@
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_1;
+  
+  # Force the kernel and systemd console to lock onto tty1 for the iDRAC KVM
+  boot.kernelParams = [ "console=tty1" ];
+
+  # Ensure the local text login prompt is explicitly enabled on tty1
+  systemd.services."getty@tty1".enable = true;
 
   # --- Networking & System Identity ---
   networking.hostName = "r730xd";
@@ -47,6 +53,7 @@
 
   hardware.graphics = {
     enable = true;
+    enable32Bit = true;
     extraPackages = with pkgs; [
       nvidia-vaapi-driver
       libva-vdpau-driver
