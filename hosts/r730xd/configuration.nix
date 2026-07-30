@@ -92,11 +92,6 @@
   services.zfs.autoScrub.enable = true;
   services.zfs.autoScrub.interval = "weekly";
 
-  hardware.graphics = {
-    enable = true;
-    enable32Bit = true;
-  };
-
   # --- Users, Groups & Directories ---
   users.groups.media = {};
 
