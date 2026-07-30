@@ -12,16 +12,8 @@
   services.xserver.enable = false;
 
   hardware.enableRedistributableFirmware = true;
-  nixpkgs.config.nvidia.acceptLicense = true;
 
   boot.kernelParams = [ 
-    "nvidia-drm.modeset=0" 
-    "console=tty1"
-    "console=ttyS0,115200n8"
-    "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
-    "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1" # Crucial: Forces driver to accept Tesla/enterprise compute cards
-    "nvidia.NVreg_AssignGpus=0" # Forces the driver to scan and grab all discovered slots
-    "nvidia.NVreg_IgnorePowerState=1"
     "pcie_aspm=off"  # <--- CRITICAL: Stops the motherboard from dropping slot voltage
     "intel_iommu=on"
     "iommu=pt"
@@ -82,16 +74,6 @@
     enable = true;
     enable32Bit = true;
   };
-
-#  hardware.nvidia = {
-#    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
-#    modesetting.enable = false;
-#    open = false; 
-#    nvidiaSettings = false;
-#    powerManagement.enable = false;
-#  };
-
-  services.xserver.videoDrivers = [ "nvidia" ];
 
   # --- Users, Groups & Directories ---
   users.groups.media = {};
