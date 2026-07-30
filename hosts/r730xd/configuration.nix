@@ -63,6 +63,10 @@
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
+  # FIX ONBOARD VIDEO CONFLICT: Explicitly blacklist the Matrox / Nouveau / generic 
+  # drivers so they don't fight with the proprietary nvidia module during early boot.
+  boot.blacklistedKernelModules = [ "nouveau" "ast" ];
+  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
   hardware.dell-fan-control.enable = true;
 
   # --- Users, Groups & Directories ---
