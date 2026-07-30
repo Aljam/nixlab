@@ -45,26 +45,21 @@
     autodetect = true;
   };
 
-  # 1. The Shared Media Group
-  # This guarantees all media services can freely read/write to your ZFS pool without Linux permission conflicts.
   users.groups.media = {};
 
-  # 2. Automatic Directory Creation
-  # Declaratively creates your library folders on the ZFS pool with the correct group permissions.
+  # Automatic Directory Creation
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies 0770 root media -"
     "d /mnt/media/tv 0770 root media -"
     "d /mnt/media/downloads 0770 root media -"
   ];
 
-  # 3. Jellyfin Media Server
   services.jellyfin = {
     enable = true;
     openFirewall = true;
     group = "media";
   };
 
-  # 4. The Arr Stack (Explicitly bound to 0.0.0.0 for pfSense / HAProxy)
   services.sonarr = {
     enable = true;
     openFirewall = true;
@@ -97,17 +92,43 @@
     };
   };
 
-  # 5. Jellyseerr (For requesting media)
   services.seerr = {
     enable = true;
     openFirewall = true;
   };
 
-  # 6. Download Client (qBittorrent)
   services.qbittorrent = {
     enable = true;
     openFirewall = true;
     group = "media";
+  };
+
+  # Autobrr (Native NixOS Service)
+  services.autobrr = {
+    enable = true;
+    port = 7474;
+    # Requires a secret string file for session cookies
+    # Create this manually: echo "your-random-string" > /var/lib/autobrr/secret
+    secretKeyFile = "/var/lib/autobrr/secret"; 
+  };
+  
+  # Recyclarr (Native NixOS Service - sets up systemd timers automatically)
+  services.recyclarr = {
+    enable = true;
+  };
+  
+  # qBitManage (via Container, as there is no official native NixOS module)
+  virtualisation.oci-containers.containers.qbitmanage = {
+    image = "ghcr.io/starbix/qbitmanage:latest";
+    environment = {
+      QBT_RUN = "true";
+      QBT_SCHEDULE = "1440"; # Runs automatically every 24 hours
+    };
+    volumes = [
+      "/var/lib/qbitmanage:/config"
+      "/mnt/pool/media:/data/media" # Your ZFS pool root
+      "/var/lib/qbittorrent:/qbittorrent" # Path to your qBittorrent app data
+    ];
   };
 
   services.homepage-dashboard = {
