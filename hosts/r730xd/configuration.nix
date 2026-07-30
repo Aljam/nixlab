@@ -145,12 +145,6 @@
     };
   };
 
-  users.users.autobrr = {
-    isSystemUser = true;
-    group = "autobrr";
-  };
-  users.groups.autobrr = {};
-
   services.recyclarr = {
     enable = true;
   };
