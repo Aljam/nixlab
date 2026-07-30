@@ -13,30 +13,26 @@
 
   hardware.enableRedistributableFirmware = true;
   
-  # 1. Enable the video driver
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  # 2. Configure the Nvidia hardware package cleanly
   hardware.nvidia = {
-    # Use legacy_535 or production (535 explicitly supports Pascal/P40 fully)
     package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
-    
-    # Required for headless server compute nodes
     modesetting.enable = false;
-    open = false; # Tesla P40 requires the proprietary blob, not the open kernel module
+    open = false; # Tesla P40 requires the proprietary blob
     nvidiaSettings = false;
     powerManagement.enable = false;
+    powerManagement.finegrained = false;
   };
 
-  # 3. Enable graphics acceleration hooks
   hardware.graphics = {
     enable = true;
     enable32Bit = true;
   };
 
-  # 4. The Magic Kernel Parameters to bypass Dell power and Pascal blocks
+  # Safe kernel parameters for headless enterprise Pascal cards on modern kernels
   boot.kernelParams = [
     "pcie_aspm=off"
+    "nvidia-drm.modeset=0"
     "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"
     "nvidia.NVreg_IgnorePowerState=1"
     "nvidia.NVreg_AssignGpus=0"
@@ -52,7 +48,7 @@
     options vfio-pci ids=10de:1b38
   '';
   
-  boot.blacklistedKernelModules = [ "nouveau" "ast" "nvidia_drm" "nvidia_modeset" "nvidia_uvm" ];
+  boot.blacklistedKernelModules = [ "nouveau" "ast" ];
 
   # Ensure the local text login prompt is explicitly enabled on tty1
   systemd.services."getty@tty1".enable = true;
