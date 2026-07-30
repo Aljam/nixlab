@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+
+  # Enable NetworkManager
+  networking.networkmanager.enable = true;
+
   ### GUI (KDE Plasma)
   services.xserver.enable = true;
   services.displayManager.sddm.enable = true;
@@ -21,4 +25,22 @@
       protontricks.enable = true;
     };
   };
+
+  # Enable Pipewire for modern audio
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
+  # Standard Desktop Apps
+  environment.systemPackages = with pkgs; [
+    firefox
+    git
+    kitty
+  ];
+}
+
 }
