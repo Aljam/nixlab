@@ -44,8 +44,19 @@
   in {
     nixosConfigurations = {
       # --- Personal Machines ---
-      navi = mkHost { hostname = "navi"; };
-      oryx = mkHost { hostname = "oryx"; };
+      navi = mkHost { 
+        hostname = "navi"; 
+        extraModules = [
+          { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ]; }
+        ]; 
+      };
+      
+      oryx = mkHost { 
+        hostname = "oryx"; 
+        extraModules = [
+          { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ]; }
+        ]; 
+      };
       
       # --- Server Rack ---
       r820 = mkHost { hostname = "r820"; };
