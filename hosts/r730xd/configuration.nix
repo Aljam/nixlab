@@ -245,9 +245,5 @@
     ];
   };
 
-  systemd.services.jellyfin.serviceConfig = {
-    SupplementaryGroups = [ "render" "video" ];
-  };
-
   system.stateVersion = "23.11";
 }
