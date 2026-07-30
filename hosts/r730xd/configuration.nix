@@ -14,6 +14,7 @@
   boot.kernelParams = [ 
     "nvidia-drm.modeset=0" 
     "console=tty1"
+    "console=ttyS0,115200n8"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1" 
   ];
   
