@@ -5,7 +5,8 @@
     ./hardware-configuration.nix
     ../../modules/common.nix
     ../../modules/dell-fans.nix
-    ../../modules/nvidia-headless.nix # <-- Import our new shared module
+    ../../modules/nvidia-headless.nix
+    ../../modules/graphics.nix
   ];
 
   networking.hostName = "r730";
