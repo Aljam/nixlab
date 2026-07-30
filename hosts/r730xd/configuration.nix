@@ -88,13 +88,13 @@
     ];
   };
 
-  hardware.nvidia = {
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
-    modesetting.enable = false;
-    open = false; 
-    nvidiaSettings = false;
-    powerManagement.enable = false;
-  };
+#  hardware.nvidia = {
+#    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
+#    modesetting.enable = false;
+#    open = false; 
+#    nvidiaSettings = false;
+#    powerManagement.enable = false;
+#  };
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
