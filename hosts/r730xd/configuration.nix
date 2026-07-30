@@ -14,7 +14,11 @@
   boot.kernelParams = [ 
     "nvidia-drm.modeset=0" 
     "console=tty1"
+    "nvidia.NVreg_PreserveVideoMemoryAllocations=1" 
   ];
+  
+  boot.blacklistedKernelModules = [ "nouveau" "ast" ];
+  hardware.dell-fan-control.enable = true;
 
   # Ensure the local text login prompt is explicitly enabled on tty1
   systemd.services."getty@tty1".enable = true;
@@ -70,12 +74,6 @@
     nvidiaSettings = false;
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
-
-  # FIX ONBOARD VIDEO CONFLICT: Explicitly blacklist the Matrox / Nouveau / generic 
-  # drivers so they don't fight with the proprietary nvidia module during early boot.
-  boot.blacklistedKernelModules = [ "nouveau" "ast" ];
-  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
-  hardware.dell-fan-control.enable = true;
 
   # --- Users, Groups & Directories ---
   users.groups.media = {};
