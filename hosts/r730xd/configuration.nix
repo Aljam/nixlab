@@ -8,6 +8,8 @@
     ../../modules/dell-fans.nix
   ];
 
+  boot.kernelPackages = pkgs.linuxPackages_6_1;
+
   # --- Networking & System Identity ---
   networking.hostName = "r730xd";
   networking.hostId = "d2083fdc"; # ZFS strictly requires a unique 8-character hex string for every machine
@@ -57,7 +59,7 @@
   hardware.nvidia = {
     modesetting.enable = false;
     open = false; 
-    nvidiaSettings = true;
+    nvidiaSettings = false;
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
 
