@@ -76,6 +76,7 @@
     open = false; 
     nvidiaSettings = false;
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
+    powerManagement.enable = false;
   };
 
   services.xserver.videoDrivers = [ "nvidia" ];
