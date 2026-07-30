@@ -41,14 +41,4 @@
   ];
 
   hardware.dell-fan-control.enable = true;
-
-  # System User
-  users.users.aljam = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
-  };
-
-  # ZFS Maintenance
-  services.zfs.autoScrub.enable = true;
-  services.zfs.autoScrub.interval = "weekly";
 }
