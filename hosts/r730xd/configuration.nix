@@ -8,6 +8,7 @@
     ../../modules/server-core.nix     # <-- Injects smartd, tmux, htop, ssh keys
     ../../modules/nvidia-headless.nix # <-- Injects Tesla P40 GPU drivers
     ../../modules/media-server.nix    # <-- Injects Jellyfin, Arr stack, UI
+    ../../modules/graphics.nix
   ];
 
   # --- Hardware & Boot Defaults ---
