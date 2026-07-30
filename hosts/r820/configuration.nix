@@ -18,6 +18,4 @@
   services.zfs.autoScrub.enable = false; 
 
   # Put your specific R820 workloads here (e.g., KVM, Proxmox, Gitlab Runners)
-
-  system.stateVersion = "23.11";
 }
