@@ -128,7 +128,7 @@
       port = 7474;
       host = "0.0.0.0";
     };
-    secretKeyFile = "/var/lib/autobrr/secret"; 
+    secretFile = "/var/lib/autobrr/secret"; 
   };
   
   services.recyclarr = {
