@@ -58,6 +58,4 @@
   services.power-profiles-daemon.enable = false;
 
   powerManagement.cpuFreqGovernor = "performance";
-
-  system.stateVersion = "23.11";
 }
