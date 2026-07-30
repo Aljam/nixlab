@@ -60,6 +60,10 @@
     enable = true;
     openFirewall = true;
     group = "media";
+    settings = {
+      server = {
+        bindAddress = "0.0.0.0";
+      };
   };
 
   # 4. The Arr Stack
@@ -67,23 +71,39 @@
     enable = true;
     openFirewall = true;
     group = "media";
+    settings = {
+      server = {
+        bindAddress = "0.0.0.0";
+      };
   };
 
   services.radarr = {
     enable = true;
     openFirewall = true;
     group = "media";
+    settings = {
+      server = {
+        bindAddress = "0.0.0.0";
+      };
   };
 
   services.prowlarr = {
     enable = true;
     openFirewall = true;
+    settings = {
+      server = {
+        bindAddress = "0.0.0.0";
+      };
   };
 
   # 5. Jellyseerr (For requesting media)
   services.jellyseerr = {
     enable = true;
     openFirewall = true;
+    settings = {
+      server = {
+        bindAddress = "0.0.0.0";
+      };
   };
 
   # 6. Download Client (qBittorrent)
@@ -91,6 +111,10 @@
     enable = true;
     openFirewall = true;
     group = "media";
+    settings = {
+      server = {
+        bindAddress = "0.0.0.0";
+      };
   };
 
   # Enable Hardware Graphics Acceleration
