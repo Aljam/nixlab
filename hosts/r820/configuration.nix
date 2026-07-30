@@ -4,8 +4,8 @@
   imports = [
     ./hardware-configuration.nix
     ../../modules/common.nix
-    ../../modules/server-core.nix # Imparts SSH, smartd, and server tools
-    ../../modules/user-aljam.nix  # Imparts your user and SSH key
+    ../../modules/server-core.nix
+    ../../modules/aljam.nix 
   ];
 
   networking.hostName = "r820";
