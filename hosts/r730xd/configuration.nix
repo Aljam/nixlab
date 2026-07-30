@@ -78,6 +78,8 @@
     "d /mnt/media/downloads 0770 root media -"
   ];
 
+  services.dbus.implementation = "dbus";
+
   # --- Media & Automation Services ---
   services.jellyfin = {
     enable = true;
