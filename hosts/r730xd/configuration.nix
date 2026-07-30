@@ -71,6 +71,7 @@
   environment.systemPackages = with pkgs; [
     smartmontools
     nvtopPackages.full
+    config.hardware.nvidia.package
   ];
 
   services.smartd = {
