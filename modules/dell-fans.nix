@@ -1,85 +1,66 @@
 { config, lib, pkgs, ... }:
 
-let
-  # The bash script that loops, reads the CPU/GPU temps, and sets the fan speed via IPMI
-  fanScript = pkgs.writeShellScriptBin "dell-fan-control" ''
-    # Disable Dell's automatic fan control (Enable manual mode)
-    ${pkgs.ipmitool}/bin/ipmitool raw 0x30 0x30 0x01 0x00
-
-    while true; do
-      # 1. Fetch the highest GPU temperature
-      GPU_TEMP=$(${pkgs.linuxPackages.nvidia_x11}/bin/nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader | sort -nr | head -n1)
-      if [ -z "$GPU_TEMP" ]; then 
-        GPU_TEMP=40 
-      fi
-
-      # 2. Fetch the highest CPU core temperature using lm_sensors
-      # This pulls the raw sensor data, isolates the temp inputs, strips decimals, and grabs the highest number.
-      CPU_TEMP=$(${pkgs.lm_sensors}/bin/sensors -u | grep -i 'temp[0-9]_input' | awk '{print $2}' | cut -d. -f1 | sort -nr | head -n1)
-      if [ -z "$CPU_TEMP" ]; then 
-        CPU_TEMP=40 
-      fi
-
-      # 3. Determine the hottest component
-      if [ "$GPU_TEMP" -gt "$CPU_TEMP" ]; then
-        MAX_TEMP=$GPU_TEMP
-      else
-        MAX_TEMP=$CPU_TEMP
-      fi
-
-      # 4. The Unified Thermal Curve (Temperatures to Fan PWM Hex Values)
-      if [ "$MAX_TEMP" -gt 80 ]; then
-        HEX_SPEED="0x64" # 100%
-      elif [ "$MAX_TEMP" -gt 70 ]; then
-        HEX_SPEED="0x46" # 70%
-      elif [ "$MAX_TEMP" -gt 60 ]; then
-        HEX_SPEED="0x32" # 50%
-      elif [ "$MAX_TEMP" -gt 50 ]; then
-        HEX_SPEED="0x23" # 35%
-      else
-        HEX_SPEED="0x14" # 20%
-      fi
-
-      # Push the speed to the Dell motherboard
-      ${pkgs.ipmitool}/bin/ipmitool raw 0x30 0x30 0x02 0xff $HEX_SPEED
-      
-      # Wait 10 seconds before polling again
-      sleep 10
-    done
-  '';
-in
 {
-  options.hardware.dell-fan-control.enable = lib.mkEnableOption "Dell IPMI Unified Fan Control";
+  # Ensure required utilities are available in the system environment
+  environment.systemPackages = with pkgs; [
+    lm_sensors
+    ipmitool
+    gawk
+    coreutils
+  ];
 
-  config = lib.mkIf config.hardware.dell-fan-control.enable {
-    # Ensure ipmitool and lm_sensors are installed for the daemon
-    environment.systemPackages = with pkgs; [ 
-      ipmitool 
-      lm_sensors 
-    ];
+  # Enable hardware sensors monitoring
+  hardware.sensors.enable = true;
 
-    # The background daemon that runs your fan script
-    systemd.services.dell-fan-control = {
-      description = "Dell PowerEdge Fan Control (CPU/GPU Target)";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network.target" ];
-      serviceConfig = {
-        ExecStart = "${fanScript}/bin/dell-fan-control";
-        Restart = "always";
-        RestartSec = "10";
-        User = "root"; # IPMI commands require root privileges
-      };
-    };
+  # Systemd service to dynamically adjust Dell PowerEdge fan speeds based on CPU temperature
+  systemd.services.dell-fans = {
+    description = "Dell PowerEdge Dynamic CPU Fan Control";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      Restart = "always";
+      RestartSec = "10s";
+      ExecStart = pkgs.writeShellScript "dell-fans-loop" ''
+        PATH=$PATH:${lib.makeBinPath [ pkgs.ipmitool pkgs.lm_sensors pkgs.gawk pkgs.coreutils ]}
 
-    # CRITICAL FAILSAFE: Restore Dell's automatic fan control if the server shuts down or the service crashes
-    systemd.services.dell-fan-failsafe = {
-      description = "Restore Dell Auto Fan Control on Shutdown";
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = true;
-        ExecStop = "${pkgs.ipmitool}/bin/ipmitool raw 0x30 0x30 0x01 0x01";
-      };
+        # Switch Dell iDRAC out of automatic control into manual fan mode
+        ipmitool raw 0x30 0x30 0x01 0x0 > /dev/null 2>&1
+
+        while true; do
+          # Extract the highest temperature reading across all CPU cores
+          CPU_TEMP=$(sensors | grep -E "Core [0-9]+" | awk '{print $3}' | tr -d '+' | cut -d'.' -f1 | sort -nr | head -n1)
+
+          # Failsafe default if sensors returns an empty or invalid value
+          if ! [[ "$CPU_TEMP" =~ ^[0-9]+$ ]]; then
+            CPU_TEMP=40
+          fi
+
+          # Safe and quiet fan curve based on CPU temperature:
+          # Under 40°C -> 20% speed (0x14)
+          # 40°C - 54°C -> 30% speed (0x1E)
+          # 55°C - 69°C -> 50% speed (0x32)
+          # 70°C+ -> 90% safety speed (0x5A)
+
+          if [ "$CPU_TEMP" -lt 40 ]; then
+            FAN_HEX="0x14"
+          elif [ "$CPU_TEMP" -ge 40 ] && [ "$CPU_TEMP" -lt 55 ]; then
+            FAN_HEX="0x1E"
+          elif [ "$CPU_TEMP" -ge 55 ] && [ "$CPU_TEMP" -lt 70 ]; then
+            FAN_HEX="0x32"
+          else
+            FAN_HEX="0x5A"
+          fi
+
+          # Send the raw IPMI command to set the fan speed percentage
+          ipmitool raw 0x30 0x30 0x02 0xff $FAN_HEX > /dev/null 2>&1
+
+          sleep 10
+        done
+      '';
+      ExecStop = pkgs.writeShellScript "dell-fans-stop" ''
+        # Return fans safely back to native Dell BIOS automatic control when stopped
+        ${pkgs.ipmitool}/bin/ipmitool raw 0x30 0x30 0x01 0x01 > /dev/null 2>&1
+      '';
     };
   };
-}
