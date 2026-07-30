@@ -36,6 +36,7 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
+          home-manager.backupFileExtension = "backup";
           home-manager.users.aljam = import ./users/aljam/home.nix;
         }
       ] ++ extraModules;
