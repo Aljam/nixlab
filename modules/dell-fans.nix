@@ -9,9 +9,6 @@
     coreutils
   ];
 
-  # Enable hardware sensors monitoring
-  hardware.sensors.enable = true;
-
   # Systemd service to dynamically adjust Dell PowerEdge fan speeds based on CPU temperature
   systemd.services.dell-fans = {
     description = "Dell PowerEdge Dynamic CPU Fan Control";
@@ -36,12 +33,7 @@
             CPU_TEMP=40
           fi
 
-          # Safe and quiet fan curve based on CPU temperature:
-          # Under 40°C -> 20% speed (0x14)
-          # 40°C - 54°C -> 30% speed (0x1E)
-          # 55°C - 69°C -> 50% speed (0x32)
-          # 70°C+ -> 90% safety speed (0x5A)
-
+          # Safe fan curve based on CPU temperature
           if [ "$CPU_TEMP" -lt 40 ]; then
             FAN_HEX="0x14"
           elif [ "$CPU_TEMP" -ge 40 ] && [ "$CPU_TEMP" -lt 55 ]; then
@@ -52,7 +44,7 @@
             FAN_HEX="0x5A"
           fi
 
-          # Send the raw IPMI command to set the fan speed percentage
+          # Send raw IPMI command to set fan speed percentage
           ipmitool raw 0x30 0x30 0x02 0xff $FAN_HEX > /dev/null 2>&1
 
           sleep 10
