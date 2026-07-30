@@ -143,7 +143,6 @@
       port = 7474;
       host = "0.0.0.0";
     };
-    secretFile = "/var/lib/autobrr/secret"; 
   };
 
   users.users.autobrr = {
