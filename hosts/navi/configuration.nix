@@ -25,6 +25,4 @@
     ];
     
     boot.kernelPackages = pkgs.linuxPackages_latest;
-    
-    system.stateVersion = "23.11";
 }
