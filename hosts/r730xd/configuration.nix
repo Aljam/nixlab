@@ -9,8 +9,6 @@
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_1;
-  services.xserver.enable = false;
-
   hardware.enableRedistributableFirmware = true;
   nixpkgs.config.nvidia.acceptLicense = true;
 
