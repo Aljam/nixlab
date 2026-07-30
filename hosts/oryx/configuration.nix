@@ -6,6 +6,7 @@
     ../../modules/common.nix  
     ../../modules/desktop.nix # Pulls in generic GRUB, KDE, Steam, Audio
     ../../modules/aljam.nix   # Pulls in your identity
+    ../../modules/graphics.nix
   ];
 
   networking.hostName = "oryx";
