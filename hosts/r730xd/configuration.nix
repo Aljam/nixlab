@@ -14,6 +14,13 @@
   hardware.enableRedistributableFirmware = true;
   nixpkgs.config.nvidia.acceptLicense = true;
 
+  # This is MANDATORY. Without it, NixOS ignores the Nvidia driver completely.
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  # CRITICAL FIX: Tell NixOS NOT to start a graphical desktop environment. 
+  # This stops the infinite flashing cursor loop.
+  services.xserver.enable = false;
+
   hardware.nvidia = {
     package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
     modesetting.enable = false;
