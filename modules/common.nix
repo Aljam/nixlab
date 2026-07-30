@@ -11,6 +11,8 @@
   # Enable Flakes globally
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  programs.fish.enable = true;
+
   users.users.aljam = {
     isNormalUser = true;
     openssh.authorizedKeys.keys = [
