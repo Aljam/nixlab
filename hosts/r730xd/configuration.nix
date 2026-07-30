@@ -103,11 +103,8 @@
   ];
 
   # --- Media & Automation Services ---
-  # 1. Enable Docker and the Nvidia Container Toolkit
-  virtualisation.docker.enable = true;
-  hardware.nvidia-container-toolkit.enable = true;
 
-  # 2. Declare the Jellyfin Container
+  virtualisation.docker.enable = true;
   virtualisation.oci-containers = {
     backend = "docker";
     containers.jellyfin = {
