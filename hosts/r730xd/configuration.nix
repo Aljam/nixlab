@@ -72,12 +72,13 @@
   };
 
   hardware.nvidia = {
-    enable = true;
     modesetting.enable = false;
     open = false; 
     nvidiaSettings = false;
     package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
   };
+
+  services.xserver.videoDrivers = [ "nvidia" ];
 
   # --- Users, Groups & Directories ---
   users.groups.media = {};
