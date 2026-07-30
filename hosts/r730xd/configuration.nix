@@ -21,6 +21,7 @@
     "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1" # Crucial: Forces driver to accept Tesla/enterprise compute cards
     "nvidia.NVreg_AssignGpus=0" # Forces the driver to scan and grab all discovered slots
     "nvidia.NVreg_IgnorePowerState=1"
+    "pcie_aspm=off"  # <--- CRITICAL: Stops the motherboard from dropping slot voltage
   ];
   
   boot.blacklistedKernelModules = [ "nouveau" "ast" ];
@@ -75,7 +76,7 @@
   };
 
   hardware.nvidia = {
-    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_470;
     modesetting.enable = false;
     open = false; 
     nvidiaSettings = false;
