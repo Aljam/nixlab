@@ -1,0 +1,31 @@
+{ config, pkgs, lib, ... }:
+
+{
+  # Standard Server Utilities
+  environment.systemPackages = with pkgs; [
+    smartmontools
+    tmux
+    htop
+    lm_sensors
+    pciutils
+  ];
+
+  # Global Drive Health Monitoring
+  services.smartd = {
+    enable = true;
+    autodetect = true;
+  };
+
+  # Secure SSH Defaults for Headless Machines
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false; # Force SSH keys
+      PermitRootLogin = "no";
+    };
+  };
+
+  # Optional: Default ZFS scrubbing (can be disabled on the R820 since it uses hardware RAID)
+  services.zfs.autoScrub.enable = lib.mkDefault true;
+  services.zfs.autoScrub.interval = lib.mkDefault "weekly";
+}
