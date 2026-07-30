@@ -9,7 +9,7 @@
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_1;
-  systemd.services.defaultTarget = "multi-user.target";
+  services.xserver.enable = false;
 
 
   # Explicitly kill DRM modeset at the kernel parameter level
