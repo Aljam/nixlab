@@ -21,6 +21,8 @@
   networking.defaultGateway = "192.168.1.1";
   networking.nameservers = [ "192.168.1.1" "1.1.1.1" ];
 
+  boot.zfs.forceImportRoot = false;
+
   # Tell GRUB to use EFI, not legacy BIOS
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
@@ -96,7 +98,7 @@
   };
 
   # 5. Jellyseerr (For requesting media)
-  services.jellyseerr = {
+  services.seerr = {
     enable = true;
     openFirewall = true;
   };
