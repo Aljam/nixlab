@@ -35,8 +35,6 @@
     "pcie_aspm=off"
     "nvidia-drm.modeset=0"
     "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"
-    "nvidia.NVreg_IgnorePowerState=1"
-    "nvidia.NVreg_AssignGpus=0"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
   ];
 
