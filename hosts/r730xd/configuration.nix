@@ -110,6 +110,63 @@
     group = "media";
   };
 
+  services.homepage-dashboard = {
+    enable = true;
+    openFirewall = true;
+    services = [
+      {
+        "Media & Requests" = [
+          {
+            Jellyfin = {
+              href = "https://jellyfin.derezzed.info";
+              description = "Media Streaming";
+              icon = "jellyfin.png";
+            };
+          }
+          {
+            Seerr = {
+              href = "https://seerr.derezzed.info";
+              description = "Media Requests";
+              icon = "seerr.png";
+            };
+          }
+        ];
+      }
+      {
+        "Automation & Downloads" = [
+          {
+            Sonarr = {
+              href = "https://sonarr.derezzed.info";
+              description = "TV Shows";
+              icon = "sonarr.png";
+            };
+          }
+          {
+            Radarr = {
+              href = "https://radarr.derezzed.info";
+              description = "Movies";
+              icon = "radarr.png";
+            };
+          }
+          {
+            Prowlarr = {
+              href = "https://prowlarr.derezzed.info";
+              description = "Indexers";
+              icon = "prowlarr.png";
+            };
+          }
+          {
+            qBittorrent = {
+              href = "http://192.168.1.2:8080";
+              description = "Torrents";
+              icon = "qbittorrent.png";
+            };
+          }
+        ];
+      }
+    ];
+  };
+
   # Enable Hardware Graphics Acceleration
   hardware.graphics = {
     enable = true;
