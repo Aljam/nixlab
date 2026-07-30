@@ -23,9 +23,15 @@
     "nvidia.NVreg_AssignGpus=0" # Forces the driver to scan and grab all discovered slots
     "nvidia.NVreg_IgnorePowerState=1"
     "pcie_aspm=off"  # <--- CRITICAL: Stops the motherboard from dropping slot voltage
+    "intel_iommu=on"
+    "iommu=pt"
   ];
+
+  boot.extraModprobeConfig = ''
+    options vfio-pci ids=10de:1b38
+  '';
   
-  boot.blacklistedKernelModules = [ "nouveau" "ast" ];
+  boot.blacklistedKernelModules = [ "nouveau" "ast" "nvidia_drm" "nvidia_modeset" "nvidia_uvm" ];
   hardware.dell-fan-control.enable = true;
 
   # Ensure the local text login prompt is explicitly enabled on tty1
