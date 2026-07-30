@@ -12,16 +12,36 @@
   services.xserver.enable = false;
 
   hardware.enableRedistributableFirmware = true;
-
-  boot.kernelParams = [ 
-    "pcie_aspm=off"  # <--- CRITICAL: Stops the motherboard from dropping slot voltage
-    "intel_iommu=on"
-    "iommu=pt"
-    "ipmi_si"
-    "ipmi_devintf"
-    "ipmi_msghandler"
-  ];
   
+  # 1. Enable the video driver
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  # 2. Configure the Nvidia hardware package cleanly
+  hardware.nvidia = {
+    # Use legacy_535 or production (535 explicitly supports Pascal/P40 fully)
+    package = config.boot.kernelPackages.nvidiaPackages.legacy_535;
+    
+    # Required for headless server compute nodes
+    modesetting.enable = false;
+    open = false; # Tesla P40 requires the proprietary blob, not the open kernel module
+    nvidiaSettings = false;
+    powerManagement.enable = false;
+  };
+
+  # 3. Enable graphics acceleration hooks
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
+  # 4. The Magic Kernel Parameters to bypass Dell power and Pascal blocks
+  boot.kernelParams = [
+    "pcie_aspm=off"
+    "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"
+    "nvidia.NVreg_IgnorePowerState=1"
+    "nvidia.NVreg_AssignGpus=0"
+  ];
+
   boot.initrd.kernelModules = [
     "vfio_pci"
     "vfio"
@@ -88,37 +108,25 @@
 
   # --- Media & Automation Services ---
 
-  virtualisation.docker.enable = true;
-  virtualisation.oci-containers = {
-    backend = "docker";
-    containers.jellyfin = {
-      image = "jellyfin/jellyfin:latest";
-      autoStart = true;
-      ports = [ "8096:8096" ];
-      
-      # Map your ZFS media pool and config directories
-      volumes = [
-        "/mnt/media:/media"
-        "/var/lib/jellyfin/config:/config"
-        "/var/lib/jellyfin/cache:/cache"
-      ];
-      
-      # 3. The VFIO Passthrough Configuration
-      environment = {
-        # Tell the Nvidia toolkit inside the container to grab the raw card
-        NVIDIA_VISIBLE_DEVICES = "all";
-        NVIDIA_DRIVER_CAPABILITIES = "compute,video,utility";
-      };
-      
-      # Force Docker to use the Nvidia runtime bridge
-      extraOptions = [
-        "--runtime=nvidia"
-      ];
-    };
+  services.jellyfin = {
+    enable = true;
+    openFirewall = true;
+    group = "media";
   };
 
-  # 4. Ensure the host firewall allows the Jellyfin port
-  networking.firewall.allowedTCPPorts = [ 8096 ];
+  users.groups.media = {};
+
+  # Pass device nodes directly into the native service
+  systemd.services.jellyfin.serviceConfig = {
+    SupplementaryGroups = [ "media" "video" "render" ];
+    DeviceAllow = [
+      "/dev/nvidia0 rwm"
+      "/dev/nvidiactl rwm"
+      "/dev/nvidia-uvm rwm"
+      "/dev/nvidia-uvm-tools rwm"
+      "char-drm rwm"
+    ];
+  };
 
   services.sonarr = {
     enable = true;
