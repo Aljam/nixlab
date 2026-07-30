@@ -17,7 +17,7 @@
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1" 
   ];
   
-  boot.blacklistedKernelModules = [ "nouveau" "ast" ];
+  boot.blacklistedKernelModules = [ "nouveau" "ast" "nvidia_drm" "nvidia_modeset" ];
   hardware.dell-fan-control.enable = true;
 
   # Ensure the local text login prompt is explicitly enabled on tty1
