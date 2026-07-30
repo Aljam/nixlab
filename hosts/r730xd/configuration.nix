@@ -11,8 +11,8 @@
   boot.kernelPackages = pkgs.linuxPackages_6_1;
   services.xserver.enable = false;
 
+  hardware.enableRedistributableFirmware = true;
 
-  # Explicitly kill DRM modeset at the kernel parameter level
   boot.kernelParams = [ 
     "nvidia-drm.modeset=0" 
     "console=tty1"
