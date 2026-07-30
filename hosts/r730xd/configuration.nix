@@ -54,8 +54,6 @@
     ];
   };
 
-  services.xserver.videoDrivers = [ "nvidia" ];
-
   hardware.nvidia = {
     modesetting.enable = false;
     open = false; 
@@ -77,8 +75,6 @@
     "d /mnt/media/tv 0770 root media -"
     "d /mnt/media/downloads 0770 root media -"
   ];
-
-  services.dbus.implementation = "dbus";
 
   # --- Media & Automation Services ---
   services.jellyfin = {
