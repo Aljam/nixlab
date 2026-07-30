@@ -37,16 +37,6 @@
     "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
   ];
-
-  boot.initrd.kernelModules = [
-    "vfio_pci"
-    "vfio"
-    "vfio_iommu_type1"
-  ];
-
-  boot.extraModprobeConfig = ''
-    options vfio-pci ids=10de:1b38
-  '';
   
   boot.blacklistedKernelModules = [ "nouveau" "ast" ];
 
