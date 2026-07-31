@@ -8,16 +8,11 @@
     ../../modules/dell-fans.nix
     ../../modules/nvidia-headless.nix
     ../../modules/graphics.nix
+    ../../server-core.nix
   ];
 
   networking.hostName = "r730";
   networking.hostId = "acccc16e"; # ZFS requirement
-
-  # Bootloader
-  boot.loader.grub.enable = true;
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.devices = [ "nodev" ];
-  boot.loader.grub.efiInstallAsRemovable = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
