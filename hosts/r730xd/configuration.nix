@@ -15,11 +15,6 @@
   # --- Hardware & Boot Defaults ---
   boot.kernelPackages = pkgs.linuxPackages_6_1;
   hardware.enableRedistributableFirmware = true;
-
-  boot.loader.grub.enable = true;
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.devices = [ "nodev" ]; 
-  boot.loader.grub.efiInstallAsRemovable = true;
   
   boot.zfs.forceImportRoot = false;
 
