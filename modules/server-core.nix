@@ -1,6 +1,11 @@
 { config, pkgs, lib, ... }:
 
 {
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.devices = [ "nodev" ];
+  boot.loader.grub.efiInstallAsRemovable = true;
+
   # Standard Server Utilities
   environment.systemPackages = with pkgs; [
     smartmontools
