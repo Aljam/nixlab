@@ -40,7 +40,6 @@
   ];
 
   # Networking baseline
-  networking.networkmanager.enable = true;
   services.tailscale.enable = true;
 
   # Bluetooth baseline
