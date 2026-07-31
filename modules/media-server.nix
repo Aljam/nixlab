@@ -63,7 +63,7 @@
   services.homepage-dashboard = {
     enable = true;
     openFirewall = true;
-    allowedHosts = "home.derezzed.info,192.168.1.2:8082";
+    allowedHosts = "home.derezzed.info,127.0.0.1:8082";
     services = [
       {
         "Media & Requests" = [
@@ -76,7 +76,7 @@
           { Sonarr = { href = "https://sonarr.derezzed.info"; description = "TV Shows"; icon = "sonarr.png"; }; }
           { Radarr = { href = "https://radarr.derezzed.info"; description = "Movies"; icon = "radarr.png"; }; }
           { Prowlarr = { href = "https://prowlarr.derezzed.info"; description = "Indexers"; icon = "prowlarr.png"; }; }
-          { qBittorrent = { href = "http://192.168.1.2:8080"; description = "Torrents"; icon = "qbittorrent.png"; }; }
+          { qBittorrent = { href = "http://127.0.0.1:8080"; description = "Torrents"; icon = "qbittorrent.png"; }; }
         ];
       }
     ];
