@@ -21,6 +21,8 @@
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
 
+  networking.networkmanager.enable = true;
+
   # --- Desktop Programs & Device Integration ---
   programs.kdeconnect.enable = true;
 
