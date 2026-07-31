@@ -55,6 +55,7 @@
     # Require keys instead of passwords (highly recommended)
     settings.PasswordAuthentication = false;
     settings.KbdInteractiveAuthentication = false;
+    settings.PermitRootLogin = "no";
   };
 
   # Automatic Garbage Collection
