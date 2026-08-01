@@ -1,19 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  # --- 1. Node Exporter (Runs on every machine to expose hardware metrics) ---
-  services.prometheus.exporters.node = {
-    enable = true;
-    port = 9100;
-    enabledCollectors = [
-      "systemd"
-      "zfs"
-      "hwmon"      # Essential for monitoring CPU/motherboard temperatures
-      "nvme"       # Essential for NVMe health tracking
-    ];
-  };
-
-  # --- 2. Prometheus (Scrapes metrics locally or across the fleet) ---
+  # --- Prometheus (Scrapes metrics locally or across the fleet) ---
   services.prometheus = {
     enable = true;
     port = 9090;
@@ -32,7 +20,7 @@
     ];
   };
 
-  # --- 3. Grafana (The Visualization UI) ---
+  # --- Grafana (The Visualization UI) ---
   services.grafana = {
     enable = true;
     settings = {
