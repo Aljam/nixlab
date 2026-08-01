@@ -42,7 +42,8 @@
   };
 
   # Open firewall if you want to scrape metrics from remote nodes into this central server
-  networking.firewall.allowedTCPPorts = [ 9100 ];
+  # 3000 = Grafana, 13378 = Audiobookshelf, 7474 = Autobrr
+  networking.firewall.allowedTCPPorts = [ 9100 3000 7474 13378];
 
   # Optional: Default ZFS scrubbing (can be disabled on the R820 since it uses hardware RAID)
   services.zfs.autoScrub.enable = lib.mkDefault true;
