@@ -51,7 +51,6 @@
   services.bazarr = {
     enable = true;
     openFirewall = true;
-    port = 6767;
   };
 
   services.readarr = {
@@ -75,7 +74,10 @@
   services.autobrr = {
     enable = true;
     secretFile = config.sops.secrets."autobrr.env".path;
-    settings = { port = 7474; host = "0.0.0.0"; };
+    settings = { 
+      port = 7474;
+      host = "0.0.0.0"; 
+    };
   };
   
   services.recyclarr.enable = true;
