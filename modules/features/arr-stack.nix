@@ -74,7 +74,7 @@
     enable = true;
     openFirewall = true;
     port = 13378;
-    host = 0.0.0.0
+    host = "0.0.0.0";
   };
   
   services.autobrr = {
