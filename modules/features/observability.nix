@@ -56,7 +56,7 @@
       };
     };
     security = {
-      secret_key = "$__file{${config.sops.secrets."grafana.env".path}}";
+      secretKeyFile = config.sops.secrets."grafana.env".path;
     };
   };
 
