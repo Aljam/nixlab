@@ -10,6 +10,12 @@
     # Core OS (Change to nixos-23.11 if you prefer stable over unstable)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
+    # Add sops-nix
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Home Manager
     home-manager = {
       url = "github:nix-community/home-manager";
