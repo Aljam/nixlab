@@ -3,6 +3,13 @@
 {
   users.groups.media = {};
 
+  # Define the SOPS secret
+  sops.secrets."autobrr.env" = {
+    sopsFile = ../../secrets/autobrr.enc.env;
+    format = "dotenv";
+    owner = config.systemd.services.autobrr.serviceConfig.User;
+  };
+
   # Directory structures for media
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies 0770 root media -"
@@ -17,7 +24,7 @@
   
   services.autobrr = {
     enable = true;
-    secretFile = "/etc/nixos/secrets/autobrr.env";
+    secretFile = config.sops.secrets."autobrr.env".path;;
     settings = { port = 7474; host = "0.0.0.0"; };
   };
   
