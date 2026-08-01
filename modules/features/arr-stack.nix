@@ -11,6 +11,20 @@
     createHome = true;
   };
 
+  users.users.lidarr = {
+    isSystemUser = true;
+    group = "media";
+    home = "/var/lib/lidarr";
+    createHome = true;
+  };
+
+  users.users.readarr = {
+    isSystemUser = true;
+    group = "media";
+    home = "/var/lib/readarr";
+    createHome = true;
+  };
+
   # Directory structures for media
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies 0770 root media -"
@@ -35,6 +49,9 @@
   services.radarr = {
     enable = true;
     openFirewall = true;
+    user = "readarr";
+    group = "media";
+    dataDir = "/var/lib/readarr";
   };
 
   services.prowlarr = {
@@ -68,6 +85,9 @@
   services.lidarr = {
     enable = true;
     openFirewall = true;
+    user = "lidarr";
+    group = "media";
+    dataDir = "/var/lib/lidarr";
   };
 
   services.audiobookshelf = {
