@@ -1,6 +1,14 @@
 { config, pkgs, ... }:
 
 {
+  # Declare the SOPS secret
+  sops.secrets."grafana.env" = {
+    sopsFile = ../../secrets/grafana.enc.env; # Adjust path to match your layout
+    format = "dotenv";
+    owner = "grafana";
+    group = "grafana";
+  };
+
   # --- Prometheus (Scrapes metrics locally or across the fleet) ---
   services.prometheus = {
     enable = true;
@@ -27,9 +35,11 @@
       server = {
         http_addr = "127.0.0.1";
         http_port = 3000;
-        # Change this if you map a domain via HAProxy later (e.g. https://grafana.derezzed.info)
         domain = "https://grafana.derezzed.info"; 
       };
+    };
+    security = {
+      secret_key = "$__file{${config.sops.secrets."grafana.env".path}}";
     };
   };
 
