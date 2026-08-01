@@ -60,8 +60,5 @@
     };
   };
 
-  # Ensure node exporter, etc.
-  services.prometheus.exporters.node.enable = true;
-  services.prometheus.enable = true;
   networking.firewall.allowedTCPPorts = [ 9090 3000 9100 ];
 }
