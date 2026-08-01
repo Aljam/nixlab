@@ -49,11 +49,10 @@
     group = "media";
   };
 
-  # Prowlarr module doesn't expose 'group' directly, so we force its system user group
+  # Prowlarr manages its own user; we force its primary group to 'media'
   services.prowlarr = {
     enable = true;
     openFirewall = true;
-    user = "prowlarr";
   };
   users.users.prowlarr.group = lib.mkForce "media";
 
@@ -63,11 +62,10 @@
     port = 5055;
   };
 
-  # Bazarr module doesn't expose 'group' directly, so we force its system user group
+  # Bazarr manages its own user; we force its primary group to 'media'
   services.bazarr = {
     enable = true;
     openFirewall = true;
-    user = "bazarr";
   };
   users.users.bazarr.group = lib.mkForce "media";
 
