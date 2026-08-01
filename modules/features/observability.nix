@@ -28,8 +28,10 @@
         http_addr = "127.0.0.1";
         http_port = 3000;
         # Change this if you map a domain via HAProxy later (e.g. https://grafana.derezzed.info)
-        domain = "localhost"; 
+        domain = "https://grafana.derezzed.info"; 
       };
     };
   };
+
+  networking.firewall.allowedTCPPorts = [ 9090 3000 9100 ];
 }
