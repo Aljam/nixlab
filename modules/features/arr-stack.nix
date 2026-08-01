@@ -20,19 +20,16 @@
   services.sonarr = {
     enable = true;
     openFirewall = true;
-    port = 8989;
   };
 
   services.radarr = {
     enable = true;
     openFirewall = true;
-    port = 7878;
   };
 
   services.prowlarr = {
     enable = true;
     openFirewall = true;
-    port = 9696;
   };
 
   services.jellyseerr = {
