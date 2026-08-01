@@ -32,7 +32,4 @@
       };
     };
   };
-
-  # Open firewall if you want to scrape metrics from remote nodes into this central server
-  networking.firewall.allowedTCPPorts = [ 9100 ];
 }
