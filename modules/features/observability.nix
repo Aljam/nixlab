@@ -1,14 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # Declare the SOPS secret
-  sops.secrets."grafana.env" = {
-    sopsFile = ../../secrets/grafana.enc.yaml; # Adjust path to match your layout
-    format = "binary";
-    owner = "grafana";
-    group = "grafana";
-  };
-
   # --- Node Exporter (Runs on every machine to expose hardware metrics) ---
   services.prometheus.exporters.node = {
     enable = true;
@@ -55,9 +47,8 @@
         domain = "https://grafana.derezzed.info"; 
       };
       security = {
-        secret_key = "$__file{${config.sops.secrets."grafana.env".path}}";
+        secret_key = "$__file{${pkgs.writeText "grafana-secret-key" "SW2YcwTIb9zpOOhoPsMm"}}";
       };
-    };
   };
 
   networking.firewall.allowedTCPPorts = [ 9090 3000 9100 ];
