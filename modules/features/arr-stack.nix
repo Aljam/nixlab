@@ -1,9 +1,12 @@
 { config, pkgs, lib, ... }:
 
 {
-  # --- System Group & Users ---
+  # ============================================================================
+  # SYSTEM USERS & SHARED PERMISSIONS
+  # ============================================================================
   users.groups.media = {};
-  
+
+  # Dedicated system user for Autobrr
   users.users.autobrr = {
     isSystemUser = true;
     group = "media";
@@ -11,17 +14,16 @@
     createHome = true;
   };
 
-  users.users.lidarr.group = lib.mkForce "media";
-  users.users.readarr.group = lib.mkForce "media";
-
-  # Directory structures for media
+  # Declarative directory creation on the ZFS storage pool with strict permissions
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies 0770 root media -"
     "d /mnt/media/tv 0770 root media -"
     "d /mnt/media/downloads 0770 root media -"
   ];
 
-# --- SOPS Secret for Autobrr ---
+  # ============================================================================
+  # SECRETS MANAGEMENT (SOPS)
+  # ============================================================================
   sops.secrets."autobrr.env" = {
     sopsFile = ../../secrets/autobrr.enc.env;
     format = "dotenv";
@@ -29,23 +31,29 @@
     group = "media";
   };
 
-  # --- Core Video & Indexing Stack ---
+  # ============================================================================
+  # CORE VIDEO & INDEXING SERVICES (THE ARR STACK)
+  # ============================================================================
+  
   services.sonarr = {
     enable = true;
     openFirewall = true;
+    user = "sonarr";
+    group = "media";
   };
 
   services.radarr = {
     enable = true;
     openFirewall = true;
-    user = "readarr";
+    user = "radarr";
     group = "media";
-    dataDir = "/var/lib/readarr";
   };
 
   services.prowlarr = {
     enable = true;
     openFirewall = true;
+    user = "prowlarr";
+    group = "media";
   };
 
   services.seerr = {
@@ -54,22 +62,36 @@
     port = 5055;
   };
 
+  services.bazarr = {
+    enable = true;
+    openFirewall = true;
+    user = "bazarr";
+    group = "media";
+  };
+
+  # ============================================================================
+  # DOWNLOAD CLIENT & MANAGEMENT
+  # ============================================================================
+
   services.qbittorrent = {
     enable = true;
     openFirewall = true;
     webuiPort = 8080;
   };
 
-  # --- Extended Media Library Stack ---
-  services.bazarr = {
-    enable = true;
-    openFirewall = true;
-  };
+  services.recyclarr.enable = true;
+
+  # ============================================================================
+  # EXTENDED MEDIA LIBRARY (BOOKS, MUSIC, AUDIOBOOKS)
+  # ============================================================================
 
   services.readarr = {
     enable = true;
     openFirewall = true;
+    user = "readarr";
+    group = "media";
   };
+  users.users.readarr.group = lib.mkForce "media";
 
   services.lidarr = {
     enable = true;
@@ -78,6 +100,7 @@
     group = "media";
     dataDir = "/var/lib/lidarr";
   };
+  users.users.lidarr.group = lib.mkForce "media";
 
   services.audiobookshelf = {
     enable = true;
@@ -85,7 +108,11 @@
     port = 13378;
     host = "0.0.0.0";
   };
-  
+
+  # ============================================================================
+  # AUTOMATION & RSS (AUTOBRR)
+  # ============================================================================
+
   services.autobrr = {
     enable = true;
     secretFile = config.sops.secrets."autobrr.env".path;
@@ -96,8 +123,6 @@
   };
 
   systemd.services.autobrr.environment = {
-    AUTOBRR_HOST = "0.0.0.0"; # <-- Force it to listen externally
+    AUTOBRR_HOST = "0.0.0.0"; # Force external interface binding for reverse proxy visibility
   };
-  
-  services.recyclarr.enable = true;
 }
