@@ -1,0 +1,12 @@
+# .sops.yaml
+keys:
+  - &aljam_admin age1gzvp3clqk5n0cqv9lts0zn68ym8xr6xxeyu8lxx5hvfkv0guu5ws7y4rel
+  - &r730xd_host age1wydscnqxyykujdxnpq0ekf84535dtz4vzhfz5el0h4h3us9vpusqhhctar
+
+creation_rules:
+  # Any file in the secrets folder will be encrypted so BOTH you and the server can unlock it
+  - path_regex: secrets/.*$
+    key_groups:
+    - age:
+      - *aljam_admin
+      - *r730xd_host
