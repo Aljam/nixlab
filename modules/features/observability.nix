@@ -11,7 +11,7 @@
         static_configs = [
           { targets = [ "127.0.0.1:9100" ]; }
         ];
-      };
+      }
       # If you want to scrape other servers in your fleet, add their IPs here:
       # {
       #   job_name = "r730-compute";
