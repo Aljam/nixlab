@@ -1,11 +1,6 @@
 {
   description = "Aljam's Unified Homelab Flake";
 
-  modules = [
-    ./modules/roles/common.nix
-    ./users/aljam/nixos.nix
-  ];
-
   inputs = {
     # Core OS (Change to nixos-23.11 if you prefer stable over unstable)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
@@ -44,6 +39,8 @@
       specialArgs = { inherit inputs; }; # Passes your inputs to all modules
       modules = [
         ./hosts/${hostname}/configuration.nix
+        ./modules/roles/common.nix
+        ./users/aljam/nixos.nix
         
         # Globally enforce Home Manager for the 'aljam' user across all hosts
         home-manager.nixosModules.home-manager
