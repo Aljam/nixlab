@@ -7,7 +7,7 @@
   sops.secrets."autobrr.env" = {
     sopsFile = ../../secrets/autobrr.enc.env;
     format = "dotenv";
-    owner = "autobrr;
+    owner = "autobrr";
     group = "media";
   };
 
