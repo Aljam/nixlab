@@ -69,10 +69,9 @@
       oryx = mkHost { 
         hostname = "oryx"; 
         extraModules = [
-          { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ];
+          { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ]; }
             inputs.nixos-hardware.nixosModules.system76
             ./modules/hardware/system76-laptop.nix
-          }
         ]; 
       };
       
