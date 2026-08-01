@@ -54,9 +54,9 @@
         http_port = 3000;
         domain = "https://grafana.derezzed.info"; 
       };
-    };
-    security = {
-      secretKeyFile = config.sops.secrets."grafana.env".path;
+      security = {
+        secretKeyFile = config.sops.secrets."grafana.env".path;
+      };
     };
   };
 
