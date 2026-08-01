@@ -11,19 +11,8 @@
     createHome = true;
   };
 
-  users.users.lidarr = {
-    isSystemUser = true;
-    group = "media";
-    home = "/var/lib/lidarr";
-    createHome = true;
-  };
-
-  users.users.readarr = {
-    isSystemUser = true;
-    group = "media";
-    home = "/var/lib/readarr";
-    createHome = true;
-  };
+  users.users.lidarr.group = lib.mkForce "media";
+  users.users.readarr.group = lib.mkForce "media";
 
   # Directory structures for media
   systemd.tmpfiles.rules = [
