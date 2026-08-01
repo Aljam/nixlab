@@ -1,6 +1,16 @@
 { config, pkgs, ... }:
 
 {
+  # --- System Group & Users ---
+  users.groups.media = {};
+  
+  users.users.autobrr = {
+    isSystemUser = true;
+    group = "media";
+    home = "/var/lib/autobrr";
+    createHome = true;
+  };
+
   # Directory structures for media
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies 0770 root media -"
@@ -32,7 +42,7 @@
     openFirewall = true;
   };
 
-  services.jellyseerr = {
+  services.seerr = {
     enable = true;
     openFirewall = true;
     port = 5055;
