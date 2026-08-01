@@ -49,12 +49,14 @@
     group = "media";
   };
 
-  # Prowlarr manages its own user; we force its primary group to 'media'
   services.prowlarr = {
     enable = true;
     openFirewall = true;
   };
-  users.users.prowlarr.group = lib.mkForce "media";
+  users.users.prowlarr = {
+    isSystemUser = true;
+    group = lib.mkForce "media";
+  };
 
   services.seerr = {
     enable = true;
@@ -62,12 +64,14 @@
     port = 5055;
   };
 
-  # Bazarr manages its own user; we force its primary group to 'media'
   services.bazarr = {
     enable = true;
     openFirewall = true;
   };
-  users.users.bazarr.group = lib.mkForce "media";
+  users.users.bazarr = {
+    isSystemUser = true;
+    group = lib.mkForce "media";
+  };
 
   # ============================================================================
   # DOWNLOAD CLIENT & MANAGEMENT
@@ -88,17 +92,21 @@
   services.readarr = {
     enable = true;
     openFirewall = true;
-    user = "readarr";
   };
-  users.users.readarr.group = lib.mkForce "media";
+  users.users.readarr = {
+    isSystemUser = true;
+    group = lib.mkForce "media";
+  };
 
   services.lidarr = {
     enable = true;
     openFirewall = true;
-    user = "lidarr";
     dataDir = "/var/lib/lidarr";
   };
-  users.users.lidarr.group = lib.mkForce "media";
+  users.users.lidarr = {
+    isSystemUser = true;
+    group = lib.mkForce "media";
+  };
 
   services.audiobookshelf = {
     enable = true;
