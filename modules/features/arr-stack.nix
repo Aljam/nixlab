@@ -1,6 +1,11 @@
 { config, pkgs, ... }:
 
 {
+  users.users.autobrr = {
+    isSystemUser = true;
+    group = "media";
+  };
+
   users.groups.media = {};
 
   # Define the SOPS secret
