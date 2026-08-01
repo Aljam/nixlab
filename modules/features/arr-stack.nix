@@ -56,13 +56,11 @@
   services.readarr = {
     enable = true;
     openFirewall = true;
-    port = 8787;
   };
 
   services.lidarr = {
     enable = true;
     openFirewall = true;
-    port = 8686;
   };
 
   services.audiobookshelf = {
