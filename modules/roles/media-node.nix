@@ -35,7 +35,7 @@
       }
       {
         "System & Monitoring" = [
-          { Grafana = { href = "http://127.0.0.1:3000"; description = "Metrics & Dashboards"; icon = "grafana.png"; }; }
+          { Grafana = { href = "https://grafana.derezzed.info"; description = "Metrics & Dashboards"; icon = "grafana.png"; }; }
         ];
       }
     ];
