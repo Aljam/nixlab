@@ -4,7 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ./disko-config.nix
-    ../../hardware/dell-poweredge.nix
+    ../../modules/hardware/dell-poweredge.nix
     ../../modules/roles/server-core.nix
     ../../modules/features/nvidia-headless.nix
     ../../modules/roles/media-node.nix
