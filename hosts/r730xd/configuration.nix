@@ -8,6 +8,7 @@
     ../../modules/roles/server-core.nix
     ../../modules/features/nvidia-headless.nix
     ../../modules/roles/media-node.nix
+    ../../modules/roles/storage-node.nix
   ];
 
   # --- Hardware & Boot Defaults ---
