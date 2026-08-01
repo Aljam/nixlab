@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../features/observability.nix
+    ../features/sanoid.nix
   ];
 
   boot.loader.grub.enable = true;
@@ -23,6 +23,22 @@
   services.smartd = {
     enable = true;
     autodetect = true;
+  };
+
+  services.prometheus.exporters.node = {
+    enable = true;
+    port = 9100;
+    enabledCollectors = [
+      "systemd"
+      "processes"
+      "cpu"
+      "diskstats"
+      "filesystem"
+      "netdev"
+      "zfs"
+      "hwmon"
+      "nvme"
+    ];
   };
 
   # Open firewall if you want to scrape metrics from remote nodes into this central server
