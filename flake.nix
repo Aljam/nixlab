@@ -80,8 +80,12 @@
       };
       
       r730xd = mkHost { 
-        hostname = "r730xd"; 
-        extraModules = [ disko.nixosModules.disko ]; 
+        hostname = "r730xd";
+        
+        extraModules = [ 
+          disko.nixosModules.disko
+          inputs.sops-nix.nixosModules.sops  
+        ]; 
       };
     };
   };
