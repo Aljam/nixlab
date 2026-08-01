@@ -3,7 +3,7 @@
 {
   # Declare the SOPS secret
   sops.secrets."grafana.env" = {
-    sopsFile = ../../secrets/grafana.enc.yaml; # Adjust path to match your layout
+    sopsFile = ../../secrets/grafana.enc.env; # Adjust path to match your layout
     format = "binary";
     owner = "grafana";
     group = "grafana";
