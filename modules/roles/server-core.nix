@@ -27,6 +27,11 @@
     port = 9100;
     enabledCollectors = [
       "systemd"
+      "processes"
+      "cpu"
+      "diskstats"
+      "filesystem"
+      "netdev"
       "zfs"
       "hwmon"      # Essential for monitoring CPU/motherboard temperatures
       "nvme"       # Essential for NVMe health tracking
