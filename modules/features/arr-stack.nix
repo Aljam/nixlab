@@ -74,6 +74,7 @@
     enable = true;
     openFirewall = true;
     port = 13378;
+    host = 0.0.0.0
   };
   
   services.autobrr = {
@@ -83,6 +84,10 @@
       port = 7474;
       host = "0.0.0.0"; 
     };
+  };
+
+  systemd.services.autobrr.environment = {
+    AUTOBRR_HOST = "0.0.0.0"; # <-- Force it to listen externally
   };
   
   services.recyclarr.enable = true;
