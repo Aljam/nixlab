@@ -41,7 +41,7 @@
   services.qbittorrent = {
     enable = true;
     openFirewall = true;
-    port = 8080;
+    webuiPort = 8080;
   };
 
   # --- Extended Media Library Stack ---
