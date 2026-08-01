@@ -4,7 +4,7 @@
   # Declare the SOPS secret
   sops.secrets."grafana.env" = {
     sopsFile = ../../secrets/grafana.enc.env; # Adjust path to match your layout
-    format = "dotenv";
+    format = "binary";
     owner = "grafana";
     group = "grafana";
   };
@@ -55,7 +55,7 @@
         domain = "https://grafana.derezzed.info"; 
       };
       security = {
-        secretKeyFile = config.sops.secrets."grafana.env".path;
+        secret_key = "$__file{${config.sops.secrets."grafana.env".path}}";
       };
     };
   };
