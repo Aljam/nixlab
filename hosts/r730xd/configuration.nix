@@ -4,12 +4,10 @@
   imports = [
     ./hardware-configuration.nix
     ./disko-config.nix
-    ../../modules/aljam.nix
-    ../../modules/common.nix
-    ../../modules/server-core.nix     # <-- Injects smartd, tmux, htop, ssh keys
-    ../../modules/nvidia-headless.nix # <-- Injects Tesla P40 GPU drivers
+    ../../hardware/dell-poweredge.nix
+    ../../modules/roles/server-core.nix
+    ../../modules/features/nvidia-headless.nix
     ../../modules/roles/media-node.nix
-    ../../modules/graphics.nix
   ];
 
   # --- Hardware & Boot Defaults ---

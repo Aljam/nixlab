@@ -3,9 +3,8 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/common.nix
-    ../../modules/server-core.nix
-    ../../modules/aljam.nix 
+    ../../hardware/dell-poweredge.nix
+    ../../modules/roles/server-core.nix 
   ];
 
   networking.hostName = "r820";

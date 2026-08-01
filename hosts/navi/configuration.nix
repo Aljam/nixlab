@@ -2,13 +2,10 @@
 
 {
     imports = [
-        ./hardware-configuration.nix
-        ../../modules/common.nix
-        ../../modules/desktop.nix    # Gets you KDE, Steam, Audio, etc.
-        ../../modules/aljam.nix # Gets you your identity
-        ../../modules/libvirt.nix    # Gets you VMs!
-        ../../modules/nas-mount.nix  # Gets you your network share!
-        ../../modules/graphics.nix
+    	./hardware-configuration.nix
+    	../../modules/roles/desktop-node.nix
+    	../../modules/features/graphics.nix
+    	../../modules/features/libvirt.nix
       ];
     
     networking.hostName = "navi";

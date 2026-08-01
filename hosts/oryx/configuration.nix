@@ -3,10 +3,8 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/common.nix  
-    ../../modules/desktop.nix # Pulls in generic GRUB, KDE, Steam, Audio
-    ../../modules/aljam.nix   # Pulls in your identity
-    ../../modules/graphics.nix
+    ../../modules/roles/desktop-node.nix
+    # Add ../../hardware/laptop-optimus.nix here eventually if you make a laptop profile!
   ];
 
   networking.hostName = "oryx";

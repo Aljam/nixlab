@@ -3,12 +3,10 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../modules/aljam.nix
-    ../../modules/common.nix
-    ../../modules/dell-fans.nix
-    ../../modules/nvidia-headless.nix
-    ../../modules/graphics.nix
-    ../../server-core.nix
+    ./disko-config.nix
+    ../../hardware/dell-poweredge.nix
+    ../../modules/roles/server-core.nix
+    ../../modules/features/nvidia-headless.nix
   ];
 
   networking.hostName = "r730";
