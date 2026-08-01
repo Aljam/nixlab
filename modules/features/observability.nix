@@ -35,6 +35,18 @@
         secret_key = "$__file{${pkgs.writeText "grafana-secret-key" "SW2YcwTIb9zpOOhoPsMm"}}";
       };
     };
+    provision = {
+      enable = true;
+      datasources.settings.datasources = [
+        {
+          name = "Prometheus";
+          type = "prometheus";
+          access = "proxy";
+          url = "http://127.0.0.1:9090"; # Points to your local Prometheus database
+          isDefault = true;
+        }
+      ];
+    };
   };
 
   networking.firewall.allowedTCPPorts = [ 9090 3000 ];
