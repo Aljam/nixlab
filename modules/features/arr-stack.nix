@@ -2,7 +2,7 @@
 
 {
   # ============================================================================
-  # SYSTEM USERS & SHARED PERMISSIONS
+  # SYSTEM GROUPS & USERS
   # ============================================================================
   users.groups.media = {};
 
@@ -34,7 +34,7 @@
   # ============================================================================
   # CORE VIDEO & INDEXING SERVICES (THE ARR STACK)
   # ============================================================================
-  
+
   services.sonarr = {
     enable = true;
     openFirewall = true;
@@ -49,12 +49,13 @@
     group = "media";
   };
 
+  # Prowlarr module doesn't expose 'group' directly, so we force its system user group
   services.prowlarr = {
     enable = true;
     openFirewall = true;
     user = "prowlarr";
-    group = "media";
   };
+  users.users.prowlarr.group = lib.mkForce "media";
 
   services.seerr = {
     enable = true;
@@ -62,12 +63,13 @@
     port = 5055;
   };
 
+  # Bazarr module doesn't expose 'group' directly, so we force its system user group
   services.bazarr = {
     enable = true;
     openFirewall = true;
     user = "bazarr";
-    group = "media";
   };
+  users.users.bazarr.group = lib.mkForce "media";
 
   # ============================================================================
   # DOWNLOAD CLIENT & MANAGEMENT
@@ -89,7 +91,6 @@
     enable = true;
     openFirewall = true;
     user = "readarr";
-    group = "media";
   };
   users.users.readarr.group = lib.mkForce "media";
 
@@ -97,7 +98,6 @@
     enable = true;
     openFirewall = true;
     user = "lidarr";
-    group = "media";
     dataDir = "/var/lib/lidarr";
   };
   users.users.lidarr.group = lib.mkForce "media";
@@ -123,6 +123,6 @@
   };
 
   systemd.services.autobrr.environment = {
-    AUTOBRR_HOST = "0.0.0.0"; # Force external interface binding for reverse proxy visibility
+    AUTOBRR_HOST = "0.0.0.0"; 
   };
 }
