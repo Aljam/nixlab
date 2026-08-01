@@ -1,6 +1,11 @@
 {
   description = "Aljam's Unified Homelab Flake";
 
+  modules = [
+    ./modules/roles/common.nix
+    ./users/aljam/nixos.nix
+  ];
+
   inputs = {
     # Core OS (Change to nixos-23.11 if you prefer stable over unstable)
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
