@@ -1,23 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # --- Node Exporter (Runs on every machine to expose hardware metrics) ---
-  services.prometheus.exporters.node = {
-    enable = true;
-    port = 9100;
-    enabledCollectors = [
-      "systemd"
-      "processes"
-      "cpu"
-      "diskstats"
-      "filesystem"
-      "netdev"
-      "zfs"
-      "hwmon"      # Essential for monitoring CPU/motherboard temperatures
-      "nvme"       # Essential for NVMe health tracking
-    ];
-  };
-
   # --- Prometheus (Scrapes metrics locally or across the fleet) ---
   services.prometheus = {
     enable = true;
@@ -52,5 +35,5 @@
     };
   };
 
-  networking.firewall.allowedTCPPorts = [ 9090 3000 9100 ];
+  networking.firewall.allowedTCPPorts = [ 9090 3000 ];
 }
