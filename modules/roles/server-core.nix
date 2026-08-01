@@ -25,23 +25,6 @@
     autodetect = true;
   };
 
-  # --- Node Exporter (Runs on every machine to expose hardware metrics) ---
-  services.prometheus.exporters.node = {
-    enable = true;
-    port = 9100;
-    enabledCollectors = [
-      "systemd"
-      "processes"
-      "cpu"
-      "diskstats"
-      "filesystem"
-      "netdev"
-      "zfs"
-      "hwmon"      # Essential for monitoring CPU/motherboard temperatures
-      "nvme"       # Essential for NVMe health tracking
-    ];
-  };
-
   # Open firewall if you want to scrape metrics from remote nodes into this central server
   networking.firewall.allowedTCPPorts = [ 9100 ];
 
