@@ -7,7 +7,8 @@
   sops.secrets."autobrr.env" = {
     sopsFile = ../../secrets/autobrr.enc.env;
     format = "dotenv";
-    owner = config.systemd.services.autobrr.serviceConfig.User;
+    owner = "autobrr;
+    group = "media";
   };
 
   # Directory structures for media
