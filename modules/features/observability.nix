@@ -49,6 +49,7 @@
       security = {
         secret_key = "$__file{${pkgs.writeText "grafana-secret-key" "SW2YcwTIb9zpOOhoPsMm"}}";
       };
+    };
   };
 
   networking.firewall.allowedTCPPorts = [ 9090 3000 9100 ];
