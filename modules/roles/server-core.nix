@@ -33,6 +33,9 @@
     ];
   };
 
+  # Open firewall if you want to scrape metrics from remote nodes into this central server
+  networking.firewall.allowedTCPPorts = [ 9100 ];
+
   # Optional: Default ZFS scrubbing (can be disabled on the R820 since it uses hardware RAID)
   services.zfs.autoScrub.enable = lib.mkDefault true;
   services.zfs.autoScrub.interval = lib.mkDefault "weekly";
