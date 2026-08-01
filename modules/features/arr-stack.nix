@@ -24,7 +24,7 @@
   
   services.autobrr = {
     enable = true;
-    secretFile = config.sops.secrets."autobrr.env".path;;
+    secretFile = config.sops.secrets."autobrr.env".path;
     settings = { port = 7474; host = "0.0.0.0"; };
   };
   
