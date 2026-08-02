@@ -6,7 +6,7 @@
     mgba       # The absolute best GBA emulator. Includes a powerful memory viewer/debugger crucial for ROM hacking.
     melonDS    # Excellent for Nintendo DS.
     mesen      # The gold standard for NES/SNES/GB/GBC with unparalleled debugging tools.
-    retroarchFull # For general testing across multiple cores.
+    retroarch-full # For general testing across multiple cores.
 
     # --- ROM Hacking & Patching ---
     flips      # The standard for creating and applying IPS and BPS patches.
