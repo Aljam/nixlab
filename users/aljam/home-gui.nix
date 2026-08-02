@@ -55,6 +55,19 @@
     # --- Upgraded Wine for Sound Voltex (EAC) ---
     wineWowPackages.stagingFull # Replaces 'stable' - has the multilib + staging patches
     winetricks
+
+    # File Management & Media
+    yazi       # Blazing-fast terminal file manager written in Rust (with image previews)
+    mpv        # Lightweight, infinitely scriptable media player
+    imv        # Lightweight Wayland image viewer
+  
+    # Audio & Volume Management
+    pavucontrol # Graphical PulseAudio/PipeWire volume control panel
+    pamixer     # Command-line audio mixer for keybind integration
+  
+    # Clipboard & Utility Applets
+    cliphist    # History manager for your Wayland clipboard
+    libnotify   # Desktop notification CLI tools (notify-send)  
   ];
 
   # Kitty Terminal Configuration
