@@ -24,7 +24,7 @@
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
-      set -g fish_greeting "${c1}
+      set -g fish_greeting "
                       .@hpp
                       "KKP
             ,      ,+;n@nnw,    ,,
