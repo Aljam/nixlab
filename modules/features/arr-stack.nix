@@ -63,12 +63,6 @@
     group = lib.mkForce "media";
   };
 
-  services.qbittorrent = {
-    enable = true;
-    openFirewall = true;
-    webuiPort = 8080;
-  };
-
   services.recyclarr.enable = true;
 
   services.readarr = {
