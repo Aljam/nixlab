@@ -23,7 +23,7 @@
     # --- 3D Console Emulators ---
     
     # PlayStation Family
-    duckstation # PS1: The undisputed king of modern PS1 emulation (upscaling, PGXP anti-jitter).
+    # duckstation # PS1: The undisputed king of modern PS1 emulation (upscaling, PGXP anti-jitter).
     pcsx2       # PS2: The gold standard. Runs perfectly on Wayland/X11.
     rpcs3       # PS3: Incredibly CPU heavy, but your 5950X will completely destroy it.
     ppsspp      # PSP: Flawless upscaling and performance.
