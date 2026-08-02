@@ -25,7 +25,7 @@
     waybar
     swaynotificationcenter
     fuzzel
-    swww
+    awww
     hyprlock
     hypridle
     wl-clipboard
