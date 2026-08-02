@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ../modules/features/libvirt.nix
+  ];
+
   # --- Shared GUI Bootloader (GRUB) ---
   boot.loader.timeout = 5;
   boot.loader.systemd-boot.enable = false;
