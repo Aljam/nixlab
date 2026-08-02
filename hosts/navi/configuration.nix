@@ -9,4 +9,5 @@
       ];
     
     networking.hostName = "navi";
+    programs.corectrl.enable = true; # AMD Overclocking/Undervolting
 }
