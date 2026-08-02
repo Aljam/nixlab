@@ -5,6 +5,14 @@
     ../modules/features/libvirt.nix
   ];
 
+  # --- Btrfs Maintenance ---
+  #  services.btrfs.autoScrub = {
+  #    enable = true;
+  #    interval = "monthly";
+  #    fileSystems = [ "/" "/mnt/your-game-drives" ]; # Add your specific mount points here
+  #  };
+  
+  
   # --- Shared GUI Bootloader (GRUB) ---
   boot.loader.timeout = 5;
   boot.loader.systemd-boot.enable = false;
