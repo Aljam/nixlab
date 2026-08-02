@@ -8,11 +8,10 @@
     ../features/vaultwarden.nix
   ];
 
-  # --- Dashboard UI ---
   services.homepage-dashboard = {
     enable = true;
     openFirewall = true;
-    # Swapped the hardcoded 192.168.1.2 IP for localhost (127.0.0.1) for internal routing
+    # Binds to localhost to prevent HAProxy Host header validation errors
     allowedHosts = "home.derezzed.info,127.0.0.1:8082";
     services = [
       {
@@ -30,7 +29,7 @@
           { Bazarr = { href = "https://bazarr.derezzed.info"; description = "Subtitles Automation"; icon = "bazarr.png"; }; }
           { Readarr = { href = "https://readarr.derezzed.info"; description = "Books Automation"; icon = "readarr.png"; }; }
           { Lidarr = { href = "https://lidarr.derezzed.info"; description = "Music Automation"; icon = "lidarr.png"; }; }
-          { qBittorrent = { href = "qb.derezzed.info"; description = "Torrents"; icon = "qbittorrent.png"; }; }
+          { qBittorrent = { href = "https://qb.derezzed.info"; description = "Torrents"; icon = "qbittorrent.png"; }; }
           { Autobrr = { href = "https://autobrr.derezzed.info"; description = "IRC Torrent Filters"; icon = "autobrr.png"; }; }
         ];
       }
