@@ -42,7 +42,7 @@
 
     # --- dev tools ---
     vscodium
-    jetbrains.idea-community
+    jetbrains.idea-oss
 
     # --- Emulation & Arcade ---
     fightcade
