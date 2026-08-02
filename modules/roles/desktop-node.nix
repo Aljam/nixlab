@@ -58,5 +58,6 @@
     librewolf
     git
     kitty
+    distrobox
   ];
 }
