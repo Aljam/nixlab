@@ -27,6 +27,18 @@
     hunspell
     hunspellDicts.en_US
     hyphenDicts.en_US
+
+    # --- Gaming Essentials ---
+
+    lutris
+    heroic
+    wineWowPackages.stable
+    winetricks
+    protonup-qt
+    mangohud
+    
+    # --- AMD GPU Management (Navi) ---
+    corectrl
   ];
 
   # Kitty Terminal Configuration
