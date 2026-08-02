@@ -6,6 +6,7 @@
     ../modules/features/gaming.nix
     ../modules/features/graphics.nix
     ../modules/features/audio.nix
+    ../modules/features/emulation.nix
   ];
 
   # --- Btrfs Maintenance ---
