@@ -1,3 +1,5 @@
+Nix
+
 { config, pkgs, lib, ... }:
 
 {
@@ -12,13 +14,11 @@
     ../../modules/features/observability.nix
   ];
 
-  # --- Hardware & Boot Defaults ---
   boot.kernelPackages = pkgs.linuxPackages_6_1;
   hardware.enableRedistributableFirmware = true;
   
   boot.zfs.forceImportRoot = false;
 
-  # --- System Identity & Networking ---
   networking.hostName = "r730xd";
   networking.hostId = "d2083fdc"; # Required for ZFS
 
