@@ -11,7 +11,6 @@
   boot.loader.grub.devices = [ "nodev" ];
   boot.loader.grub.efiInstallAsRemovable = true;
 
-  # Standard Server Utilities
   environment.systemPackages = with pkgs; [
     smartmontools
     tmux
@@ -20,7 +19,6 @@
     pciutils
   ];
 
-  # Global Drive Health Monitoring
   services.smartd = {
     enable = true;
     autodetect = true;
@@ -42,11 +40,9 @@
     ];
   };
 
-  # Open firewall if you want to scrape metrics from remote nodes into this central server
-  # 3000 = Grafana, 13378 = Audiobookshelf, 7474 = Autobrr
-  networking.firewall.allowedTCPPorts = [ 9100 3000 7474 13378];
+  # 3000: Grafana | 7474: Autobrr | 9100: Node Exporter | 13378: Audiobookshelf
+  networking.firewall.allowedTCPPorts = [ 9100 3000 7474 13378 ];
 
-  # Optional: Default ZFS scrubbing (can be disabled on the R820 since it uses hardware RAID)
   services.zfs.autoScrub.enable = lib.mkDefault true;
   services.zfs.autoScrub.interval = lib.mkDefault "weekly";
 }
