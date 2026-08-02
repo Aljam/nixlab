@@ -3,7 +3,7 @@
 {
   imports = [
     ../features/sanoid.nix
-    ../modules/features/monitoring.nix
+    ../features/monitoring.nix
   ];
 
   boot.loader.grub.enable = true;
