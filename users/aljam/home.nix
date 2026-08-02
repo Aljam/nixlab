@@ -15,6 +15,20 @@
     tldr
     fd
     lazygit
+
+    # Search & Navigation
+    ripgrep    # Blazing fast replacement for grep ('rg')
+    fd         # Simple, fast alternative to 'find'
+    jq         # Command-line JSON processor (essential for API debugging)
+    
+    # Git & Workflow
+    lazygit    # Stunning terminal UI for Git commands
+    fzf        # Command-line fuzzy finder (pairs great with zoxide & fish)
+  
+    # System Inspection & Monitoring
+    btop       # Gorgeous resource monitor for CPU, memory, disks, and network
+    ncdu       # NCurses disk usage analyzer (crucial for finding what's eating your ZFS space)
+    fastfetch  # Modern replacement for neofetch to show system specs on shell boot
   ];
 
   # Fish Shell Configuration
