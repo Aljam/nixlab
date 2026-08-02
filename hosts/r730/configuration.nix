@@ -11,22 +11,15 @@
   ];
 
   networking.hostName = "r730";
-  networking.hostId = "acccc16e"; # ZFS requirement
+  networking.hostId = "acccc16e"; # Required for ZFS
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # ---------------------------------------------------------
-  # CONTAINERIZATION & AI WORKLOADS
-  # ---------------------------------------------------------
   virtualisation.docker.enable = true;
   hardware.nvidia-container-toolkit.enable = true; # Passes the P40s into Docker
 
-  # ---------------------------------------------------------
-  # HOST-SPECIFIC AI COMPUTE OVERRIDES
-  # ---------------------------------------------------------
-  
   hardware.nvidia = {
-    modesetting.enable = true; # Overrides the module default
+    modesetting.enable = true; # Overrides the headless module default
     nvidiaPersistenced = true; # Prevents power-state latency drops during AI training
   };
 
