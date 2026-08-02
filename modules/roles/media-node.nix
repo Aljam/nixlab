@@ -8,6 +8,8 @@
     ../features/vaultwarden.nix
   ];
 
+  users.groups.media = {}
+
   services.homepage-dashboard = {
     enable = true;
     openFirewall = true;
