@@ -15,6 +15,17 @@
     tldr
     fd
     lazygit
+
+    # --- Gaming Essentials ---
+    lutris
+    heroic
+    wineWowPackages.stable
+    winetricks
+    protonup-qt
+    mangohud
+    
+    # --- AMD GPU Management (Navi) ---
+    corectrl
   ];
 
   # Fish Shell Configuration
