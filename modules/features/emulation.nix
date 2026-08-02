@@ -14,7 +14,7 @@
 
     # --- Reverse Engineering & Hex Editing ---
     imhex      # A world-class reverse engineering hex editor. Incredibly powerful for tearing apart ROM structures.
-    wxHexEditor # A great, lightweight alternative for massive files.
+    # wxHexEditor # A great, lightweight alternative for massive files.
 
     # --- Game Development & Asset Tools ---
     rgbds      # Rednex Game Boy Development System (Assembler/Linker for Game Boy).
