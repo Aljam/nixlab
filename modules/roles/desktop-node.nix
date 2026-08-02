@@ -9,6 +9,7 @@
     ../features/emulation.nix
     ../features/monitoring.nix
     ../features/hyprland.nix
+    ../features/flatpak.nix
   ];
 
   # --- Btrfs Maintenance ---
