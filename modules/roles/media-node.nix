@@ -30,7 +30,7 @@
           { Bazarr = { href = "https://bazarr.derezzed.info"; description = "Subtitles Automation"; icon = "bazarr.png"; }; }
           { Readarr = { href = "https://readarr.derezzed.info"; description = "Books Automation"; icon = "readarr.png"; }; }
           { Lidarr = { href = "https://lidarr.derezzed.info"; description = "Music Automation"; icon = "lidarr.png"; }; }
-          { qBittorrent = { href = "http://127.0.0.1:8080"; description = "Torrents"; icon = "qbittorrent.png"; }; }
+          { qBittorrent = { href = "qb.derezzed.info"; description = "Torrents"; icon = "qbittorrent.png"; }; }
           { Autobrr = { href = "https://autobrr.derezzed.info"; description = "IRC Torrent Filters"; icon = "autobrr.png"; }; }
         ];
       }
