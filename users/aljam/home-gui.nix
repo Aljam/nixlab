@@ -44,9 +44,6 @@
     vscodium
     jetbrains.idea-oss
 
-    # --- Emulation & Arcade ---
-    fbneo # The backend emulator Fightcade uses
-
     # --- Rhythm Games ---
     unnamed-sdvx-clone # Native Linux Sound Voltex (USC)
     qjackctl # GUI to manage low-latency audio for rhythm games
