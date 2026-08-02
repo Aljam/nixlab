@@ -3,9 +3,11 @@
 {
   users.groups.media = {};
 
-  services.jellyfin.enable = true;
-  services.jellyfin.openFirewall = true;
-  services.jellyfin.group = "media";
+  services.jellyfin = {
+    enable = true;
+    openFirewall = true;
+    group = "media";
+  };
 
   # Hardware acceleration passthrough for Jellyfin
   systemd.services.jellyfin.serviceConfig = {
