@@ -1,7 +1,6 @@
 { config, pkgs, lib, ... }:
 
 {
-  # --- Gaming Architecture ---
   programs.gamemode.enable = true;
   
   programs.steam = {
@@ -9,7 +8,7 @@
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
-    gamescopeSession.enable = true; # Great for isolating game windows
+    gamescopeSession.enable = true;
     protontricks.enable = true;
     extraCompatPackages = with pkgs; [
       proton-ge-bin
