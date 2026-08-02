@@ -4,7 +4,7 @@
   environment.systemPackages = with pkgs; [
     # --- The Emulators (with Debugging capabilities) ---
     mgba       # The absolute best GBA emulator. Includes a powerful memory viewer/debugger crucial for ROM hacking.
-    melonDS    # Excellent for Nintendo DS.
+    melonds    # Excellent for Nintendo DS.
     mesen      # The gold standard for NES/SNES/GB/GBC with unparalleled debugging tools.
     retroarch-full # For general testing across multiple cores.
 
