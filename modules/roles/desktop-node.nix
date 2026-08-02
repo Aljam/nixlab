@@ -48,6 +48,11 @@
     enable = true;
     dockerCompat = true; # Allows you to type 'docker' in the terminal
   };
+  
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
+  };
 
   # Standard Desktop Apps
   environment.systemPackages = with pkgs; [
