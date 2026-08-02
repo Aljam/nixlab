@@ -18,17 +18,17 @@
       fsType = "btrfs";
     };
 
-  fileSystems."/run/media/aljam/Games" =
+  fileSystems."/mnt/Games" =
     { device = "/dev/disk/by-uuid/c68af57a-274f-408d-bdd9-58f7c203bb02";
       fsType = "btrfs";
     };
 
-  fileSystems."/run/media/aljam/Vidya" =
+  fileSystems."/mnt/Vidya" =
     { device = "/dev/disk/by-uuid/7e38280a-0946-4d28-b888-b08e0601a2d6";
       fsType = "btrfs";
     };
 
-  fileSystems."/run/media/Vault" = {
+  fileSystems."/mnt/Vault" = {
     device = "/dev/disk/by-uuid/f357ff7f-f97a-4b54-98d0-d3178311c7e5";
     fsType = "btrfs";
     options = [ 
