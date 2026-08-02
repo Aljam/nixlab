@@ -1,11 +1,12 @@
 { config, pkgs, ... }:
 
 {
-  users.groups.media = {};
-
-  services.qbittorrent.enable = true;
-  services.qbittorrent.openFirewall = true;
-  services.qbittorrent.group = "media";
+  services.qbittorrent = {
+    enable = true;
+    openFirewall = true;
+    group = "media";
+    webuiPort = 8080;
+  };
 
   virtualisation.oci-containers.containers.qbitmanage = {
     image = "ghcr.io/starbix/qbitmanage:latest";
