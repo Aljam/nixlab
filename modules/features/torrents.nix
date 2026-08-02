@@ -15,7 +15,7 @@
     };
     volumes = [
       "/var/lib/qbitmanage:/config"
-      "/mnt/pool/media:/data/media"
+      "/mnt/media:/data/media"
       "/var/lib/qbittorrent:/qbittorrent"
     ];
   };
