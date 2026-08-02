@@ -49,6 +49,11 @@
 
   programs.nix-ld.enable = true;
 
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true; # Allows you to type 'docker' in the terminal
+  };
+
   # Standard Desktop Apps
   environment.systemPackages = with pkgs; [
     librewolf
