@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  # --- Prometheus (Scrapes metrics locally or across the fleet) ---
   services.prometheus = {
     enable = true;
     port = 9090;
@@ -20,7 +19,6 @@
     ];
   };
 
-  # --- Grafana (The Visualization UI) ---
   services.grafana = {
     enable = true;
     settings = {
