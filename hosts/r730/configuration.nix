@@ -16,6 +16,12 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # ---------------------------------------------------------
+  # CONTAINERIZATION & AI WORKLOADS
+  # ---------------------------------------------------------
+  virtualisation.docker.enable = true;
+  hardware.nvidia-container-toolkit.enable = true; # Passes the P40s into Docker
+
+  # ---------------------------------------------------------
   # HOST-SPECIFIC AI COMPUTE OVERRIDES
   # ---------------------------------------------------------
   
