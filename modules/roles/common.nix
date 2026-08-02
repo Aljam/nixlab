@@ -1,6 +1,18 @@
 { config, pkgs, lib, ... }:
 
 {
+  # Fix for openldap upstream test failure (test017-syncreplication-refresh)
+  nixpkgs.overlays = [
+    (final: prev: {
+      openldap = prev.openldap.overrideAttrs (_: {
+        doCheck = false;
+      });
+      glances = prev.glances.overrideAttrs (_: {
+        doCheck = false;
+      });
+    })
+  ];
+
   # Allow unfree packages fleet-wide
   nixpkgs.config.allowUnfree = true;
 
@@ -72,18 +84,6 @@
     # Use the host's SSH host key as the age decryption key
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
-
-  # Fix for openldap upstream test failure (test017-syncreplication-refresh)
-  nixpkgs.overlays = [
-    (final: prev: {
-      openldap = prev.openldap.overrideAttrs (_: {
-        doCheck = false;
-      });
-      glances = prev.glances.overrideAttrs (_: {
-        doCheck = false;
-      });
-    })
-  ];
 
   # Automatically optimize the Nix store (deduplicates identical files)
   nix.optimise.automatic = true;
