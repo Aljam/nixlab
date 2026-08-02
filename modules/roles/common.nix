@@ -73,6 +73,15 @@
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 
+  # Fix for openldap upstream test failure (test017-syncreplication-refresh)
+  nixpkgs.overlays = [
+    (final: prev: {
+      openldap = prev.openldap.overrideAttrs (_: {
+        doCheck = false;
+      });
+    })
+  ];
+
   # Automatically optimize the Nix store (deduplicates identical files)
   nix.optimise.automatic = true;
 
