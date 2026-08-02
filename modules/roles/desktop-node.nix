@@ -47,6 +47,8 @@
     pulse.enable = true;
   };
 
+  programs.nix-ld.enable = true;
+
   # Standard Desktop Apps
   environment.systemPackages = with pkgs; [
     librewolf
