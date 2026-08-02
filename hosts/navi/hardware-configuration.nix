@@ -28,6 +28,20 @@
       fsType = "btrfs";
     };
 
+  fileSystems."/run/media/Vault" = {
+    device = "/dev/disk/by-uuid/f357ff7f-f97a-4b54-98d0-d3178311c7e5";
+    fsType = "btrfs";
+    options = [ 
+      "nofail" 
+      "compress=zstd" 
+      "noatime"
+      "users"
+      "exec"
+      "x-systemd.device-timeout=30s"
+      "x-systemd.mount-timeout=30s"  
+    ];
+  };
+
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/0DFC-F1C6";
       fsType = "vfat";
