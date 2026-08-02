@@ -10,6 +10,7 @@
     ../features/monitoring.nix
     ../features/hyprland.nix
     ../features/flatpak.nix
+    ../features/networking-tools.nix
   ];
 
   # --- Btrfs Maintenance ---
