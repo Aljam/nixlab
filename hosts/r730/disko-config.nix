@@ -3,8 +3,57 @@
 
   disko.devices = {
     disk = {
-      disk0 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...1"; }; # Replace with actual disk ID
-      disk1 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...2"; };
+      disk0 = {
+        type = "disk";
+        device = "/dev/disk/by-id/wwn-0x5000c500...1"; # Replace with actual disk ID
+        content = {
+          type = "gpt";
+          partitions = {
+            ESP = {
+              size = "500M";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot";
+              };
+            };
+            zfs = {
+              size = "100%";
+              content = {
+                type = "zfs";
+                pool = "r730pool";
+              };
+            };
+          };
+        };
+      };
+      
+      disk1 = {
+        type = "disk";
+        device = "/dev/disk/by-id/wwn-0x5000c500...2"; # Replace with actual disk ID
+        content = {
+          type = "gpt";
+          partitions = {
+            ESP = {
+              size = "500M";
+              type = "EF00";
+              content = {
+                type = "filesystem";
+                format = "vfat";
+                mountpoint = "/boot-fallback"; # Fallback EFI mount
+              };
+            };
+            zfs = {
+              size = "100%";
+              content = {
+                type = "zfs";
+                pool = "r730pool";
+              };
+            };
+          };
+        };
+      };
       disk2 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...3"; };
       disk3 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...4"; };
       disk4 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...5"; };
