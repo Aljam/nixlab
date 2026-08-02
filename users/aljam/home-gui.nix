@@ -32,8 +32,6 @@
 
     lutris
     heroic
-    wineWowPackages.stable
-    winetricks
     protonup-qt
     mangohud
     
@@ -49,7 +47,7 @@
     qjackctl # GUI to manage low-latency audio for rhythm games
 
     # --- Upgraded Wine for Sound Voltex (EAC) ---
-    wineWowPackages.stagingFull # Replaces 'stable' - has the multilib + staging patches
+    wineWow64Packages.stagingFull # Replaces 'stable' - has the multilib + staging patches
     winetricks
 
     # File Management & Media
