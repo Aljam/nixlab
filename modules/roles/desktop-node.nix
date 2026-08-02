@@ -5,6 +5,7 @@
     ../modules/features/libvirt.nix
     ../modules/features/gaming.nix
     ../modules/features/graphics.nix
+    ../modules/features/audio.nix
   ];
 
   # --- Btrfs Maintenance ---
@@ -37,15 +38,6 @@
 
   # --- Desktop Programs & Device Integration ---
   programs.kdeconnect.enable = true;
-
-  # Enable Pipewire for modern audio
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
 
   programs.nix-ld.enable = true;
 
