@@ -35,10 +35,4 @@
     brightnessctl
     pamixer
   ];
-
-  # Enable SDDM login manager with Wayland session support
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = true;
-  };
 }
