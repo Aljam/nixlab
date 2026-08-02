@@ -37,6 +37,7 @@
     nmap
     tcpdump
     duf
+    sops
   ];
 
   # Networking baseline
@@ -62,6 +63,14 @@
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 14d";
+  };
+
+  sops = {
+    # Points to your repository's encrypted secrets file (e.g., secrets/secrets.yaml)
+    defaultSopsFile = ../../secrets/secrets.yaml;
+    
+    # Use the host's SSH host key as the age decryption key
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 
   # Automatically optimize the Nix store (deduplicates identical files)
