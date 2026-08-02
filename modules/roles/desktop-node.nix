@@ -2,12 +2,12 @@
 
 {
   imports = [
-    ../modules/features/libvirt.nix
-    ../modules/features/gaming.nix
-    ../modules/features/graphics.nix
-    ../modules/features/audio.nix
-    ../modules/features/emulation.nix
-    ../modules/features/monitoring.nix
+    ../features/libvirt.nix
+    ../features/gaming.nix
+    ../features/graphics.nix
+    ../features/audio.nix
+    ../features/emulation.nix
+    ../features/monitoring.nix
   ];
 
   # --- Btrfs Maintenance ---
