@@ -40,7 +40,6 @@
     ];
   };
 
-  # 3000: Grafana | 7474: Autobrr | 9100: Node Exporter | 13378: Audiobookshelf
   networking.firewall.allowedTCPPorts = [ 9100 3000 7474 13378 ];
 
   services.zfs.autoScrub.enable = lib.mkDefault true;
