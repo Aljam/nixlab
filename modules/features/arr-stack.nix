@@ -1,8 +1,6 @@
 { config, pkgs, lib, ... }:
 
 {
-  users.groups.media = {};
-
   users.users.autobrr = {
     isSystemUser = true;
     group = "media";
