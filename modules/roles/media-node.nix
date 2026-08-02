@@ -5,6 +5,7 @@
     ../features/jellyfin.nix
     ../features/arr-stack.nix
     ../features/torrents.nix
+    ../features/vaultwarden.nix
   ];
 
   # --- Dashboard UI ---
