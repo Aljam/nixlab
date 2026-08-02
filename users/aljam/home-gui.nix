@@ -39,6 +39,10 @@
     
     # --- AMD GPU Management (Navi) ---
     corectrl
+
+    # --- dev tools ---
+    vscodium
+    jetbrains.idea-community
   ];
 
   # Kitty Terminal Configuration
