@@ -79,6 +79,9 @@
       openldap = prev.openldap.overrideAttrs (_: {
         doCheck = false;
       });
+      glances = prev.glances.overrideAttrs (_: {
+        doCheck = false;
+      });
     })
   ];
 
