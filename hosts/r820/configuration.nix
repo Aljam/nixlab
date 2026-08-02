@@ -9,7 +9,6 @@
   ];
 
   # Bootloader setup for standard non-ZFS partition layout
-  boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.loader.grub.enable = true;
