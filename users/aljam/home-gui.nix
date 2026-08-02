@@ -32,7 +32,7 @@
     mangohud
     corectrl
     vscodium
-    jetbrains.idea-community-src
+    jetbrains.idea
     unnamed-sdvx-clone
     qjackctl
     # Replaces 'stable' - has the multilib + staging patches for Sound Voltex (EAC)
