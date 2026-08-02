@@ -41,6 +41,7 @@
         ./hosts/${hostname}/configuration.nix
         ./modules/roles/common.nix
         ./users/aljam/nixos.nix
+        sops-nix.nixosModules.sops
         
         # Globally enforce Home Manager for the 'aljam' user across all hosts
         home-manager.nixosModules.home-manager
@@ -85,7 +86,6 @@
         
         extraModules = [ 
           disko.nixosModules.disko
-          inputs.sops-nix.nixosModules.sops  
         ]; 
       };
     };
