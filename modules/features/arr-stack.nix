@@ -1,12 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
-  # ============================================================================
-  # SYSTEM GROUPS & USERS
-  # ============================================================================
   users.groups.media = {};
 
-  # Dedicated system user for Autobrr
   users.users.autobrr = {
     isSystemUser = true;
     group = "media";
@@ -14,26 +10,18 @@
     createHome = true;
   };
 
-  # Declarative directory creation on the ZFS storage pool with strict permissions
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies 0770 root media -"
     "d /mnt/media/tv 0770 root media -"
     "d /mnt/media/downloads 0770 root media -"
   ];
 
-  # ============================================================================
-  # SECRETS MANAGEMENT (SOPS)
-  # ============================================================================
   sops.secrets."autobrr.env" = {
     sopsFile = ../../secrets/autobrr.enc.env;
     format = "dotenv";
     owner = "autobrr";
     group = "media";
   };
-
-  # ============================================================================
-  # CORE VIDEO & INDEXING SERVICES (THE ARR STACK)
-  # ============================================================================
 
   services.sonarr = {
     enable = true;
@@ -53,6 +41,7 @@
     enable = true;
     openFirewall = true;
   };
+  
   users.users.prowlarr = {
     isSystemUser = true;
     group = lib.mkForce "media";
@@ -63,20 +52,16 @@
     openFirewall = true;
     port = 5055;
   };
-  services.seerr.enable = true;
 
   services.bazarr = {
     enable = true;
     openFirewall = true;
   };
+  
   users.users.bazarr = {
     isSystemUser = true;
     group = lib.mkForce "media";
   };
-
-  # ============================================================================
-  # DOWNLOAD CLIENT & MANAGEMENT
-  # ============================================================================
 
   services.qbittorrent = {
     enable = true;
@@ -86,14 +71,11 @@
 
   services.recyclarr.enable = true;
 
-  # ============================================================================
-  # EXTENDED MEDIA LIBRARY (BOOKS, MUSIC, AUDIOBOOKS)
-  # ============================================================================
-
   services.readarr = {
     enable = true;
     openFirewall = true;
   };
+  
   users.users.readarr = {
     isSystemUser = true;
     group = lib.mkForce "media";
@@ -104,6 +86,7 @@
     openFirewall = true;
     dataDir = "/var/lib/lidarr";
   };
+  
   users.users.lidarr = {
     isSystemUser = true;
     group = lib.mkForce "media";
@@ -116,10 +99,6 @@
     host = "0.0.0.0";
   };
 
-  # ============================================================================
-  # AUTOMATION & RSS (AUTOBRR)
-  # ============================================================================
-
   services.autobrr = {
     enable = true;
     secretFile = config.sops.secrets."autobrr.env".path;
@@ -128,7 +107,7 @@
       host = "0.0.0.0"; 
     };
   };
-
+  
   systemd.services.autobrr.environment = {
     AUTOBRR_HOST = "0.0.0.0"; 
   };
