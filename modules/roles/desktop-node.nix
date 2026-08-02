@@ -4,6 +4,7 @@
   imports = [
     ../modules/features/libvirt.nix
     ../modules/features/gaming.nix
+    ../modules/features/graphics.nix
   ];
 
   # --- Btrfs Maintenance ---
