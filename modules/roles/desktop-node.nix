@@ -8,6 +8,7 @@
     ../features/audio.nix
     ../features/emulation.nix
     ../features/monitoring.nix
+    ../features/hyprland.nix
   ];
 
   # --- Btrfs Maintenance ---
