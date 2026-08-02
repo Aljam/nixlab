@@ -63,7 +63,7 @@
     openFirewall = true;
     port = 5055;
   };
-  services.seerr.enable = tru;
+  services.seerr.enable = true;
 
   services.bazarr = {
     enable = true;
