@@ -31,8 +31,6 @@
     # Nintendo Family
     dolphin-emu # GameCube / Wii: The legendary emulator. 
     cemu        # Wii U: Now fully native to Linux, amazing for Breath of the Wild/Mario Kart 8.
-
-    emulationstation-de  # The best UI for massive ROM libraries
   ];
 
   services.udev.packages = [ pkgs.dolphin-emu ]; # Grants Dolphin raw access to GC controller adapters
