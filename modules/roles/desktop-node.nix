@@ -56,9 +56,12 @@
     extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
   };
 
+  programs.firejail.enable = true;
+
   # Standard Desktop Apps
   environment.systemPackages = with pkgs; [
     librewolf
+    keepassxc
     git
     kitty
     distrobox
