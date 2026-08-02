@@ -1,5 +1,3 @@
-Nix
-
 { config, pkgs, lib, ... }:
 
 {
