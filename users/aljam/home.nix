@@ -16,23 +16,11 @@
     tldr
     fd
     lazygit
-
-    # Search & Navigation
-    ripgrep    # Blazing fast replacement for grep ('rg')
-    fd         # Simple, fast alternative to 'find'
-    jq         # Command-line JSON processor (essential for API debugging)
-    
-    # Git & Workflow
-    lazygit    # Stunning terminal UI for Git commands
-    fzf        # Command-line fuzzy finder (pairs great with zoxide & fish)
-  
-    # System Inspection & Monitoring
-    btop       # Gorgeous resource monitor for CPU, memory, disks, and network
-    ncdu       # NCurses disk usage analyzer (crucial for finding what's eating your ZFS space)
-    fastfetch  # Modern replacement for neofetch to show system specs on shell boot
+    btop
+    ncdu
+    fastfetch
   ];
 
-  # Fish Shell Configuration
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
@@ -41,11 +29,10 @@
     shellAliases = {
       ls = "eza --icons";
       cat = "bat";
-      ssh = "kitty +kitten ssh"; 
+      ssh = "kitty +kitten ssh";
     };
   };
 
-  # Git Configuration
   programs.git = {
     enable = true;
     settings = {
@@ -54,24 +41,16 @@
         email = "aljam@live.ca";
         signingkey = "~/.ssh/id_ed25519.pub";
       };
-
-      commit = {
-        gpgsign = true;
-      };
-
-      gpg = {
-        format = "ssh";
-      };
+      commit.gpgsign = true;
+      gpg.format = "ssh";
     };
   };
 
-  # Smart directory jumping
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
   };
 
-  # Automatic Nix development environments
   programs.direnv = {
     enable = true;
     nix-direnv.enable = true;
