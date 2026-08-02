@@ -3,6 +3,7 @@
 {
   imports = [
     ../modules/features/libvirt.nix
+    ../modules/features/gaming.nix
   ];
 
   # --- Btrfs Maintenance ---
