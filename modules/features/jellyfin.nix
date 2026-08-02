@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  users.groups.media = {};
-
   services.jellyfin = {
     enable = true;
     openFirewall = true;
