@@ -43,6 +43,18 @@
     # --- dev tools ---
     vscodium
     jetbrains.idea-community
+
+    # --- Emulation & Arcade ---
+    fightcade
+    fbneo # The backend emulator Fightcade uses
+
+    # --- Rhythm Games ---
+    unnamed-sdvx-clone # Native Linux Sound Voltex (USC)
+    qjackctl # GUI to manage low-latency audio for rhythm games
+
+    # --- Upgraded Wine for Sound Voltex (EAC) ---
+    wineWowPackages.stagingFull # Replaces 'stable' - has the multilib + staging patches
+    winetricks
   ];
 
   # Kitty Terminal Configuration
