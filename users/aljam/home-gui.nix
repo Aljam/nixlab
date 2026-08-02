@@ -45,7 +45,6 @@
     jetbrains.idea-oss
 
     # --- Emulation & Arcade ---
-    fightcade
     fbneo # The backend emulator Fightcade uses
 
     # --- Rhythm Games ---
