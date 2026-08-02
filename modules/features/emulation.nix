@@ -19,5 +19,19 @@
     # --- Game Development & Asset Tools ---
     rgbds      # Rednex Game Boy Development System (Assembler/Linker for Game Boy).
     tiled      # A general-purpose tile map editor used heavily in GBA/Pokémon ROM hacking.
+
+    # --- 3D Console Emulators ---
+    
+    # PlayStation Family
+    duckstation # PS1: The undisputed king of modern PS1 emulation (upscaling, PGXP anti-jitter).
+    pcsx2       # PS2: The gold standard. Runs perfectly on Wayland/X11.
+    rpcs3       # PS3: Incredibly CPU heavy, but your 5950X will completely destroy it.
+    ppsspp      # PSP: Flawless upscaling and performance.
+
+    # Nintendo Family
+    dolphin-emu # GameCube / Wii: The legendary emulator. 
+    cemu        # Wii U: Now fully native to Linux, amazing for Breath of the Wild/Mario Kart 8.
   ];
+
+  services.udev.packages = [ pkgs.dolphin-emu ]; # Grants Dolphin raw access to GC controller adapters
 }
