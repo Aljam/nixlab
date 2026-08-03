@@ -40,7 +40,7 @@
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 9100 3000 7474 13378 ];
+  networking.firewall.allowedTCPPorts = [ 9100 3000 ];
 
   services.zfs.autoScrub.enable = lib.mkDefault true;
   services.zfs.autoScrub.interval = lib.mkDefault "weekly";
