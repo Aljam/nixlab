@@ -19,30 +19,13 @@
     btop
     ncdu
     fastfetch
+    gh
   ];
 
   programs.fish = {
     enable = true;
     interactiveShellInit = ''
-      set -g fish_greeting "
-                      .@hpp
-                      "KKP
-            ,      ,+;n@nnw,    ,,
-         ,||ppKN|||p##KKNpp|LKp!L@|IN,
-       ;L##KKPL|$#KKM"````"TE|IKm`"K@LKp
-     ||#KKM` ||#KKP .*||hw,  T|I#N   T||Km
-    ||$#K`   |I#KP | |||$##N  @I#KH   ||$#N
-    '|I8N    |I#Kb Y@@p##KBKP |I#KN  ,@$#KM
-      TPLKm, Y|I8N  "KKKKKK* ||##KL,@$#KKP
-        "Kp@bp$p@LKp,     .||p##KH@p#KK*
-     U@#Kp`*KKK*Tb@@I#m |.{#KKKM*KKKPT@#Kp
-      `*"         `PK#K HI#KM`        `**`
-                   IK#K $K#B
-           ,Kpp    I#BB IhKKp   p#p,
-           "KKKKmp##KKK TKKKKp##KKKM
-             `TKKKKKKP`  `*KKKKKKM`
-
-"
+      set -g fish_greeting ""
     '';
     shellAliases = {
       ls = "eza --icons";
