@@ -1,20 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
-  # Workaround for openldap upstream test failure (test017-syncreplication-refresh)
-  nixpkgs.overlays = [
-    (final: prev: {
-      openldap = prev.openldap.overrideAttrs (_: {
-        doCheck = false;
-      });
-      glances = prev.glances.overrideAttrs (_: {
-        doCheck = false;
-      });
-    })
-  ];
-
   nixpkgs.config.allowUnfree = true;
-  system.stateVersion = lib.mkDefault "23.11";
+  system.stateVersion = lib.mkDefault "26.05";
 
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
