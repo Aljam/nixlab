@@ -15,6 +15,8 @@
       "credentials=/etc/nixos/smb-secrets"
       "uid=1000"
       "gid=100"
+      "file_mode=0664"
+      "dir_mode=0775"
     ];
   };
 }
