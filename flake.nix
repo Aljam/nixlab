@@ -6,6 +6,10 @@
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+
+    mailserver = {
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-unstable";
+    };
     
     sops-nix = {
       url = "github:Mic92/sops-nix";
@@ -25,7 +29,7 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, disko, sops-nix, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, disko, sops-nix, mailserver, ... }@inputs:
   let
     system = "x86_64-linux";
     
