@@ -16,6 +16,7 @@
   hardware.enableRedistributableFirmware = true;
   
   boot.zfs.forceImportRoot = false;
+  boot.zfs.zfs_arc_max = 68719476736;
 
   networking.hostName = "r730xd";
   networking.hostId = "d2083fdc"; # Required for ZFS
