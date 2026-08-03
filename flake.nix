@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11"; # <--- Stable Input
+    
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     
     sops-nix = {
@@ -21,18 +23,22 @@
     };
   };
 
-  environment.systemPackages = with pkgs; [
-    # Other packages...
-    pkgs-stable.lutris 
-  ];
+  # NOTE: environment.systemPackages has been REMOVED from here!
 
-  outputs = { self, nixpkgs, home-manager, disko, sops-nix, ... }@inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, disko, sops-nix, ... }@inputs:
   let
     system = "x86_64-linux";
     
+    pkgs-stable = import nixpkgs-stable {
+      inherit system;
+      config.allowUnfree = true;
+    };
+    
     mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = { inherit inputs; };
+      
+      specialArgs = { inherit inputs pkgs-stable; }; 
+      
       modules = [
         ./hosts/${hostname}/configuration.nix
         ./modules/roles/common.nix
@@ -45,6 +51,9 @@
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
           home-manager.users.aljam = import ./users/aljam/home.nix;
+          
+          # 3. Pass pkgs-stable down to Home Manager as well!
+          home-manager.extraSpecialArgs = { inherit inputs pkgs-stable; };
         }
       ] ++ extraModules;
     };
