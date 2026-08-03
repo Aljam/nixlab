@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11"; # <--- Stable Input
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
     
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     
@@ -22,8 +22,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-
-  # NOTE: environment.systemPackages has been REMOVED from here!
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, disko, sops-nix, ... }@inputs:
   let
@@ -52,39 +50,44 @@
           home-manager.backupFileExtension = "backup";
           home-manager.users.aljam = import ./users/aljam/home.nix;
           
-          # 3. Pass pkgs-stable down to Home Manager as well!
           home-manager.extraSpecialArgs = { inherit inputs pkgs-stable; };
         }
       ] ++ extraModules;
     };
+
+    desktopGUI = { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ]; };
+    serverDisko = disko.nixosModules.disko;
+
   in {
     nixosConfigurations = {
+      
       navi = mkHost { 
         hostname = "navi";
-        extraModules = [
-          { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ]; }
-        ]; 
+        extraModules = [ desktopGUI ]; 
       };
       
       oryx = mkHost { 
         hostname = "oryx";
-        extraModules = [
-          { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ]; }
-          inputs.nixos-hardware.nixosModules.system76
+        extraModules = [ 
+          desktopGUI 
+          inputs.nixos-hardware.nixosModules.system76 
         ];
       };
       
-      r820 = mkHost { hostname = "r820"; };
+      r820 = mkHost { 
+        hostname = "r820"; 
+      };
       
       r730 = mkHost { 
         hostname = "r730";
-        extraModules = [ disko.nixosModules.disko ]; 
+        extraModules = [ serverDisko ]; 
       };
       
       r730xd = mkHost { 
         hostname = "r730xd";
-        extraModules = [ disko.nixosModules.disko ];
+        extraModules = [ serverDisko ];
       };
+      
     };
   };
 }
