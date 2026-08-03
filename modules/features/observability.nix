@@ -1,22 +1,73 @@
-{ config, pkgs, domains, ... }: # <-- Added 'domains' here
+{ config, pkgs, domains, ... }:
 
 {
+  # Load the SMTP password securely via SOPS
+  sops.secrets."alertmanager.env" = {
+    sopsFile = ../../secrets/alertmanager.enc.env;
+    format = "dotenv";
+    # Notice we don't need owner/group here! The NixOS wrapper handles it.
+  };
+
+  # Enable and Configure Alertmanager for Email
+  services.prometheus.alertmanager = {
+    enable = true;
+    port = 9093;
+    
+    # Securely loads the secret and substitutes $SMTP_PASSWORD below
+    environmentFile = config.sops.secrets."alertmanager.env".path;
+    
+    configuration = {
+      global = {
+        # Replace with your SMTP provider (e.g., smtp.gmail.com:587)
+        smtp_smarthost = "smtp.mail-provider.com:587"; 
+        smtp_from = "alerts@${domains.primary}";
+        smtp_auth_username = "your-email@example.com";
+        smtp_auth_password = "$SMTP_PASSWORD"; 
+        smtp_require_tls = true;
+      };
+      
+      route = {
+        group_by = [ "alertname" "instance" ];
+        group_wait = "30s";
+        group_interval = "5m";
+        repeat_interval = "4h";
+        receiver = "email";
+      };
+      
+      receivers = [
+        {
+          name = "email";
+          email_configs = [
+            {
+              # The email address that will receive the alerts
+              to = "your-personal-email@example.com";
+              send_resolved = true;
+              headers = {
+                Subject = "[{{ .Status | toUpper }}] {{ .GroupLabels.alertname }} (NixOS Fleet)";
+              };
+            }
+          ];
+        }
+      ];
+    };
+  };
+
   services.prometheus = {
     enable = true;
     port = 9090;
+
+    alertmanagers = [
+      {
+        scheme = "http";
+        static_configs = [ { targets = [ "127.0.0.1:9093" ]; } ];
+      }
+    ];
     
     scrapeConfigs = [
       {
         job_name = "nixos-local";
-        static_configs = [
-          { targets = [ "127.0.0.1:9100" ]; }
-        ];
+        static_configs = [ { targets = [ "127.0.0.1:9100" ]; } ];
       }
-      # If you want to scrape other servers in your fleet, add their IPs here:
-      # {
-      #   job_name = "r730-compute";
-      #   static_configs = [ { targets = [ "192.168.1.X:9100" ]; } ];
-      # }
     ];
 
     rules = [
@@ -24,7 +75,6 @@
         groups:
           - name: hardware_alerts
             rules:
-              # Alert 1: If a server drops off the network for 5 minutes
               - alert: InstanceDown
                 expr: up == 0
                 for: 5m
@@ -33,7 +83,6 @@
                 annotations:
                   summary: "Host {{ $labels.instance }} is unreachable."
 
-              # Alert 2: If CPU load stays above 85% for 10 minutes
               - alert: HighCpuLoad
                 expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
                 for: 10m
@@ -42,7 +91,6 @@
                 annotations:
                   summary: "CPU load on {{ $labels.instance }} has been > 85% for 10 minutes."
 
-              # Alert 3: If your massive ZFS pool hits 85% capacity
               - alert: ZfsPoolCapacityWarning
                 expr: zfs_pool_capacity > 85
                 for: 5m
@@ -58,7 +106,7 @@
     node = {
       enable = true;
       port = 9100;
-      enabledCollectors = [ "systemd" "zfs" ]; # Expose ZFS metrics for the alerts
+      enabledCollectors = [ "systemd" "zfs" ]; 
     };
   };
 
@@ -73,7 +121,6 @@
         serve_from_sub_path = true;
       };
       security = {
-        # Note: Since you use sops-nix, you might eventually want to move this secret key to secrets.yaml!
         secret_key = "$__file{${pkgs.writeText "grafana-secret-key" "SW2YcwTIb9zpOOhoPsMm"}}";
       };
     };
@@ -84,13 +131,12 @@
           name = "Prometheus";
           type = "prometheus";
           access = "proxy";
-          url = "http://127.0.0.1:9090"; # Points to your local Prometheus database
+          url = "http://127.0.0.1:9090"; 
           isDefault = true;
         }
       ];
     };
   };
 
-  # Added 9100 so the scraper isn't blocked by the firewall
-  networking.firewall.allowedTCPPorts = [ 9090 3000 9100 ];
+  networking.firewall.allowedTCPPorts = [ 9090 3000 9100 9093 ];
 }
