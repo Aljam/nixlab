@@ -1,75 +1,54 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  imports = [
-    ../features/libvirt.nix
-    ../features/gaming.nix
-    ../features/graphics.nix
-    ../features/audio.nix
-    ../features/emulation.nix
-    ../features/monitoring.nix
-    ../features/hyprland.nix
-    ../features/flatpak.nix
-    ../features/networking-tools.nix
-    ../features/nas-mount.nix
-  ];
+  nixpkgs.config.allowUnfree = true;
+  time.timeZone = "America/Toronto";
+  i18n.defaultLocale = "en_CA.UTF-8";
 
-  # --- Btrfs Maintenance ---
-  #  services.btrfs.autoScrub = {
-  #    enable = true;
-  #    interval = "monthly";
-  #    fileSystems = [ "/" "/mnt/your-game-drives" ]; # Add your specific mount points here
-  #  };
-  
-  
-  # --- Shared GUI Bootloader (GRUB) ---
-  boot.loader.timeout = 5;
-  boot.loader.systemd-boot.enable = false;
-  boot.loader.efi.canTouchEfiVariables = true;
-  
-  boot.loader.grub.enable = true;
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.efiInstallAsRemovable = false;
-  boot.loader.grub.device = "nodev";
-  boot.loader.grub.configurationLimit = 10;
-  boot.loader.grub.timeoutStyle = "menu";
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  security.sudo.enable = true;
 
-  # Enable NetworkManager
-  networking.networkmanager.enable = true;
-
-  ### GUI (KDE Plasma)
-  services.xserver.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
-
-  # --- Desktop Programs & Device Integration ---
-  programs.kdeconnect.enable = true;
-
-  programs.nix-ld.enable = true;
-
-  virtualisation.podman = {
-    enable = true;
-    dockerCompat = true; # Allows you to type 'docker' in the terminal
-  };
-
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
-
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-hyprland pkgs.xdg-desktop-portal-gtk ];
-  };
-
-  programs.firejail.enable = true;
-
-  # Standard Desktop Apps
   environment.systemPackages = with pkgs; [
-    librewolf
-    keepassxc
+    home-manager
     git
-    kitty
-    distrobox
+    htop
+    wget
+    curl
+    yt-dlp
+    ffmpeg
+    vim
+    cifs-utils
+    kitty.terminfo # Fixes missing terminfo when connecting via SSH from Kitty
+    lm_sensors
+    iotop
+    nvd
+    nix-tree
+    iperf3
+    nmap
+    tcpdump
+    duf
+    sops
   ];
+
+  services.tailscale.enable = true;
+
+  services.openssh = {
+    enable = true;
+    settings.PasswordAuthentication = false;
+    settings.KbdInteractiveAuthentication = false;
+    settings.PermitRootLogin = "no";
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 14d";
+  };
+
+  sops = {
+    defaultSopsFile = ../../secrets/secrets.yaml;
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  };
+
+  nix.optimise.automatic = true;
 }
