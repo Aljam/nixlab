@@ -6,7 +6,7 @@
 
   # --- NAS CIFS Mount ---
   fileSystems."/run/media/aljam/share" = {
-    device = "//192.168.2.12/share";
+    device = "//192.168.2.10/share";
     fsType = "cifs";
     options = let
       automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
