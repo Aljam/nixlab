@@ -103,4 +103,6 @@
   systemd.services.autobrr.environment = {
     AUTOBRR_HOST = "0.0.0.0"; 
   };
+
+  networking.firewall.allowedTCPPorts = [ 7474 13378 ];
 }
