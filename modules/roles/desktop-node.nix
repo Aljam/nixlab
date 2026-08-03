@@ -11,6 +11,7 @@
     ../features/hyprland.nix
     ../features/flatpak.nix
     ../features/networking-tools.nix
+    ../features/nas-mount.nix
   ];
 
   # --- Btrfs Maintenance ---
