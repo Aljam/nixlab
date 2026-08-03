@@ -36,4 +36,6 @@
   ];
 
   hardware.dell-fan-control.enable = true;
+
+  system.stateVersion = lib.mkDefault "26.05";
 }
