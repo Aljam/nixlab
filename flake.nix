@@ -33,11 +33,25 @@
       inherit system;
       config.allowUnfree = true;
     };
+
+    # Centralized Fleet Domains
+    domains = {
+      primary    = "derezzed.info";       # Media server & stats
+      fuwa       = "fuwa.space";
+      cybal      = "cybal.org";
+      netrunner  = "netrunner.dev";
+      
+      # Glowrunner variants
+      glow_net   = "glowrunner.network";
+      glow_dev   = "glowrunner.dev";
+      glow_xyz   = "glowrunner.xyz";
+    };
     
     mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
       inherit system;
       
-      specialArgs = { inherit inputs pkgs-stable hostname; }; 
+      # Added 'domains' here to pass to standard NixOS modules
+      specialArgs = { inherit inputs pkgs-stable hostname domains; }; 
       
       modules = [
         ./hosts/${hostname}/configuration.nix
@@ -52,7 +66,8 @@
           home-manager.backupFileExtension = "backup";
           home-manager.users.aljam = import ./users/aljam/home.nix;
           
-          home-manager.extraSpecialArgs = { inherit inputs pkgs-stable; };
+          # Added 'domains' here so your Home Manager configurations can use them too
+          home-manager.extraSpecialArgs = { inherit inputs pkgs-stable domains; };
         }
       ] ++ extraModules;
     };
