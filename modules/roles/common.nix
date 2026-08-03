@@ -2,8 +2,6 @@
 
 {
   nixpkgs.config.allowUnfree = true;
-  system.stateVersion = lib.mkDefault "26.05";
-
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
 
