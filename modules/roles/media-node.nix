@@ -8,7 +8,7 @@
     ../features/vaultwarden.nix
   ];
 
-  users.groups.media = {}
+  users.groups.media = {};
 
   services.homepage-dashboard = {
     enable = true;
