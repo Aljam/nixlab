@@ -48,4 +48,6 @@
   # Remote builder configuration
   nix.settings.trusted-users = [ "root" "aljam" ];
   nix.settings.allowed-users = [ "@users" ];
+
+  system.stateVersion = lib.mkDefault "26.05";
 }
