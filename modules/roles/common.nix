@@ -32,11 +32,6 @@
 
   services.tailscale.enable = true;
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
-
   services.openssh = {
     enable = true;
     settings.PasswordAuthentication = false;
