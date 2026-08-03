@@ -21,6 +21,11 @@
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    # Other packages...
+    pkgs-stable.lutris 
+  ];
+
   outputs = { self, nixpkgs, home-manager, disko, sops-nix, ... }@inputs:
   let
     system = "x86_64-linux";
