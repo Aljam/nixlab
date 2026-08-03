@@ -6,6 +6,7 @@
     ../../modules/hardware/dell-poweredge.nix
     ../../modules/roles/server-core.nix 
     ../../modules/features/libvirt.nix
+    ../../modules/roles/mail-node.nix
   ];
 
   # Bootloader setup for standard non-ZFS partition layout
