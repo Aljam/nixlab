@@ -8,4 +8,6 @@
   ];
 
   networking.hostName = "oryx";
+
+  system.stateVersion = lib.mkDefault "26.05";
 }
