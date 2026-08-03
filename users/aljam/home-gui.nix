@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-stable, ... }:
 
 {
   xdg.enable = true;
@@ -26,7 +26,7 @@
     hunspell
     hunspellDicts.en_US
     hyphenDicts.en_US
-    lutris
+    pkgs-stable.lutris
     heroic
     protonup-qt
     mangohud
