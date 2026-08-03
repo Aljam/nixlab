@@ -8,6 +8,7 @@
     ../../modules/roles/server-core.nix
     ../../modules/roles/storage-node.nix
     ../../modules/features/nvidia-headless.nix
+    ../../modules/roles/ai-node.nix
   ];
 
   networking.hostName = "r730";
