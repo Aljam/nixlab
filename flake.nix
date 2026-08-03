@@ -37,7 +37,7 @@
     mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
       inherit system;
       
-      specialArgs = { inherit inputs pkgs-stable; }; 
+      specialArgs = { inherit inputs pkgs-stable hostname; }; 
       
       modules = [
         ./hosts/${hostname}/configuration.nix
@@ -59,19 +59,21 @@
 
     desktopGUI = { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ]; };
     serverDisko = disko.nixosModules.disko;
+    flatpakModule = inputs.nix-flatpak.nixosModules.nix-flatpak;
 
   in {
     nixosConfigurations = {
       
       navi = mkHost { 
         hostname = "navi";
-        extraModules = [ desktopGUI ]; 
+        extraModules = [ desktopGUI flatpakModule ]; 
       };
       
       oryx = mkHost { 
         hostname = "oryx";
         extraModules = [ 
           desktopGUI 
+          flatpakModule 
           inputs.nixos-hardware.nixosModules.system76 
         ];
       };
