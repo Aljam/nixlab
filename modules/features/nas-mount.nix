@@ -5,7 +5,7 @@
   environment.systemPackages = [ pkgs.cifs-utils ];
 
   # --- NAS CIFS Mount ---
-  fileSystems."/run/media/aljam/share" = {
+  fileSystems."/mnt/share" = {
     device = "//192.168.2.10/share";
     fsType = "cifs";
     options = let
