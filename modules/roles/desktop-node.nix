@@ -18,7 +18,7 @@
   
   services.tailscale = {
     enable = true;
-    useRoutingFeatures = "client"; # or "both" if advertising routes, but keep local safe
+    useRoutingFeatures = "both";
     extraUpFlags = [
       "--accept-routes=true"
     ];
