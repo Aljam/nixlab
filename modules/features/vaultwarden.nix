@@ -7,9 +7,7 @@
     config = {
       ROCKET_PORT = 8222;
       ROCKET_ADDRESS = "0.0.0.0";
-
-      SIGNUPS_ALLOWED = true; # SET TO FALSE AFTER ACCOUNT CREATION
-
+      SIGNUPS_ALLOWED = false; # SET TO FALSE AFTER ACCOUNT CREATION
       DOMAIN = "https://vault.${domains.primary}";
     };
   };
