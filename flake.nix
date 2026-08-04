@@ -38,6 +38,7 @@
 
       pkgs-stable = import nixpkgs-stable {
         inherit system;
+        config.allowUnfree = true;
       };
 
       domains = {
