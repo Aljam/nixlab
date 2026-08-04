@@ -26,14 +26,6 @@
     }
   ];
 
-
-
-
-
-  
-    9100  # Prometheus Node Exporter
-  ];
-
   boot.loader.systemd-boot.enable = false;
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
