@@ -2,6 +2,8 @@
 
 {
   nixpkgs.config.allowUnfree = true;
+  hardware.enableRedistributableFirmware = true;
+
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
 
