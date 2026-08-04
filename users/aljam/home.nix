@@ -1,7 +1,8 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./modules/core/git.nix ];
+  imports = [ ./modules/core/git.nix
+              ./modules/core/shell.nix ];
               
   home.enableNixpkgsReleaseCheck = false;
   home.username = "aljam";
