@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  sops.secrets.restic-password = {};
+
   # Ensure restic is available fleet-wide on nodes that include this module
   environment.systemPackages = [ pkgs.restic ];
 
