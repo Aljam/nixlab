@@ -3,8 +3,6 @@
 {
   xdg.enable = true;
 
-  networking.networkmanager.enable = true;
-
   home.packages = with pkgs; [
     ungoogled-chromium
     kdePackages.kate
