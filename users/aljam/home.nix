@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  imports = [ ./modules/core/git.nix ];
+              
   home.enableNixpkgsReleaseCheck = false;
   home.username = "aljam";
   home.homeDirectory = "/home/aljam";
@@ -33,19 +35,6 @@
       ls = "eza --icons";
       cat = "bat";
       ssh = "kitty +kitten ssh";
-    };
-  };
-
-  programs.git = {
-    enable = true;
-    settings = {
-      user = {
-        name = "Aljam";
-        email = "aljam@live.ca";
-        signingkey = "~/.ssh/id_ed25519.pub";
-      };
-      commit.gpgsign = true;
-      gpg.format = "ssh";
     };
   };
 
