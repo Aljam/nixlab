@@ -18,7 +18,11 @@
 
     # Apply templates to your ZFS pools (Adjust pool/dataset names to match yours)
     datasets = {
-      "pool/media" = {
+      "mediapool/media" = {
+        useTemplate = [ "storage" ];
+        recursive = true;
+      };
+      "mediapool/root" = {
         useTemplate = [ "storage" ];
         recursive = true;
       };
