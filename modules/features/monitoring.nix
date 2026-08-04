@@ -19,7 +19,7 @@
     enable = true;
     openFirewall = true;
     port = 9100;
-    enabledCollectors = [
+    enabledCollectors = lib.mkForce [
       "systemd"
       "processes"
       "cpu"
