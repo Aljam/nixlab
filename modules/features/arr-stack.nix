@@ -23,21 +23,18 @@
 
   services.sonarr = {
     enable = true;
-    openFirewall = true;
     user = "sonarr";
     group = "media";
   };
 
   services.radarr = {
     enable = true;
-    openFirewall = true;
     user = "radarr";
     group = "media";
   };
 
   services.prowlarr = {
     enable = true;
-    openFirewall = true;
   };
   
   users.users.prowlarr = {
@@ -47,13 +44,11 @@
 
   services.seerr = {
     enable = true;
-    openFirewall = true;
     port = 5055;
   };
 
   services.bazarr = {
     enable = true;
-    openFirewall = true;
   };
   
   users.users.bazarr = {
@@ -65,7 +60,6 @@
 
   services.readarr = {
     enable = true;
-    openFirewall = true;
   };
   
   users.users.readarr = {
@@ -75,7 +69,6 @@
 
   services.lidarr = {
     enable = true;
-    openFirewall = true;
     dataDir = "/var/lib/lidarr";
   };
   
@@ -86,7 +79,6 @@
 
   services.audiobookshelf = {
     enable = true;
-    openFirewall = true;
     port = 13378;
     host = "0.0.0.0";
   };
