@@ -26,10 +26,7 @@
     }
   ];
 
-  networking.firewall.allowedTCPPorts = [
-    22    # SSH
-    80    # HTTP
-    443   # HTTPS
+
     5055  # Seerr
     6767  # Bazarr
     7474  # Autobrr
