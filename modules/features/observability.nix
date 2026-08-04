@@ -18,7 +18,7 @@
         smtp_smarthost = "smtp.mail-provider.com:587"; 
         smtp_from = "alerts@${domains.primary}";
         smtp_auth_username = "your-email@example.com";
-        smtp_auth_password = config.sops.secrets.alertmanager_smtp_password.path;; 
+        smtp_auth_password = config.sops.secrets.alertmanager_smtp_password.path; 
         smtp_require_tls = true;
       };
       
