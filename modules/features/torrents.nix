@@ -21,7 +21,5 @@
     ];
   };
 
-    
   networking.firewall.allowedTCPPorts = [ 8080 ];  # qBittorrent
-
 }
