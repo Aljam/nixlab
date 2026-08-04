@@ -9,6 +9,7 @@
 
     mailserver = {
       url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
     
     sops-nix = {
