@@ -11,23 +11,6 @@
               ./modules/core/nvim.nix
   ];
 
-  # Universal CLI & Dev Tools (Safe for Servers & Desktops)
-  home.packages = with pkgs; [
-    bat
-    eza
-    fzf
-    ripgrep
-    jq
-    tldr
-    fd
-    lazygit
-    btop
-    ncdu
-    fastfetch
-    gh
-    sops
-  ];
-
   programs.zoxide = {
     enable = true;
     enableFishIntegration = true;
