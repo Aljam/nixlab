@@ -36,7 +36,6 @@
     
     pkgs-stable = import nixpkgs-stable {
       inherit system;
-      config.allowUnfree = true;
     };
 
     # Centralized Fleet Domains
