@@ -14,4 +14,20 @@
     iotop
     sysstat
   ];
+
+ services.prometheus.exporters.node = {
+   enable = true;
+   port = 9100;
+   enabledCollectors = [
+     "systemd"
+     "processes"
+     "cpu"
+     "diskstats"
+     "filesystem"
+     "netdev"
+     "zfs"
+     "hwmon"
+     "nvme"
+   ];
+ };
 }
