@@ -9,6 +9,9 @@
   networking.defaultGateway = "${subnets.lan}.1";
   networking.nameservers = [ "${subnets.lan}.1" ];
 
+  networking.networkmanager.enable = false;
+  networking.useDHCP = false;
+
   environment.systemPackages = with pkgs; [
     smartmontools
     tmux
