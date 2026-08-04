@@ -4,7 +4,6 @@
   # --- Virtualisation & KVM ---
   virtualisation.libvirtd.enable = true;
   virtualisation.libvirtd.qemu.swtpm.enable = true;
-  virtualisation.spiceUSBRedirection.enable = true;
 
   virtualisation.libvirtd.qemu.package = pkgs.qemu_kvm;
   # Ensure it doesn't force conflicting network rules if you manage them elsewhere
