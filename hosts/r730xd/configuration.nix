@@ -30,7 +30,7 @@
   ];
 
   networking.defaultGateway = "192.168.1.1";
-  networking.nameservers = [ "192.168.1.1" "1.1.1.1" ];
+  networking.nameservers = [ "192.168.1.1" ];
 
   networking.firewall.allowedTCPPorts = [
     8096  # Jellyfin
