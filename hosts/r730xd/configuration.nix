@@ -32,4 +32,9 @@
   networking.nameservers = [ "192.168.1.1" "1.1.1.1" ];
 
   system.stateVersion = lib.mkDefault "26.05";
+
+  boot.loader.systemd-boot.enable = false;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.device = "nodev";
 }
