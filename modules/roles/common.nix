@@ -1,6 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
+  nixpkgs.config.allowUnfree = true;
   hardware.enableRedistributableFirmware = true;
 
   time.timeZone = "America/Toronto";
