@@ -13,5 +13,6 @@
     ../../modules/features/libvirt.nix
     ../../modules/features/flatpak.nix
     ../../modules/features/remote-builder.nix
+    ../../modules/features/restic-client.nix
   ];
 }
