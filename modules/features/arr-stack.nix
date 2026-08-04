@@ -96,4 +96,17 @@
       host = "0.0.0.0";
     };
   };
+
+
+  networking.firewall.allowedTCPPorts = [
+    5055  # Seerr
+    6767  # Bazarr
+    7474  # Autobrr
+    7878  # Radarr
+    8686  # Lidarr
+    8787  # Readarr
+    8989  # Sonarr
+    9696  # Prowlarr
+    13378 # Audiobookshelf
+  ];
 }
