@@ -2,6 +2,7 @@
 
 {
   sops.secrets.alertmanager-password = {};
+  sops.defaultSopsFile = ../../../secrets/secrets.yaml
 
   # Enable and Configure Alertmanager for Email
   services.prometheus.alertmanager = {
