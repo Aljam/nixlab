@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, domains, ... }:
 
 {
   services.vaultwarden = {
@@ -10,7 +10,7 @@
 
       SIGNUPS_ALLOWED = true; # SET TO FALSE AFTER ACCOUNT CREATION
 
-      DOMAIN = "https://vault.derezzed.info";
+      DOMAIN = "https://vault.${domains.primary}";
     };
   };
 }
