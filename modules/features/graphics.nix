@@ -17,4 +17,6 @@
 
   # Add KDE Plasma so SDDM detects the desktop session files
   services.desktopManager.plasma6.enable = true;
+
+  services.xserver.enable = true;
 }
