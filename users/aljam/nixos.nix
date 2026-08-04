@@ -3,6 +3,8 @@
 {
   programs.fish.enable = true;
 
+  nixpkgs.config.allowUnfree = true;
+
   users.users.aljam = {
     isNormalUser = true;
     openssh.authorizedKeys.keys = [
