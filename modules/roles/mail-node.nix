@@ -32,7 +32,8 @@
 
     # SENDGRID RELAY (Bypasses Bell's Port 25 Block)
     indexSmarthost = true;
-    relayHosts = [
+    
+    relay = [
       {
         host = "smtp.sendgrid.net";
         port = 587; 
