@@ -21,6 +21,7 @@
     ncdu
     fastfetch
     gh
+    sops
   ];
 
   programs.fish = {
