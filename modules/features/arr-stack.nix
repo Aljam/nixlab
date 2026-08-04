@@ -1,6 +1,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  sops.defaultSopsFile = ../../../secrets/secrets.yaml;
+
   users.users.autobrr = {
     isSystemUser = true;
     group = "media";
