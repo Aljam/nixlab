@@ -1,8 +1,6 @@
 { config, pkgs, lib, ... }:
 
 {
-  nixpkgs.config.allowUnfree = true;
-
   programs.gamemode.enable = true;
   
   programs.steam = {
