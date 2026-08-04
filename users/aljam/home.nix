@@ -1,8 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  nixpkgs.config.allowUnfree = true;
-
   home.enableNixpkgsReleaseCheck = false;
   home.username = "aljam";
   home.homeDirectory = "/home/aljam";
