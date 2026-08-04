@@ -1,6 +1,7 @@
 { config, pkgs, domains, ... }:
 
 {
+  sops.secrets.alertmanager_smtp_password = {};
   sops.defaultSopsFile = ../../../secrets/secrets.yaml;
 
   # Enable and Configure Alertmanager for Email
@@ -9,7 +10,7 @@
     port = 9093;
     
     # Securely loads the secret and substitutes $SMTP_PASSWORD below
-    environmentFile = config.sops.secrets.alertmanager_smtp_password.path;
+    environmentFile = config.sops.secrets.alertmanager_smtp_password;
     
     configuration = {
       global = {
@@ -17,7 +18,7 @@
         smtp_smarthost = "smtp.mail-provider.com:587"; 
         smtp_from = "alerts@${domains.primary}";
         smtp_auth_username = "your-email@example.com";
-        smtp_auth_password = "$SMTP_PASSWORD"; 
+        smtp_auth_password = config.sops.secrets.alertmanager_smtp_password.path;; 
         smtp_require_tls = true;
       };
       
