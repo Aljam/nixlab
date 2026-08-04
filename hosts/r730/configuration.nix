@@ -28,10 +28,6 @@
   environment.systemPackages = with pkgs; [
     cudatoolkit
     linuxPackages.nvidia_x11
-    pciutils
-    lm_sensors
-    tmux
-    htop
   ];
 
   hardware.dell-fan-control.enable = true;
