@@ -5,6 +5,12 @@
     ../../modules/features/audio.nix
     ../../modules/features/graphics.nix
     ../../modules/features/hyprland.nix
+    ../../modules/features/emulation.nix
+    ../../modules/features/nas-mount.nix
+    ../../modules/features/networking-tools.nix
+    ../../modules/features/gaming.nix
+    ../../modules/features/libvirt.nix
+    
   ];
 
   # Explicitly enable X11 and SDDM for the desktop/laptop role
