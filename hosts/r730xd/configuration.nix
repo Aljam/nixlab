@@ -19,9 +19,6 @@
   networking.hostName = "r730xd";
   networking.hostId = "d2083fdc"; # Required for ZFS
 
-  networking.networkmanager.enable = false;
-  networking.useDHCP = false;
-
   networking.interfaces.eno1.ipv4.addresses = [
     {
       address = "${subnets.lan}.2";
