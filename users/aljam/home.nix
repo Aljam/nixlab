@@ -1,10 +1,13 @@
 { config, pkgs, ... }:
 
 {
+  nixpkgs.config.allowUnfree = true;
+
   home.enableNixpkgsReleaseCheck = false;
   home.username = "aljam";
   home.homeDirectory = "/home/aljam";
   home.stateVersion = "23.11";
+  
 
   # Universal CLI & Dev Tools (Safe for Servers & Desktops)
   home.packages = with pkgs; [
