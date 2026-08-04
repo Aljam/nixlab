@@ -60,8 +60,8 @@ nixlab/
 │   ├── home-gui.nix        # Graphical desktop additions (Kitty terminal, browsers, app suites)
 │   └── nixos.nix           # User account definitions and system bindings
 └── secrets/                # Encrypted infrastructure secrets
-    ├── secrets.yaml        # Master sops-nix encrypted credential store
-    └── autobrr.enc.env     # Application-specific encrypted environment variables
+    └── secrets.yaml        # Master sops-nix encrypted credential store
+    
 ```
 
 ---
