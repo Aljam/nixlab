@@ -62,8 +62,7 @@ nixlab/
 │   └── modules/             # Modularized user sub-configs (git.nix, shell.nix, nvim.nix, etc.)
 └── secrets/                 # Encrypted infrastructure secrets
     └── secrets.yaml         # Master sops-nix encrypted credential store
-
----
+```
 
 ## ⚙️ Deep-Dive Component Breakdown
 
