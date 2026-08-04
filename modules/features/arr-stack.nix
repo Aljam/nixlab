@@ -2,7 +2,6 @@
 
 {
   sops.secrets.autobrr_api_key = {};
-  sops.defaultSopsFile = ../../../secrets/secrets.yaml;
 
   users.users.autobrr = {
     isSystemUser = true;
