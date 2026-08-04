@@ -24,22 +24,6 @@
     autodetect = true;
   };
 
-  services.prometheus.exporters.node = {
-    enable = true;
-    port = 9100;
-    enabledCollectors = [
-      "systemd"
-      "processes"
-      "cpu"
-      "diskstats"
-      "filesystem"
-      "netdev"
-      "zfs"
-      "hwmon"
-      "nvme"
-    ];
-  };
-
   services.zfs.autoScrub.enable = lib.mkDefault true;
   services.zfs.autoScrub.interval = lib.mkDefault "weekly";
 }
