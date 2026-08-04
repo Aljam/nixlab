@@ -41,7 +41,7 @@
     port = 5055;
     openFirewall = true;
   };
-  systemd.services.jellyseerr.environment = {
+  systemd.services.seerr.environment = {
     HOST = "0.0.0.0";
   };
 
