@@ -41,6 +41,9 @@
     port = 5055;
     openFirewall = true;
   };
+  systemd.services.jellyseerr.environment = {
+    HOST = "0.0.0.0";
+  };
 
   services.bazarr = {
     enable = true;
