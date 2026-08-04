@@ -32,6 +32,20 @@
   networking.defaultGateway = "192.168.1.1";
   networking.nameservers = [ "192.168.1.1" "1.1.1.1" ];
 
+  networking.firewall.allowedTCPPorts = [
+    8096  # Jellyfin
+    8989  # Sonarr
+    7878  # Radarr
+    9696  # Prowlarr
+    5055  # Jellyseerr (Seerr)
+    6767  # Bazarr
+    8787  # Readarr
+    8686  # Lidarr
+    8080  # qBittorrent
+    7474  # Autobrr
+    13378 # Audiobookshelf
+  ];
+
   boot.loader.systemd-boot.enable = false;
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
