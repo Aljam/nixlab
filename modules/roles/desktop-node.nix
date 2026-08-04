@@ -10,6 +10,7 @@
     ../../modules/features/networking-tools.nix
     ../../modules/features/gaming.nix
     ../../modules/features/libvirt.nix
+    ../../modules/features/flatpak.nix
     
   ];
 
