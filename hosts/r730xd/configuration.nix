@@ -44,6 +44,7 @@
     8080  # qBittorrent
     7474  # Autobrr
     13378 # Audiobookshelf
+    8222  # Vaultwarden
   ];
 
   boot.loader.systemd-boot.enable = false;
