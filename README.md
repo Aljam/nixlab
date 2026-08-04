@@ -42,27 +42,26 @@ The codebase follows a strict modular design pattern. Logic is decoupled into re
 
 ```text
 nixlab/
-├── flake.nix               # The central entry point defining inputs, outputs, and host configurations
-├── flake.lock              # Pinned package commit snapshot ensuring absolute build reproducibility
-├── hosts/                  # Host-specific configurations and hardware mapping
-│   ├── navi/               # Desktop configuration & hardware-configuration.nix
-│   ├── oryx/               # Laptop configuration & hardware-configuration.nix
-│   ├── r730/               # AI compute configuration & Disko Mirrored VDEV layout
-│   ├── r730xd/             # Media server configuration & Disko 24-drive RAID-Z2 layout
-│   └── r820/               # Quad-socket compute node configuration (hardware RAID/ext4)
-├── modules/                # Reusable system modules
-│   ├── features/           # Opt-in software services & toolsets (arr-stack, jellyfin, vaultwarden, 
-│   │                       #   torrents, monitoring, libvirt, hyprland, gaming, nvidia-headless)
-│   ├── hardware/           # Hardware-specific quirks (dell-poweredge, system76-laptop, navi-desktop)
-│   └── roles/              # Fleet-wide baselines (common.nix, server-core.nix, desktop-node.nix, media-node.nix)
-├── users/aljam/            # Standalone Home Manager user profiles
-│   ├── home.nix            # Core CLI environment (Fish shell, Git, Neovim, CLI utilities)
-│   ├── home-gui.nix        # Graphical desktop additions (Kitty terminal, browsers, app suites)
-│   └── nixos.nix           # User account definitions and system bindings
-└── secrets/                # Encrypted infrastructure secrets
-    └── secrets.yaml        # Master sops-nix encrypted credential store
-    
-```
+├── flake.nix                # Central entry point defining inputs, outputs, and specialArgs routing
+├── flake.lock               # Pinned package commit snapshot ensuring absolute build reproducibility
+├── hosts/                   # Host-specific configurations and hardware mapping
+│   ├── navi/                # Desktop configuration & hardware-configuration.nix
+│   ├── oryx/                # Laptop configuration & hardware-configuration.nix
+│   ├── r730/                # AI compute configuration & Disko Mirrored VDEV layout
+│   ├── r730xd/              # Media server configuration & Disko 24-drive RAID-Z2 layout
+│   └── r820/                # Quad-socket compute node configuration (hardware RAID/ext4)
+├── modules/                 # Reusable system modules
+│   ├── features/            # Opt-in software services & toolsets (arr-stack, jellyfin, vaultwarden, 
+│   │                        #   torrents, monitoring, restic-client, sanoid, hyprland, gaming, nvidia-headless)
+│   ├── hardware/            # Hardware-specific quirks (dell-poweredge, system76-laptop, navi-desktop)
+│   └── roles/               # Fleet-wide baselines (common.nix, server-core.nix, desktop-node.nix, media-node.nix)
+├── users/aljam/             # Modular Home Manager user profiles
+│   ├── home.nix             # Core CLI environment hub (Fish shell, Git, Neovim, CLI utilities)
+│   ├── home-gui.nix         # Graphical desktop extensions (Kitty, window managers, app suites)
+│   ├── nixos.nix            # User account definitions and system bindings
+│   └── modules/             # Modularized user sub-configs (git.nix, shell.nix, nvim.nix, etc.)
+└── secrets/                 # Encrypted infrastructure secrets
+    └── secrets.yaml         # Master sops-nix encrypted credential store
 
 ---
 
