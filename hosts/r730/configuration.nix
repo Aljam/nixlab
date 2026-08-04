@@ -34,8 +34,7 @@
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.device = "nodev";
-
-
+  boot.loader.grub.configurationLimit = 10;
 
   hardware.dell-fan-control.enable = true;
 
