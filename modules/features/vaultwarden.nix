@@ -3,10 +3,11 @@
 {
   services.vaultwarden = {
     enable = true;
+    openFirewall = true;
     backupDir = "/var/backup/vaultwarden";
     config = {
       ROCKET_PORT = 8222;
-      ROCKET_ADDRESS = "127.0.0.1";
+      ROCKET_ADDRESS = "0.0.0.0";
 
       SIGNUPS_ALLOWED = true; # SET TO FALSE AFTER ACCOUNT CREATION
 
