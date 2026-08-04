@@ -13,4 +13,7 @@
     ../../modules/features/flatpak.nix
     
   ];
+  
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
 }
