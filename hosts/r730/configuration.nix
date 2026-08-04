@@ -14,8 +14,6 @@
   networking.hostName = "r730";
   networking.hostId = "acccc16e"; # Required for ZFS
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
   virtualisation.docker.enable = true;
   hardware.nvidia-container-toolkit.enable = true; # Passes the P40s into Docker
 
