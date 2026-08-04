@@ -5,7 +5,6 @@
     ./hardware-configuration.nix
     ../../modules/roles/desktop-node.nix
     ../../modules/hardware/navi-desktop.nix
-    ../../modules/features/remote-builder.nix
   ];
 
   networking.hostName = "navi";
