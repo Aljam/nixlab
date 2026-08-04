@@ -10,6 +10,8 @@
   networking.hostName = "navi";
   programs.corectrl.enable = true; # AMD Overclocking/Undervolting
 
+  networking.networkmanager.enable = true;
+
   boot.loader.systemd-boot.enable = false;
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
