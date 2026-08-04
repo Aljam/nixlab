@@ -93,6 +93,7 @@
 
   services.autobrr = {
     enable = true;
+    openFirewall = true;
     secretFile = config.sops.secrets.autobrr_api_key.path;
     settings = {
       port = 7474;
