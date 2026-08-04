@@ -36,10 +36,11 @@
     
     pkgs-stable = import nixpkgs-stable {
       inherit system;
+      config.allowUnfree = true;
     };
 
     domains = {
-      primary    = "derezzed.info";       # Media server & stats
+      primary    = "derezzed.info";
       fuwa       = "fuwa.space";
       cybal      = "cybal.org";
       netrunner  = "netrunner.dev";
@@ -55,6 +56,9 @@
       specialArgs = { inherit inputs pkgs-stable hostname domains; }; 
       
       modules = [
+        ({ ... }: {
+          nixpkgs.config.allowUnfree = true;
+        })
         ./hosts/${hostname}/configuration.nix
         ./modules/roles/common.nix
         ./users/aljam/nixos.nix
@@ -66,12 +70,6 @@
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
           home-manager.users.aljam = import ./users/aljam/home.nix;
-          
-          # Allows Home Manager to evaluate unfree packages like Steam & Discord
-          home-manager.sharedModules = [{
-            nixpkgs.config.allowUnfree = true;
-          }];
-          
           home-manager.extraSpecialArgs = { inherit inputs pkgs-stable domains; };
         }
       ] ++ extraModules;
@@ -94,7 +92,7 @@
         extraModules = [ 
           desktop 
           flatpakModule 
-          inputs.nix-hardware.nixosModules.system76 
+          inputs.nixos-hardware.nixosModules.system76 
         ];
       };
       
