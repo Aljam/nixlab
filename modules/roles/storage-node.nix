@@ -3,8 +3,6 @@
 {
   imports = [
     ../features/sanoid.nix
+    ../features/zfs-base.nix
   ];
-
-  services.zfs.autoScrub.enable = lib.mkDefault true;
-  services.zfs.autoScrub.interval = lib.mkDefault "weekly";
 }
