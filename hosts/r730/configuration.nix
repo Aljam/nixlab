@@ -6,6 +6,7 @@
     ./disko-config.nix
     ../../modules/hardware/dell-poweredge.nix
     ../../modules/roles/server-core.nix
+    ../../modules/roles/storage-node.nix
     ../../modules/roles/ai-node.nix
     ../../modules/features/nvidia-headless.nix
   ];
