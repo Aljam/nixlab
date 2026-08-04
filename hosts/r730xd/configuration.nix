@@ -33,6 +33,9 @@
   networking.nameservers = [ "192.168.1.1" ];
 
   networking.firewall.allowedTCPPorts = [
+    22    # SSH
+    80    # HTTP
+    443   # HTTPS
     6767  # Bazarr
     7474  # Autobrr
     7878  # Radarr
