@@ -98,8 +98,4 @@
       host = "0.0.0.0"; 
     };
   };
-  
-  systemd.services.autobrr.environment = {
-    AUTOBRR_HOST = "0.0.0.0"; 
-  };
 }
