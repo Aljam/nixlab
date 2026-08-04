@@ -14,13 +14,6 @@
     "d /mnt/media/downloads 0770 root media -"
   ];
 
-  sops.secrets."autobrr.env" = {
-    sopsFile = ../../secrets/autobrr.enc.env;
-    format = "dotenv";
-    owner = "autobrr";
-    group = "media";
-  };
-
   services.sonarr = {
     enable = true;
     user = "sonarr";
@@ -85,7 +78,7 @@
 
   services.autobrr = {
     enable = true;
-    secretFile = config.sops.secrets."autobrr.env".path;
+    secretFile = config.sops.secrets.autobrr-key.path;
     settings = { 
       port = 7474;
       host = "0.0.0.0"; 
