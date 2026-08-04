@@ -28,6 +28,8 @@
     };
     
     nix-flatpak.url = "github:gmodena/nix-flatpak";
+
+    hyprland.url = "github:hyprwm/Hyprland";
   };
 
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, disko, sops-nix, mailserver, ... }@inputs:
