@@ -20,16 +20,19 @@
     enable = true;
     user = "sonarr";
     group = "media";
+    openFirewall = true;
   };
 
   services.radarr = {
     enable = true;
     user = "radarr";
     group = "media";
+    openFirewall = true;
   };
 
   services.prowlarr = {
     enable = true;
+    openFirewall = true;
   };
   
   users.users.prowlarr = {
@@ -40,10 +43,12 @@
   services.seerr = {
     enable = true;
     port = 5055;
+    openFirewall = true;
   };
 
   services.bazarr = {
     enable = true;
+    openFirewall = true;
   };
   
   users.users.bazarr = {
@@ -55,6 +60,7 @@
 
   services.readarr = {
     enable = true;
+    openFirewall = true;
   };
   
   users.users.readarr = {
@@ -65,6 +71,7 @@
   services.lidarr = {
     enable = true;
     dataDir = "/var/lib/lidarr";
+    openFirewall = true;
   };
   
   users.users.lidarr = {
