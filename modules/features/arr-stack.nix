@@ -52,7 +52,6 @@
   services.bazarr = {
     enable = true;
     openFirewall = true;
-    settings.server.bindaddress = "*";
   };
   
   users.users.bazarr = {
