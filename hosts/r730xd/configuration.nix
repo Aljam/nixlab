@@ -29,9 +29,6 @@
     }
   ];
 
-  networking.defaultGateway = "${subnets.lan}.1";
-  networking.nameservers = [ "${subnets.lan}.1" ];
-
   networking.firewall.allowedTCPPorts = [
     22    # SSH
     80    # HTTP
