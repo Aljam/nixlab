@@ -9,6 +9,7 @@
   imports = [ ./modules/core/git.nix
               ./modules/core/shell.nix
               ./modules/core/nvim.nix
+              ./modules/core/packages.nix
   ];
 
   programs.zoxide = {
