@@ -44,6 +44,8 @@
     pamixer
     cliphist
     libnotify
+    reaper
+    audacity
   ];
 
   programs.kitty = {
