@@ -36,14 +36,6 @@
     };
   };
 
-  services.tailscale = {
-    enable = true;
-    useRoutingFeatures = "client"; # or "both" if advertising routes, but keep local safe
-    extraUpFlags = [
-      "--accept-routes=false" # Prevents Tailscale from overriding your local gateway
-    ];
-  };
-
   programs.git = {
     enable = true;
     settings = {
