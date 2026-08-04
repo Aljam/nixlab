@@ -3,13 +3,6 @@
 {
   sops.secrets.autobrr_api_key = {};
 
-  users.users.autobrr = {
-    isSystemUser = true;
-    group = "media";
-    home = "/var/lib/autobrr";
-    createHome = true;
-  };
-
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies 0770 root media -"
     "d /mnt/media/tv 0770 root media -"
