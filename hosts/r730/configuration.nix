@@ -6,9 +6,8 @@
     ./disko-config.nix
     ../../modules/hardware/dell-poweredge.nix
     ../../modules/roles/server-core.nix
-    ../../modules/roles/storage-node.nix
-    ../../modules/features/nvidia-headless.nix
     ../../modules/roles/ai-node.nix
+    ../../modules/features/nvidia-headless.nix
   ];
 
   networking.hostName = "r730";
