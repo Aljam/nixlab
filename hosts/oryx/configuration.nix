@@ -15,6 +15,7 @@
   boot.loader.grub.device = "nodev";
   boot.loader.grub.configurationLimit = 10;
 
+  networking.networkmanager.enable = true;
 
   system.stateVersion = lib.mkDefault "26.05";
 }
