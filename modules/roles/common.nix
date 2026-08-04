@@ -8,6 +8,8 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   security.sudo.enable = true;
 
+  networking.networkmanager.enable = true;
+
   environment.systemPackages = with pkgs; [
     home-manager
     git
