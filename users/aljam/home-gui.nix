@@ -1,9 +1,9 @@
 { config, pkgs, pkgs-stable, ... }:
 
 {
-  xdg.enable = true;
-
   nixpkgs.config.allowUnfree = true;
+
+  xdg.enable = true;
 
   home.packages = with pkgs; [
     ungoogled-chromium
