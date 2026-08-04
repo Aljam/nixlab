@@ -49,11 +49,15 @@
       glow_dev   = "glowrunner.dev";
       glow_xyz   = "glowrunner.xyz";
     };
+
+    subnets = {
+      lan = "192.168.1";
+    };
     
     mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
       inherit system;
       
-      specialArgs = { inherit inputs pkgs-stable hostname domains; }; 
+      specialArgs = { inherit inputs pkgs-stable hostname domains subnets; }; 
       
       modules = [
         ({ ... }: {
@@ -70,7 +74,7 @@
           home-manager.useUserPackages = true;
           home-manager.backupFileExtension = "backup";
           home-manager.users.aljam = import ./users/aljam/home.nix;
-          home-manager.extraSpecialArgs = { inherit inputs pkgs-stable domains; };
+          home-manager.extraSpecialArgs = { inherit inputs pkgs-stable domains subnets; };
         }
       ] ++ extraModules;
     };
