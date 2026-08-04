@@ -1,12 +1,7 @@
 { config, pkgs, domains, ... }:
 
 {
-  # Load the SMTP password securely via SOPS
-  sops.secrets."alertmanager.env" = {
-    sopsFile = ../../secrets/alertmanager.enc.env;
-    format = "dotenv";
-    # Notice we don't need owner/group here! The NixOS wrapper handles it.
-  };
+  sops.secrets.alertmanager-password = {};
 
   # Enable and Configure Alertmanager for Email
   services.prometheus.alertmanager = {
