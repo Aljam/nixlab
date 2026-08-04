@@ -30,6 +30,13 @@
     linuxPackages.nvidia_x11
   ];
 
+  boot.loader.systemd-boot.enable = false;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.efiSupport = true;
+  boot.loader.grub.device = "nodev";
+
+
+
   hardware.dell-fan-control.enable = true;
 
   system.stateVersion = lib.mkDefault "26.05";
