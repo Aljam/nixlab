@@ -23,5 +23,4 @@
       "--accept-routes=false" # Prevents Tailscale from overriding your local gateway
     ];
   };
-  
 }
