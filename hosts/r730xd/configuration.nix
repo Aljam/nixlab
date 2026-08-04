@@ -33,18 +33,19 @@
   networking.nameservers = [ "192.168.1.1" ];
 
   networking.firewall.allowedTCPPorts = [
-    8096  # Jellyfin
-    8989  # Sonarr
-    7878  # Radarr
-    9696  # Prowlarr
-    5055  # Jellyseerr (Seerr)
     6767  # Bazarr
-    8787  # Readarr
-    8686  # Lidarr
-    8080  # qBittorrent
     7474  # Autobrr
-    13378 # Audiobookshelf
+    7878  # Radarr
+    8080  # qBittorrent
+    8096  # Jellyfin
     8222  # Vaultwarden
+    8686  # Lidarr
+    8787  # Readarr
+    8989  # Sonarr
+    9100  # Prometheus Node Exporter
+    9696  # Prowlarr
+    5055  # Jellyseerr
+    13378 # Audiobookshelf
   ];
 
   boot.loader.systemd-boot.enable = false;
