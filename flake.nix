@@ -63,7 +63,7 @@
       
       modules = [
         ({ ... }: {
-          nixpkgs.config.allowUnfree = true;
+          
         })
         ./hosts/${hostname}/configuration.nix
         ./modules/roles/common.nix
