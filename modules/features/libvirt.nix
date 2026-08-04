@@ -6,6 +6,11 @@
   virtualisation.libvirtd.qemu.swtpm.enable = true;
   virtualisation.spiceUSBRedirection.enable = true;
 
+  virtualisation.libvirtd.qemu.package = pkgs.qemu_kvm;
+  # Ensure it doesn't force conflicting network rules if you manage them elsewhere
+  virtualisation.libvirtd.onBoot = "ignore";
+  virtualisation.libvirtd.onShutdown = "shutdown";
+
   # GUI frontend for libvirtd 
   # (If you ever use this module on a headless server, you can override this to false)
   programs.virt-manager.enable = true;
