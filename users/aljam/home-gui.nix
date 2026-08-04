@@ -1,6 +1,8 @@
 { config, pkgs, pkgs-stable, ... }:
 
 {
+  nixpkgs.config.allowUnfree = true;
+
   xdg.enable = true;
 
   home.packages = with pkgs; [
