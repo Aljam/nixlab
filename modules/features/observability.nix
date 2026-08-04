@@ -10,7 +10,7 @@
     port = 9093;
     
     # Securely loads the secret and substitutes $SMTP_PASSWORD below
-    environmentFile = config.sops.secrets.alertmanager_smtp_password;
+    environmentFile = config.sops.secrets.alertmanager_smtp_password.path;
     
     configuration = {
       global = {
