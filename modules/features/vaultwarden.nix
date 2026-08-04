@@ -3,7 +3,6 @@
 {
   services.vaultwarden = {
     enable = true;
-    openFirewall = true;
     backupDir = "/var/backup/vaultwarden";
     config = {
       ROCKET_PORT = 8222;
