@@ -21,6 +21,7 @@
     user = "sonarr";
     group = "media";
     openFirewall = true;
+    settings.server.bindaddress = "*";
   };
 
   services.radarr = {
@@ -28,11 +29,13 @@
     user = "radarr";
     group = "media";
     openFirewall = true;
+    settings.server.bindaddress = "*";
   };
 
   services.prowlarr = {
     enable = true;
     openFirewall = true;
+    settings.server.bindaddress = "*";
   };
   
   users.users.prowlarr = {
@@ -49,6 +52,7 @@
   services.bazarr = {
     enable = true;
     openFirewall = true;
+    settings.server.bindaddress = "*";
   };
   
   users.users.bazarr = {
@@ -61,6 +65,7 @@
   services.readarr = {
     enable = true;
     openFirewall = true;
+    settings.server.bindaddress = "*";
   };
   
   users.users.readarr = {
@@ -72,6 +77,7 @@
     enable = true;
     dataDir = "/var/lib/lidarr";
     openFirewall = true;
+    settings.server.bindaddress = "*";
   };
   
   users.users.lidarr = {
