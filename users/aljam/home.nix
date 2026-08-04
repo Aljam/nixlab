@@ -1,14 +1,15 @@
 { config, pkgs, ... }:
 
-{
-  imports = [ ./modules/core/git.nix
-              ./modules/core/shell.nix ];
-              
+{              
   home.enableNixpkgsReleaseCheck = false;
   home.username = "aljam";
   home.homeDirectory = "/home/aljam";
   home.stateVersion = "26.05";
   
+  imports = [ ./modules/core/git.nix
+              ./modules/core/shell.nix
+              ./modules/core/nvim.nix
+  ];
 
   # Universal CLI & Dev Tools (Safe for Servers & Desktops)
   home.packages = with pkgs; [
