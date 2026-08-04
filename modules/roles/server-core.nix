@@ -6,11 +6,6 @@
     ../features/monitoring.nix
   ];
 
-  boot.loader.grub.enable = true;
-  boot.loader.grub.efiSupport = true;
-  boot.loader.grub.devices = [ "nodev" ];
-  boot.loader.grub.efiInstallAsRemovable = true;
-
   environment.systemPackages = with pkgs; [
     smartmontools
     tmux
