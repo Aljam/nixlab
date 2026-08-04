@@ -20,7 +20,6 @@
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-      useGlobalPkgs = true;
     };
 
     disko = {
@@ -71,7 +70,6 @@
           home-manager.backupFileExtension = "backup";
           home-manager.users.aljam = import ./users/aljam/home.nix;
           
-          # Added 'domains' here so your Home Manager configurations can use them too
           home-manager.extraSpecialArgs = { inherit inputs pkgs-stable domains; };
         }
       ] ++ extraModules;
