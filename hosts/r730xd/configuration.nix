@@ -12,9 +12,7 @@
     ../../modules/features/observability.nix
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_1;
-  hardware.enableRedistributableFirmware = true;
-  
+  boot.kernelPackages = pkgs.linuxPackages_6_1;  
   boot.zfs.forceImportRoot = false;
   boot.kernelParams = [ "zfs.zfs_arc_max=68719476736" ];
 
@@ -31,11 +29,11 @@
   networking.defaultGateway = "192.168.1.1";
   networking.nameservers = [ "192.168.1.1" "1.1.1.1" ];
 
-  system.stateVersion = lib.mkDefault "26.05";
-
   boot.loader.systemd-boot.enable = false;
   boot.loader.grub.enable = true;
   boot.loader.grub.efiSupport = true;
   boot.loader.grub.device = "nodev";
   boot.loader.grub.configurationLimit = 10;
+
+  system.stateVersion = lib.mkDefault "26.05";
 }
