@@ -12,6 +12,6 @@
     ../../modules/features/gaming.nix
     ../../modules/features/libvirt.nix
     ../../modules/features/flatpak.nix
-    
+    ../../modules/features/remote-builder.nix
   ];
 }
