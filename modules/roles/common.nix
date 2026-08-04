@@ -43,15 +43,15 @@
     settings.PermitRootLogin = "no";
   };
 
+  sops = {
+    defaultSopsFile = ../../secrets/secrets.yaml;
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  };
+
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 14d";
-  };
-
-  sops = {
-    defaultSopsFile = ../../secrets/secrets.yaml;
-    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 
   nix.optimise.automatic = true;
