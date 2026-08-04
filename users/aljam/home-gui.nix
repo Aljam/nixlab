@@ -46,6 +46,7 @@
     libnotify
     reaper
     audacity
+    lmms
   ];
 
   programs.kitty = {
