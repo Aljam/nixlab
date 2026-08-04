@@ -3,7 +3,7 @@
 {
   imports = [
     ../../modules/features/audio.nix
-    ../../modules/features.bluetooth.nix
+    ../../modules/features/bluetooth.nix
     ../../modules/features/graphics.nix
     ../../modules/features/hyprland.nix
     ../../modules/features/emulation.nix
