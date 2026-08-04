@@ -13,11 +13,4 @@
     ../../modules/features/flatpak.nix
     
   ];
-
-  # Explicitly enable X11 and SDDM for the desktop/laptop role
-  services.xserver.enable = true;
-  services.displayManager.sddm = {
-    enable = true;
-    wayland.enable = false; # Enforces stable X11 greeter backend to avoid hybrid-graphics crashes
-  };
 }
