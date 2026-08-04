@@ -24,15 +24,4 @@
       };
     };
   };
-
-  # Optional: Enable Syncoid for dataset replication (e.g., pushing backups to another host)
-  # services.syncoid = {
-  #   enable = true;
-  #   commonArgs = "--sshkey=/root/.ssh/id_ed25519";
-  #   commands."backup-media" = {
-  #     source = "tank/media";
-  #     target = "root@192.168.1.X:tank/backup-media";
-  #     interval = "daily";
-  #   };
-  # };
 }
