@@ -8,7 +8,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     mailserver = {
-      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/nixos-unstable";
+      url = "gitlab:simple-nixos-mailserver/nixos-mailserver/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     
