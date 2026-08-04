@@ -5,6 +5,7 @@
     ./hardware-configuration.nix
     ../../modules/roles/desktop-node.nix
     ../../modules/hardware/system76-laptop.nix
+    ../../modules/features/remote-builder.nix
   ];
 
   networking.hostName = "oryx";
