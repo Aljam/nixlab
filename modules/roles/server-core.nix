@@ -18,7 +18,4 @@
     enable = true;
     autodetect = true;
   };
-
-  services.zfs.autoScrub.enable = lib.mkDefault true;
-  services.zfs.autoScrub.interval = lib.mkDefault "weekly";
 }
