@@ -106,4 +106,4 @@ deploy .#r730xd
 ---
 
 ## 📜 License & Maintenance
-Maintained under an open infrastructure philosophy. Contributions, issue reports, and pull requests to improve modularity or expand hardware support are welcome.
+Maintained under GNU General Public License version 2. Contributions, issue reports, and pull requests to improve modularity or expand hardware support are welcome.
