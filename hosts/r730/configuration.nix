@@ -37,7 +37,5 @@
   boot.loader.grub.device = "nodev";
   boot.loader.grub.configurationLimit = 10;
 
-  hardware.dell-fan-control.enable = true;
-
   system.stateVersion = lib.mkDefault "26.05";
 }
