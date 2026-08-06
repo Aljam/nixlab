@@ -60,10 +60,10 @@ in {
           topology = {
             type = "topology";
             vdev = [
-              { mode = "mirror"; members = [ "d1-zfs" "d2-zfs" ]; }
-              { mode = "mirror"; members = [ "d3-zfs" "d4-zfs" ]; }
-              { mode = "mirror"; members = [ "d5-zfs" "d6-zfs" ]; }
-              { mode = "mirror"; members = [ "d7-zfs" "d8-zfs" ]; }
+              { mode = "mirror"; members = [ "d1" "d2" ]; }
+              { mode = "mirror"; members = [ "d3" "d4" ]; }
+              { mode = "mirror"; members = [ "d5" "d6" ]; }
+              { mode = "mirror"; members = [ "d7" "d8" ]; }
             ];
           };
         };
