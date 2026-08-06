@@ -13,20 +13,20 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "r730pool/root";
-      fsType = "zfs";
-    };
+  #fileSystems."/" =
+  #  { device = "r730pool/root";
+  #    fsType = "zfs";
+  #  };
 
-  fileSystems."/nix" =
-    { device = "r730pool/media";
-      fsType = "zfs";
-    };
+  #fileSystems."/nix" =
+  #  { device = "r730pool/media";
+  #    fsType = "zfs";
+  #  };
 
-  fileSystems."/home" =
-    { device = "r730pool/media";
-      fsType = "zfs";
-    };
+  #fileSystems."/home" =
+  #  { device = "r730pool/media";
+  #    fsType = "zfs";
+  #  };
 
   swapDevices = [ ];
 
