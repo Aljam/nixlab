@@ -13,15 +13,15 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-  fileSystems."/" =
-    { device = "mediapool/root";
-      fsType = "zfs";
-    };
+  #fileSystems."/" =
+  #  { device = "mediapool/root";
+  #    fsType = "zfs";
+  #  };
 
-  fileSystems."/mnt/media" =
-    { device = "mediapool/media";
-      fsType = "zfs";
-    };
+  #fileSystems."/mnt/media" =
+  #  { device = "mediapool/media";
+  #    fsType = "zfs";
+  #  };
 
   swapDevices = [ ];
 
