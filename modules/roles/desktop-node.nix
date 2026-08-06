@@ -23,4 +23,6 @@
       "--accept-routes=true"
     ];
   };
+
+  programs.kdeconnect.enable = true;
 }
