@@ -24,12 +24,12 @@
   boot.kernelPackages = pkgs.linuxPackages_6_1;  
 
   virtualisation.docker.enable = true;
-  hardware.nvidia-container-toolkit.enable = true; # Passes the P40s into Docker
+  # hardware.nvidia-container-toolkit.enable = true; # Passes the P40s into Docker
 
-  hardware.nvidia = {
-    modesetting.enable = true; # Overrides the headless module default
-    nvidiaPersistenced = true; # Prevents power-state latency drops during AI training
-  };
+  # hardware.nvidia = {
+  #   modesetting.enable = true; # Overrides the headless module default
+  #   nvidiaPersistenced = true; # Prevents power-state latency drops during AI training
+  # };
 
   nixpkgs.config.cudaSupport = true;
 
