@@ -1,72 +1,71 @@
-{ lib, ... }: {
+{ lib, ... }:
+let
+  rawDisks = [
+    "wwn-0x5000c5007dd3fee3" # d1 (Gets ESP Boot Partition)
+    "wwn-0x5000c5007dd70cb7" # d2 (Gets ESP Boot Partition)
+    "wwn-0x5000c5007de11ecb" # d3
+    "wwn-0x5000c5007f119817" # d4
+    "wwn-0x5000c5007f1268cb" # d5
+    "wwn-0x5000c5007f138ae3" # d6
+    "wwn-0x5000c5008f0364e3" # d7
+    "wwn-0x5000c5008f0517e3" # d8
+  ];
+
+  makeDisk = index: wwn: lib.nameValuePair "d${toString index}" {
+    type = "disk";
+    device = "/dev/disk/by-id/${wwn}";
+    content = {
+      type = "gpt";
+      partitions = 
+        if (index == 1 || index == 2) then {
+          ESP = {
+            size = "500M";
+            type = "EF00";
+            content = {
+              type = "filesystem";
+              format = "vfat";
+              mountpoint = if index == 1 then "/boot" else "/boot2";
+            };
+          };
+          zfs = {
+            size = "100%";
+            content = {
+              type = "zfs";
+              pool = "r730pool";
+            };
+          };
+        } 
+        else {
+          zfs = {
+            size = "100%";
+            content = {
+              type = "zfs";
+              pool = "r730pool";
+            };
+          };
+        };
+    };
+  };
+
+in {
   boot.zfs.devNodes = "/dev/disk/by-id";
 
   disko.devices = {
-    disk = {
-      disk0 = {
-        type = "disk";
-        device = "/dev/disk/by-id/wwn-0x5000c5007dd3fee3"; # Replace with actual disk ID
-        content = {
-          type = "gpt";
-          partitions = {
-            ESP = {
-              size = "500M";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot";
-              };
-            };
-            zfs = {
-              size = "100%";
-              content = {
-                type = "zfs";
-                pool = "r730pool";
-              };
-            };
-          };
-        };
-      };
-      
-      disk1 = {
-        type = "disk";
-        device = "/dev/disk/by-id/wwn-0x5000c5007dd3fee3"; # Replace with actual disk ID
-        content = {
-          type = "gpt";
-          partitions = {
-            ESP = {
-              size = "500M";
-              type = "EF00";
-              content = {
-                type = "filesystem";
-                format = "vfat";
-                mountpoint = "/boot-fallback"; # Fallback EFI mount
-              };
-            };
-            zfs = {
-              size = "100%";
-              content = {
-                type = "zfs";
-                pool = "r730pool";
-              };
-            };
-          };
-        };
-      };
-      disk2 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5007dd70cb7"; };
-      disk3 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5007f119817"; };
-      disk4 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5007f1268cb"; };
-      disk5 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5007f138ae3"; };
-      disk6 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5008f0364e3"; };
-      disk7 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5008f0517e3"; };
-    };
+    disk = builtins.listToAttrs (lib.imap1 makeDisk rawDisks);
+
     zpool = {
       r730pool = {
         type = "zpool";
         mode = {
-          # Define 4 mirrored VDEVs (pairs)
-          val = "mirror disk0 disk1 mirror disk2 disk3 mirror disk4 disk5 mirror disk6 disk7";
+          topology = {
+            type = "topology";
+            vdev = [
+              { mode = "mirror"; members = [ "d1" "d2" ]; }
+              { mode = "mirror"; members = [ "d3" "d4" ]; }
+              { mode = "mirror"; members = [ "d5" "d6" ]; }
+              { mode = "mirror"; members = [ "d7" "d8" ]; }
+            ];
+          };
         };
         rootFsOptions = {
           compression = "lz4";
