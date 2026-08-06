@@ -4,7 +4,7 @@
   # 1. Enable Ollama (The LLM Engine)
   services.ollama = {
     enable = true;
-    acceleration = "cuda"; # Crucial: Tells Ollama to grab the Tesla P40s
+    # acceleration = "cuda"; # Crucial: Tells Ollama to grab the Tesla P40s
     
     # Allow Open WebUI and other local apps to communicate with the API
     environmentVariables = {
