@@ -18,7 +18,12 @@
       fsType = "zfs";
     };
 
-  fileSystems."/mnt/media" =
+  fileSystems."/nix" =
+    { device = "mediapool/media";
+      fsType = "zfs";
+    };
+
+  fileSystems."/home" =
     { device = "mediapool/media";
       fsType = "zfs";
     };
