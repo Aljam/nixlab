@@ -14,17 +14,17 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "mediapool/root";
+    { device = "r730pool/root";
       fsType = "zfs";
     };
 
   fileSystems."/nix" =
-    { device = "mediapool/media";
+    { device = "r730pool/media";
       fsType = "zfs";
     };
 
   fileSystems."/home" =
-    { device = "mediapool/media";
+    { device = "r730pool/media";
       fsType = "zfs";
     };
 
