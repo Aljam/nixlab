@@ -14,6 +14,13 @@
   networking.hostName = "r730";
   networking.hostId = "acccc16e"; # Required for ZFS
 
+  networking.interfaces.eno1.ipv4.addresses = [
+    {
+      address = "${subnets.lan}.3";
+      prefixLength = 24;
+    }
+  ];
+
   boot.kernelPackages = pkgs.linuxPackages_6_1;  
 
   virtualisation.docker.enable = true;
