@@ -5,7 +5,7 @@
     disk = {
       disk0 = {
         type = "disk";
-        device = "/dev/disk/by-id/wwn-0x5000c500...1"; # Replace with actual disk ID
+        device = "/dev/disk/by-id/wwn-0x5000c5007dd3fee3"; # Replace with actual disk ID
         content = {
           type = "gpt";
           partitions = {
@@ -31,7 +31,7 @@
       
       disk1 = {
         type = "disk";
-        device = "/dev/disk/by-id/wwn-0x5000c500...2"; # Replace with actual disk ID
+        device = "/dev/disk/by-id/wwn-0x5000c5007dd3fee3"; # Replace with actual disk ID
         content = {
           type = "gpt";
           partitions = {
@@ -54,12 +54,12 @@
           };
         };
       };
-      disk2 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...3"; };
-      disk3 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...4"; };
-      disk4 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...5"; };
-      disk5 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...6"; };
-      disk6 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...7"; };
-      disk7 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c500...8"; };
+      disk2 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5007dd70cb7"; };
+      disk3 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5007f119817"; };
+      disk4 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5007f1268cb"; };
+      disk5 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5007f138ae3"; };
+      disk6 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5008f0364e3"; };
+      disk7 = { type = "disk"; device = "/dev/disk/by-id/wwn-0x5000c5008f0517e3"; };
     };
     zpool = {
       r730pool = {
