@@ -1,8 +1,8 @@
 { lib, ... }:
 let
   rawDisks = [
-    "wwn-0x5000c5007dd3fee3" # d1 (Gets ESP Boot Partition)
-    "wwn-0x5000c5007dd70cb7" # d2 (Gets ESP Boot Partition)
+    "wwn-0x5000c5007dd3fee3" # d1
+    "wwn-0x5000c5007dd70cb7" # d2
     "wwn-0x5000c5007de11ecb" # d3
     "wwn-0x5000c5007f119817" # d4
     "wwn-0x5000c5007f1268cb" # d5
@@ -60,10 +60,10 @@ in {
           topology = {
             type = "topology";
             vdev = [
-              { mode = "mirror"; members = [ "d1" "d2" ]; }
-              { mode = "mirror"; members = [ "d3" "d4" ]; }
-              { mode = "mirror"; members = [ "d5" "d6" ]; }
-              { mode = "mirror"; members = [ "d7" "d8" ]; }
+              { mode = "mirror"; members = [ "d1-zfs" "d2-zfs" ]; }
+              { mode = "mirror"; members = [ "d3-zfs" "d4-zfs" ]; }
+              { mode = "mirror"; members = [ "d5-zfs" "d6-zfs" ]; }
+              { mode = "mirror"; members = [ "d7-zfs" "d8-zfs" ]; }
             ];
           };
         };
