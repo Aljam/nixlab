@@ -4,8 +4,6 @@
   boot.loader.grub.gfxmodeEfi = "1920x1200";
   boot.loader.grub.gfxmodeBios = "1920x1200";
   boot.loader.grub.gfxpayloadEfi = "keep";
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.blacklistedKernelModules = [ "nouveau" ];
   boot.kernelParams = [
     "nvidia.NVreg_PreserveVideoMemoryAllocations=1"
