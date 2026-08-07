@@ -10,6 +10,4 @@
     "usb-storage.quirks=152d:0551:u"
     "usbcore.autosuspend=-1"
   ];
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 }
