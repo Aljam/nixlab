@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, inputs, ... }:
 
 {
   imports = [
@@ -15,7 +15,13 @@
     ../../modules/features/remote-builder.nix
     ../../modules/features/restic-client.nix
   ];
-  
+
+  nixpkgs.overlays = [
+    inputs.nix-cachyos-kernel.overlays.pinned
+  ];
+  hardware.enableRedistributableFirmware = true;
+  boot.kernelPackages = inputs.nix-cachyos-kernel.legacyPackages.x86_64-linux.linuxPackages-cachyos-lts;
+
   services.tailscale = {
     enable = true;
     useRoutingFeatures = "both";
