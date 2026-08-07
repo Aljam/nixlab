@@ -5,6 +5,8 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-25.11";
 
+    nix-cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     mailserver = {
@@ -30,9 +32,29 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
     hyprland.url = "github:hyprwm/Hyprland";
+    
+    millennium = {
+      url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
+    };
+    nur = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, disko, sops-nix, mailserver, ... }@inputs:
+  outputs = {
+    self,
+    nixpkgs,
+    nixpkgs-stable,
+    home-manager,
+    disko,
+    sops-nix,
+    mailserver,
+    nix-cachyos-kernel,
+    millennium,
+    nur,
+    ...
+  }@inputs:
     let
       system = "x86_64-linux";
 
@@ -50,21 +72,30 @@
         glow_dev   = "glowrunner.dev";
         glow_xyz   = "glowrunner.xyz";
       };
-
       subnets = {
         lan = "192.168.1";
       };
-
       mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
         inherit system;
-
-        specialArgs = { inherit inputs pkgs-stable hostname domains subnets; };
+        specialArgs = {
+          inherit inputs pkgs-stable hostname domains subnets;
+        };
 
         modules = [
           ./hosts/${hostname}/configuration.nix
           ./modules/roles/common.nix
           ./users/aljam/nixos.nix
           sops-nix.nixosModules.sops
+          nur.modules.nixos.default
+          (
+            { pkgs, ... }:
+            {
+              nixpkgs.overlays = [
+                nix-cachyos-kernel.overlays.pinned
+                inputs.millennium.overlays.default
+              ];
+            }
+          )       
 
           home-manager.nixosModules.home-manager
           {
