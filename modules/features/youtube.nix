@@ -16,7 +16,8 @@
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
     igotno_username:
       preset: [default]
-      url: "https://www.youtube.com/@igotno_username"
+      download:
+        url: "https://www.youtube.com/@igotno_username"
   '';
 
   systemd.services.ytdl-sub = {
