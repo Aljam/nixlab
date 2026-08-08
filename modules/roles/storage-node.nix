@@ -5,6 +5,4 @@
     ../features/sanoid.nix
     ../features/zfs-base.nix
   ];
-
-  services.sftpServer.enable = true;
 }
