@@ -6,6 +6,7 @@
     ../features/arr-stack.nix
     ../features/torrents.nix
     ../features/vaultwarden.nix
+    ../features/youtube.nix
   ];
 
   users.groups.media = {};
