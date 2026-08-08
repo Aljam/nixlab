@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = [ pkgs.ytdl-sub ];
+  users.users.media = { isSystemUser = true; group = "media"; };
 
   environment.etc."ytdl-sub/config.yaml".text = ''
     configuration:
