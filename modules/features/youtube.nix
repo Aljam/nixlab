@@ -31,6 +31,7 @@
       User = "media"; 
       Group = "media";
       StateDirectory = "ytdl-sub";
+      WorkingDirectory = "/var/lib/ytdl-sub";
       ExecStart = "${pkgs.ytdl-sub}/bin/ytdl-sub --config /etc/ytdl-sub/config.yaml sub /etc/ytdl-sub/subscriptions.yaml";
       ReadWritePaths = [ "/mnt/media/youtube" ];
     };
