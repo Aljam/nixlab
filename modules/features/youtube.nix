@@ -12,13 +12,11 @@
         output_options:
           output_directory: "/mnt/media/youtube"
   '';
-
+  
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
-    Channels:
-      igotno_username:
-        preset:
-          - default
-        url: "https://www.youtube.com/@igotno_username"
+    igotno_username:
+      preset: [default]
+      url: "https://www.youtube.com/@igotno_username"
   '';
 
   systemd.services.ytdl-sub = {
