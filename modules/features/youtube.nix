@@ -3,6 +3,10 @@
 {
   environment.systemPackages = [ pkgs.ytdl-sub ];
   users.users.media = { isSystemUser = true; group = "media"; };
+  
+  systemd.tmpfiles.rules = [
+    "d /mnt/media/youtube 0770 root media -"
+  ];
 
   environment.etc."ytdl-sub/config.yaml".text = ''
     configuration:
