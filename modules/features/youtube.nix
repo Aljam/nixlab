@@ -11,6 +11,7 @@
       default:
         output_options:
           output_directory: "/mnt/media/youtube"
+          file_name: "{title}.{ext}"
   '';
   
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
