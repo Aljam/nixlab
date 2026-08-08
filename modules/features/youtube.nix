@@ -33,6 +33,7 @@
       StateDirectory = "ytdl-sub";
       ExecStart = "${pkgs.ytdl-sub}/bin/ytdl-sub --config /etc/ytdl-sub/config.yaml sub /etc/ytdl-sub/subscriptions.yaml";
       ProtectSystem = "strict";
+      PrivateTmp = true;
       ReadWritePaths = [ "/mnt/media/youtube" ];
     };
   };
