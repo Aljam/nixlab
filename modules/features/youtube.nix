@@ -41,7 +41,7 @@
     description = "Timer for ytdl-sub YouTube automation";
     wantedBy = [ "timers.target" ];
     timerConfig = {
-      OnCalendar = "hourly";
+      OnCalendar = "*:0/5";
       Persistent = true;
     };
   };
