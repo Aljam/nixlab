@@ -9,7 +9,7 @@
     presets:
       default:
         output_options:
-          output_directory: "/mnt/pool/media/youtube"
+          output_directory: "/mnt/media/youtube"
   '';
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
