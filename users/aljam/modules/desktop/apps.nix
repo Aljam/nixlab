@@ -2,8 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    ungoogled-chromium
-    kdePackages.kate
     deadbeef-with-plugins
     discord
     betterdiscordctl
