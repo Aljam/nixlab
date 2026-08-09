@@ -73,7 +73,7 @@ in
   services.shoko = {
     enable = true;
     openFirewall = true;
-  }
+  };
 
   # AniDB only (web UIs are localhost-only now)
   networking.firewall.allowedUDPPorts = [ 9000 ];
