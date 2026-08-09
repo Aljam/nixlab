@@ -21,10 +21,4 @@
     enable = true;
     autodetect = true;
   };
-
-  networking.firewall.allowedTCPPorts = [
-    22    # SSH
-    80    # HTTP
-    443   # HTTPS
-  ];
 }
