@@ -40,6 +40,11 @@ in
     lidarr.environment.LIDARR__SERVER__BINDADDRESS     = "127.0.0.1";
 
     bazarr.serviceConfig.UMask = "0002";
+
+    shoko.environment = {
+      ASPNETCORE_URLS = "http://127.0.0.1:8111";
+      SHOKO_PORT = "8111";
+    };
   };
 
   # Force media group for services that create their own user
