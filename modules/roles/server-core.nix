@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ../features/sanoid.nix
     ../features/monitoring.nix
   ];
 
