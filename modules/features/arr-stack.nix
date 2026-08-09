@@ -4,6 +4,7 @@ let
   mkArr = extra: {
     enable = true;
     group = "media";
+    openFirewall = true;
   } // extra;
 
   mediaUsers = [ "prowlarr" "bazarr" "readarr" "lidarr" "shoko" ];
