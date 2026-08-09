@@ -54,8 +54,10 @@ in
   services.seerr = {
     enable = true;
     port = 5055;
+    environment = {
+      host = "127.0.0.1";
+    };
   };
-  systemd.services.seerr.environment.HOST = "127.0.0.1";
 
   services.recyclarr.enable = true;
 
