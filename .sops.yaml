@@ -4,6 +4,7 @@ keys:
   - &navi age1762y5d2qd2w7uhe5eytj3r3g6c5wa04wej85ulcwemhfz903xetq3ecu59
   - &oryx age1cmqwuvuflmhg30sz5j6h9cztavahx8ep3rkshmfuqswdt0h9u48qa3x298
   - &r730xd age1wydscnqxyykujdxnpq0ekf84535dtz4vzhfz5el0h4h3us9vpusqhhctar
+  - &r730 age19ld0986nwpmydnq9smwc47grdqektew3pv8hk9rcasw32vss49xqmsayuw
 
 creation_rules:
   # Any file in the secrets folder will be encrypted so BOTH you and the server can unlock it
@@ -14,3 +15,4 @@ creation_rules:
       - *navi
       - *oryx
       - *r730xd
+      - *r730
