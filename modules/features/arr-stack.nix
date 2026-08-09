@@ -45,8 +45,10 @@
     HOST = "0.0.0.0";
   };
 
-  services.bazarr = {
+services.bazarr = {
     enable = true;
+    user = "bazarr";
+    group = "media";
     openFirewall = true;
   };
   
@@ -55,6 +57,7 @@
     group = lib.mkForce "media";
   };
   systemd.services.bazarr.environment.BAZARR__SERVER__BINDADDRESS = "*";
+  systemd.services.bazarr.serviceConfig.UMask = "0002";
 
   services.recyclarr.enable = true;
 
