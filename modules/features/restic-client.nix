@@ -13,7 +13,7 @@
 
       # Point this to your storage server (e.g., r730xd ZFS pool via SFTP)
       # Or change to a local directory path if backing up directly on the server
-      repository = "sftp:aljam@r730xd:/tank/backups/${config.networking.hostName}";
+      repository = "sftp:aljam@r730xd:/mnt/backups/${config.networking.hostName}";
 
       # Securely load the repository password using sops-nix
       passwordFile = config.sops.secrets.restic-password.path;
