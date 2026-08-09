@@ -1,6 +1,8 @@
 { config, pkgs, lib, domains, ... }:
 
 {
+   sops.secrets.grafana-secret-key = {};
+
   environment.systemPackages = with pkgs; [
     btop
     
