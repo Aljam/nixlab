@@ -20,15 +20,13 @@ in
     "d /mnt/media/music     0770 root media -"
   ];
 
-  # ── Core *arr stack ──────────────────────────────────────────────
   services.sonarr  = mkArr { user = "sonarr"; };
   services.radarr  = mkArr { user = "radarr"; };
   services.bazarr  = mkArr { user = "bazarr"; };
   services.lidarr  = mkArr { dataDir = "/var/lib/lidarr"; };
   services.readarr = mkArr { };
-  services.prowlarr = { enable = true; };
+  services.prowlarr = { enable = true; openFirewall = true; };
 
-  # Bind to localhost + Bazarr umask + Shoko
   systemd.services = {
     sonarr.environment.SONARR__SERVER__BINDADDRESS     = "0.0.0.0";
     radarr.environment.RADARR__SERVER__BINDADDRESS     = "0.0.0.0";
@@ -39,7 +37,6 @@ in
 
     bazarr.serviceConfig.UMask = "0002";
 
-    # Shoko has no bindAddress option — use ASP.NET Core env
     shoko.environment = {
       ASPNETCORE_URLS = "http://0.0.0.0:8111";
       SHOKO_PORT = "8111";
@@ -51,7 +48,6 @@ in
     group = lib.mkForce "media";
   });
 
-  # ── Other media helpers ──────────────────────────────────────────
   services.seerr = {
     enable = true;
     port = 5055;
@@ -64,6 +60,7 @@ in
     enable = true;
     port = 13378;
     host = "0.0.0.0";
+    openFirewall = true;
   };
 
   services.autobrr = {
