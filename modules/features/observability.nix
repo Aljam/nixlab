@@ -116,7 +116,7 @@
         serve_from_sub_path = true;
       };
       security = {
-        secret_key = "$__file{${pkgs.writeText "grafana-secret-key" "SW2YcwTIb9zpOOhoPsMm"}}";
+        secret_key = config.sops.secrets.grafana-secret-key.path;
       };
     };
     provision = {
