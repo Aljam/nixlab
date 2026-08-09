@@ -3,7 +3,7 @@
 let
   # Shared defaults for *arr-style services
   bindAll = serviceName: envPrefix: {
-    systemd.services.${serviceName}.environment."${envPrefix}__SERVER__BINDADDRESS" = "*";
+    systemd.services.${serviceName}.environment."${envPrefix}__SERVER__BINDADDRESS" = "127.0.0.1";
   };
 
   # Force a system user into the media group (for modules that create their own user)
