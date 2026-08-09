@@ -69,7 +69,6 @@ in
     enable = true;
     openFirewall = true;
     secretFile = config.sops.secrets.autobrr_api_key.path;
-    address = "127.0.0.1";
   };
 
   services.shoko.enable = true;
