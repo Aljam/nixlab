@@ -24,6 +24,7 @@
         appId = "org.vinegarhq.Sober";
         origin = "flathub";
       }
+      "com.github.PintaProject.Pinta"
       "com.fightcade.Fightcade"
     ];
   };
