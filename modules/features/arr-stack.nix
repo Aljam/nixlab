@@ -36,12 +36,12 @@ in
 
   # Bind to all interfaces + Bazarr umask
   systemd.services = {
-    sonarr.environment.SONARR__SERVER__BINDADDRESS     = "*";
-    radarr.environment.RADARR__SERVER__BINDADDRESS     = "*";
-    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "*";
-    bazarr.environment.BAZARR__SERVER__BINDADDRESS     = "*";
-    readarr.environment.READARR__SERVER__BINDADDRESS   = "*";
-    lidarr.environment.LIDARR__SERVER__BINDADDRESS     = "*";
+    sonarr.environment.SONARR__SERVER__BINDADDRESS     = "127.0.0.1";
+    radarr.environment.RADARR__SERVER__BINDADDRESS     = "127.0.0.1";
+    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "127.0.0.1";
+    bazarr.environment.BAZARR__SERVER__BINDADDRESS     = "127.0.0.1";
+    readarr.environment.READARR__SERVER__BINDADDRESS   = "127.0.0.1";
+    lidarr.environment.LIDARR__SERVER__BINDADDRESS     = "127.0.0.1";
 
     bazarr.serviceConfig.UMask = "0002";
   };
@@ -58,14 +58,14 @@ in
     port = 5055;
     openFirewall = true;
   };
-  systemd.services.seerr.environment.HOST = "0.0.0.0";
+  systemd.services.seerr.environment.HOST = "127.0.0.1";
 
   services.recyclarr.enable = true;
 
   services.audiobookshelf = {
     enable = true;
     port = 13378;
-    host = "0.0.0.0";
+    host = "127.0.0.1";
   };
 
   services.autobrr = {
@@ -74,7 +74,7 @@ in
     secretFile = config.sops.secrets.autobrr_api_key.path;
     settings = {
       port = 7474;
-      host = "0.0.0.0";
+      host = "127.0.0.1";
     };
   };
 
