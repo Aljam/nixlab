@@ -97,12 +97,15 @@
     };
   };
 
+  services.shoko.enable = true;
+  users.users.shoko.extraGroups = [ "media" ];
 
   networking.firewall.allowedTCPPorts = [
     5055  # Seerr
     6767  # Bazarr
     7474  # Autobrr
     7878  # Radarr
+    8111  # Shoko
     8686  # Lidarr
     8787  # Readarr
     8989  # Sonarr
