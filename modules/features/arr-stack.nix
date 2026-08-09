@@ -54,9 +54,7 @@ in
   services.seerr = {
     enable = true;
     port = 5055;
-    environment = {
-      host = "127.0.0.1";
-    };
+    openFirewall = true;
   };
 
   services.recyclarr.enable = true;
