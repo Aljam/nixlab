@@ -134,7 +134,7 @@
     enable = true;
     settings = {
       server = {
-        http_addr = "127.0.0.1";
+        http_addr = "0.0.0.0";
         http_port = 3000;
         root_url = "https://grafana.${domains.primary}"; 
         domain = "grafana.${domains.primary}";
