@@ -13,6 +13,8 @@
       working_directory: "/var/lib/ytdl-sub"
     presets:
       default:
+        ytdl_options:
+          match_filter: "duration <= 43200"
         output_options:
           output_directory: "/mnt/media/youtube"
           file_name: "{title}.{ext}"
