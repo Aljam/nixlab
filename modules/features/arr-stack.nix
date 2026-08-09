@@ -29,10 +29,7 @@ in
   services.bazarr  = mkArr { user = "bazarr"; };
   services.lidarr  = mkArr { dataDir = "/var/lib/lidarr"; };
   services.readarr = mkArr { };
-  services.prowlarr = {
-    enable = true;
-    openFirewall = true;
-  };
+  services.prowlarr = { enable = true; };
 
   # Bind to all interfaces + Bazarr umask
   systemd.services = {
@@ -56,7 +53,6 @@ in
   services.seerr = {
     enable = true;
     port = 5055;
-    openFirewall = true;
   };
   systemd.services.seerr.environment.HOST = "127.0.0.1";
 
@@ -70,7 +66,6 @@ in
 
   services.autobrr = {
     enable = true;
-    openFirewall = true;
     secretFile = config.sops.secrets.autobrr_api_key.path;
     settings = {
       port = 7474;
