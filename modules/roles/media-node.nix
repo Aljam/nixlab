@@ -35,6 +35,7 @@
           { Lidarr = { href = "https://lidarr.${domains.primary}"; description = "Music Automation"; icon = "lidarr.png"; }; }
           { qBittorrent = { href = "https://qb.${domains.primary}"; description = "Torrents"; icon = "qbittorrent.png"; }; }
           { Autobrr = { href = "https://autobrr.${domains.primary}"; description = "IRC Torrent Filters"; icon = "autobrr.png"; }; }
+          { Shoko = { href = "https://shoko.${domains.primary}"; description = "AniDB integration"; icon = "shoko.png"; }; }
         ];
       }
       {
