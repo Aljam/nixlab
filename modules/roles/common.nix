@@ -1,6 +1,10 @@
 { config, pkgs, lib, ... }:
 
 {
+  imports = [
+    ../../modules/features/boot.nix
+  ];
+  
   nixpkgs.config.allowUnfree = true;
   hardware.enableRedistributableFirmware = true;
 
