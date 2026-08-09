@@ -14,8 +14,6 @@
   environment.systemPackages = with pkgs; [
     smartmontools
     tmux
-    htop
-    lm_sensors
     pciutils
   ];
 
