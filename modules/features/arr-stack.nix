@@ -116,4 +116,6 @@
     9696  # Prowlarr
     13378 # Audiobookshelf
   ];
+
+  networking.firewall.allowedUDPPorts = [ 9000 ]; # shoko anidb
 }
