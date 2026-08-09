@@ -10,5 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4.4.0
       - uses: DeterminateSystems/nix-installer-action@v22
-      - run: nix flake check
-      - run: nixos-rebuild dry-build
+      - run: nix build .#nixosConfigurations.<host>.config.system.build.toplevel --dry-run
+      - run: nix flake check --all-systems
+
+
