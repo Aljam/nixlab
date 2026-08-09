@@ -98,7 +98,11 @@
   };
 
   services.shoko.enable = true;
-  users.users.shoko.extraGroups = [ "media" ];
+  
+  users.users.shoko = { 
+    isSystemUser = true;
+    group = "media"; 
+  };
 
   networking.firewall.allowedTCPPorts = [
     5055  # Seerr
