@@ -76,10 +76,6 @@ in
 
   # Only ports not covered by openFirewall
   networking.firewall = {
-    allowedTCPPorts = [
-      13378  # Audiobookshelf
-      8111   # Shoko
-    ];
     allowedUDPPorts = [
       9000   # Shoko AniDB
     ];
