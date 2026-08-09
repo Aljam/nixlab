@@ -7,6 +7,8 @@
     "d /mnt/media/movies 0770 root media -"
     "d /mnt/media/tv 0770 root media -"
     "d /mnt/media/downloads 0770 root media -"
+    "d /mnt/media/books 0770 root media -"
+    "d /mnt/media/music 0770 root media -"
   ];
 
   services.sonarr = {
