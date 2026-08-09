@@ -2,8 +2,8 @@
 
 {
    sops.secrets.grafana-secret-key = {};
-
-  environment.systemPackages = with pkgs; [
+   
+   environment.systemPackages = with pkgs; [
     btop
     
     # Workaround for upstream pytest failures
