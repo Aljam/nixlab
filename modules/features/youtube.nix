@@ -18,7 +18,7 @@
           download_sections: "*00:00:00-inf"
         output_options:
           output_directory: "/mnt/media/youtube"
-          file_name: "{title}.{ext}"
+          file_name: "[{upload_date}] - {title}.{ext}"
   '';
   
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
