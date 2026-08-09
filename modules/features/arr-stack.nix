@@ -29,18 +29,18 @@ in
 
   # Bind to localhost + Bazarr umask + Shoko
   systemd.services = {
-    sonarr.environment.SONARR__SERVER__BINDADDRESS     = "127.0.0.1";
-    radarr.environment.RADARR__SERVER__BINDADDRESS     = "127.0.0.1";
-    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "127.0.0.1";
-    bazarr.environment.BAZARR__SERVER__BINDADDRESS     = "127.0.0.1";
-    readarr.environment.READARR__SERVER__BINDADDRESS   = "127.0.0.1";
-    lidarr.environment.LIDARR__SERVER__BINDADDRESS     = "127.0.0.1";
+    sonarr.environment.SONARR__SERVER__BINDADDRESS     = "0.0.0.0";
+    radarr.environment.RADARR__SERVER__BINDADDRESS     = "0.0.0.0";
+    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "0.0.0.0";
+    bazarr.environment.BAZARR__SERVER__BINDADDRESS     = "0.0.0.0";
+    readarr.environment.READARR__SERVER__BINDADDRESS   = "0.0.0.0";
+    lidarr.environment.LIDARR__SERVER__BINDADDRESS     = "0.0.0.0";
 
     bazarr.serviceConfig.UMask = "0002";
 
     # Shoko has no bindAddress option — use ASP.NET Core env
     shoko.environment = {
-      ASPNETCORE_URLS = "http://127.0.0.1:8111";
+      ASPNETCORE_URLS = "http://0.0.0.0:8111";
       SHOKO_PORT = "8111";
     };
   };
@@ -62,7 +62,7 @@ in
   services.audiobookshelf = {
     enable = true;
     port = 13378;
-    host = "127.0.0.1";
+    host = "0.0.0.0";
   };
 
   services.autobrr = {
