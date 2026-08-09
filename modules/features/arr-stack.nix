@@ -1,19 +1,16 @@
 { config, pkgs, lib, ... }:
 
 let
-  # Common *arr options
   mkArr = extra: {
     enable = true;
     group = "media";
   } // extra;
 
-  # Force system users into the media group
   mediaUsers = [ "prowlarr" "bazarr" "readarr" "lidarr" "shoko" ];
 in
 {
   sops.secrets.autobrr_api_key = { };
 
-  # Media directories
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies    0770 root media -"
     "d /mnt/media/tv        0770 root media -"
@@ -30,7 +27,7 @@ in
   services.readarr = mkArr { };
   services.prowlarr = { enable = true; };
 
-  # Bind to all interfaces + Bazarr umask
+  # Bind to localhost + Bazarr umask + Shoko
   systemd.services = {
     sonarr.environment.SONARR__SERVER__BINDADDRESS     = "127.0.0.1";
     radarr.environment.RADARR__SERVER__BINDADDRESS     = "127.0.0.1";
@@ -41,13 +38,13 @@ in
 
     bazarr.serviceConfig.UMask = "0002";
 
+    # Shoko has no bindAddress option — use ASP.NET Core env
     shoko.environment = {
       ASPNETCORE_URLS = "http://127.0.0.1:8111";
       SHOKO_PORT = "8111";
     };
   };
 
-  # Force media group for services that create their own user
   users.users = lib.genAttrs mediaUsers (name: {
     isSystemUser = true;
     group = lib.mkForce "media";
@@ -79,10 +76,6 @@ in
 
   services.shoko.enable = true;
 
-  # Only ports not covered by openFirewall
-  networking.firewall = {
-    allowedUDPPorts = [
-      9000   # Shoko AniDB
-    ];
-  };
+  # AniDB only (web UIs are localhost-only now)
+  networking.firewall.allowedUDPPorts = [ 9000 ];
 }
