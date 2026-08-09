@@ -5,7 +5,7 @@ let
   mkArr = extra: {
     enable = true;
     group = "media";
-  };
+  } // extra;
 
   # Force system users into the media group
   mediaUsers = [ "prowlarr" "bazarr" "readarr" "lidarr" "shoko" ];
