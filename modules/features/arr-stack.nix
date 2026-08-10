@@ -69,6 +69,9 @@ in
       radarr.movies = {
         base_url = "http://localhost:7878";
         api_key = config.sops.secrets.radarr_api_key.path;
+      };
+    };
+  };
 
   services.audiobookshelf = {
     enable = true;
