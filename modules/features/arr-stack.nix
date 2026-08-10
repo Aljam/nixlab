@@ -7,31 +7,35 @@ let
     openFirewall = true;
   } // extra;
 
-  mediaUsers = [ "prowlarr" "bazarr" "readarr" "lidarr" "shoko" ];
+  mediaUsers = [ "sonarr" "radarr" "prowlarr" "bazarr" "readarr" "lidarr" "shoko" ];
 in
 {
+  # SOPS secret declarations
   sops.secrets.autobrr_api_key = { };
-  sops.secrets.sonarr_api_key = {};
-  sops.secrets.radarr_api_key = {};
+  sops.secrets.sonarr_api_key = { };
+  sops.secrets.radarr_api_key = { };
 
+  # Declarative directory creation and permissions
   systemd.tmpfiles.rules = [
-    "d /mnt/media/movies    0770 root media -"
-    "d /mnt/media/tv        0770 root media -"
-    "d /mnt/media/downloads 0770 root media -"
-    "d /mnt/media/downloads/tv  0770 root media -"
-    "d /mnt/media/downloads/movies  0770 root media -"
+    "d /mnt/media/movies           0770 root media -"
+    "d /mnt/media/tv               0770 root media -"
+    "d /mnt/media/downloads        0770 root media -"
+    "d /mnt/media/downloads/tv     0770 root media -"
+    "d /mnt/media/downloads/movies 0770 root media -"
     "d /mnt/media/downloads/music  0770 root media -"
-    "d /mnt/media/books     0770 root media -"
-    "d /mnt/media/music     0770 root media -"
+    "d /mnt/media/books            0770 root media -"
+    "d /mnt/media/music            0770 root media -"
   ];
 
-  services.sonarr  = mkArr { user = "sonarr"; };
-  services.radarr  = mkArr { user = "radarr"; };
-  services.bazarr  = mkArr { user = "bazarr"; };
-  services.lidarr  = mkArr { dataDir = "/var/lib/lidarr"; };
-  services.readarr = mkArr { };
+  # Service definitions tied to the shared media group
+  services.sonarr   = mkArr { user = "sonarr"; };
+  services.radarr   = mkArr { user = "radarr"; };
+  services.bazarr   = mkArr { user = "bazarr"; };
+  services.lidarr   = mkArr { user = "lidarr"; dataDir = "/var/lib/lidarr"; };
+  services.readarr  = mkArr { user = "readarr"; };
   services.prowlarr = { enable = true; openFirewall = true; };
 
+  # Ensure all service daemons bind to all local network interfaces
   systemd.services = {
     sonarr.environment.SONARR__SERVER__BINDADDRESS     = "0.0.0.0";
     radarr.environment.RADARR__SERVER__BINDADDRESS     = "0.0.0.0";
@@ -48,9 +52,10 @@ in
     };
   };
 
+  # Enforce system user identities assigned to the media group
   users.users = lib.genAttrs mediaUsers (name: {
     isSystemUser = true;
-    group = lib.mkForce "media";
+    group = "media";
   });
 
   services.seerr = {
@@ -59,6 +64,7 @@ in
     openFirewall = true;
   };
 
+  # Recyclarr TRaSH Guides synchronization
   services.recyclarr = {
     enable = true;
     configuration = {
@@ -114,6 +120,5 @@ in
     openFirewall = true;
   };
 
-  # AniDB only (web UIs are localhost-only now)
   networking.firewall.allowedUDPPorts = [ 9000 ];
 }
