@@ -65,10 +65,16 @@ in
       sonarr.anime = {
         base_url = "http://localhost:8989";
         api_key = config.sops.secrets.sonarr_api_key.path;
+        quality_profiles = [
+          { trash_id = "72dae194fc92bf828f32cde7744e51a1"; }
+        ];
       };
       radarr.movies = {
         base_url = "http://localhost:7878";
         api_key = config.sops.secrets.radarr_api_key.path;
+        quality_profiles = [
+          { trash_id = "037b514d3bf2cf92cf24edf915be4855"; }
+        ];
       };
     };
   };
