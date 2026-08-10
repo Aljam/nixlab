@@ -76,7 +76,11 @@ in
         ];
         custom_formats = [
           {
-            trash_ids = [ "3b8d30e5fdbf72c36605e5da25243bc5" ];
+            trash_ids = [ 
+              "d0901a523f66d482d77eb6e55c70e28f" # Repack/Proper (Sonarr)
+              "418f50b10f1907201b6cfdf881f467b7" # Anime Dual Audio
+              "026d5aadd1a6b4e550b134cb6c72b3ca" # uNCENSORED
+            ];
             assign_scores_to = [
               { name = "WEB-1080p"; score = 500; }
             ];
