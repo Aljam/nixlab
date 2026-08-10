@@ -57,7 +57,19 @@ in
     openFirewall = true;
   };
 
-  services.recyclarr.enable = true;
+  sops.secrets.sonarr_api_key = {};
+  sops.secrets.radarr_api_key = {};
+
+  services.recyclarr = {
+    enable = true;
+    configuration = {
+      sonarr.anime = {
+        base_url = "http://localhost:8989";
+        api_key = config.sops.secrets.sonarr_api_key.path;
+      };
+      radarr.movies = {
+        base_url = "http://localhost:7878";
+        api_key = config.sops.secrets.radarr_api_key.path;
 
   services.audiobookshelf = {
     enable = true;
