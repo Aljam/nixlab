@@ -68,12 +68,28 @@ in
         quality_profiles = [
           { trash_id = "72dae194fc92bf828f32cde7744e51a1"; }
         ];
+        custom_formats = [
+          {
+            trash_ids = [ "3b8d30e5fdbf72c36605e5da25243bc5" ];
+            assign_scores_to = [
+              { name = "WEB-1080p"; score = 500; }
+            ];
+          }
+        ];
       };
       radarr.movies = {
         base_url = "http://localhost:7878";
         api_key = config.sops.secrets.radarr_api_key.path;
         quality_profiles = [
-          { trash_id = "037b514d3bf2cf92cf24edf915be4855"; }
+          { trash_id = "d1d67249d3890e49bc12e275d989a7e9"; }
+        ];
+        custom_formats = [
+          {
+            trash_ids = [ "e7718d7a3ce595f289bfee26adc178f5" ];
+            assign_scores_to = [
+              { name = "HD Bluray + WEB"; score = 500; }
+            ];
+          }
         ];
       };
     };
