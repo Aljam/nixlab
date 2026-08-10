@@ -77,7 +77,7 @@ in
         custom_formats = [
           {
             trash_ids = [ 
-              "d0901a523f66d482d77eb6e55c70e28f" # Repack/Proper (Sonarr)
+              "ec8fa7296b64e8cd390a1600981f3923" # Repack/Proper (Sonarr)
               "418f50b10f1907201b6cfdf881f467b7" # Anime Dual Audio
               "026d5aadd1a6b4e550b134cb6c72b3ca" # uNCENSORED
             ];
