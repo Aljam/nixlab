@@ -85,7 +85,7 @@ in
       };
       radarr.movies = {
         base_url = "http://localhost:7878";
-        pi_key._secret = sops.secrets.radarr_api_key.path;
+        api_key._secret = sops.secrets.radarr_api_key.path;
         quality_profiles = [
           { trash_id = "d1d67249d3890e49bc12e275d989a7e9"; }
         ];
