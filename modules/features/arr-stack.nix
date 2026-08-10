@@ -11,6 +11,8 @@ let
 in
 {
   sops.secrets.autobrr_api_key = { };
+  sops.secrets.sonarr_api_key = {};
+  sops.secrets.radarr_api_key = {};
 
   systemd.tmpfiles.rules = [
     "d /mnt/media/movies    0770 root media -"
@@ -56,9 +58,6 @@ in
     port = 5055;
     openFirewall = true;
   };
-
-  sops.secrets.sonarr_api_key = {};
-  sops.secrets.radarr_api_key = {};
 
   services.recyclarr = {
     enable = true;
