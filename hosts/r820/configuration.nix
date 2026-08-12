@@ -11,14 +11,6 @@
 
   networking.hostName = "r820";
 
-  networking.bridges = {
-    "br0" = {
-      interfaces = [ "eno1" ];
-    };
-  };
-
-  # Disable DHCP on the physical interface so it doesn't fight the bridge
-  networking.interfaces.eno1.useDHCP = false;
   
   networking.interfaces.br0.ipv4.addresses = [{
     address = "${subnets.lan}.4";
