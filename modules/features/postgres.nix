@@ -38,6 +38,9 @@
     openFirewall = true;
     initialPasswordFile = config.sops.secrets.pgadmin_password.path;
     port = 5050; # Default port for the web interface
+    settings = {
+      DEFAULT_SERVER = "0.0.0.0";
+    };
   };
 
   # 4. Open the Firewall
