@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, subnets, ... }:
 
 {
   services.prometheus.exporters.node = {
@@ -19,4 +19,5 @@
   };
 
   networking.firewall.allowedTCPPorts = [ 9100 ];
+  networking.firewall.extraInput = "ip saddr 192.168.1.2 tcp dport 9100 accept";
 }
