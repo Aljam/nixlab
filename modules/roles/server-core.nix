@@ -6,7 +6,7 @@
     ../features/node-exporter.nix
   ];
 
-  networking.defaultGateway = { address = "${subnets.lan}.1"; };
+  networking.defaultGateway.address = "${subnets.lan}.1";
   networking.nameservers = [ "${subnets.lan}.1" ];
   networking.enableIPv6 = false;
   networking.firewall.trustedInterfaces = [ "eno1" ];
