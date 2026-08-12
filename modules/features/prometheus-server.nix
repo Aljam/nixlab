@@ -19,5 +19,5 @@
   };
 
   # Ensure the prometheus port is open on the server hosting it
-  networking.firewall.allowedTCPPorts = [ 9090 ];
+  networking.firewall.allowedTCPPorts = [ 9090 9100 ];
 }
