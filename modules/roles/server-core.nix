@@ -9,6 +9,8 @@
   networking.defaultGateway = "${subnets.lan}.1";
   networking.nameservers = [ "${subnets.lan}.1" ];
 
+  networking.enableIPv6 = false;
+
   networking.networkmanager.enable = false;
   networking.useDHCP = false;
 
