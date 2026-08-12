@@ -17,23 +17,6 @@
     sysstat
   ];
 
-  services.prometheus.exporters.node = {
-    enable = true;
-    openFirewall = true;
-    port = 9100;
-    enabledCollectors = lib.mkForce [
-      "systemd"
-      "processes"
-      "cpu"
-      "diskstats"
-      "filesystem"
-      "netdev"
-      "zfs"
-      "hwmon"
-      "nvme"
-    ];
-  };
-
  sops.secrets.alertmanager_smtp_password = {};
 
   # Enable and Configure Alertmanager for Email
