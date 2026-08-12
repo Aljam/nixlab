@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, domains, ... }:
 
 {
    sops.secrets.grafana-secret-key = {};
