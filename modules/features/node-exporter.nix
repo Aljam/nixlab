@@ -16,6 +16,7 @@
       "nvme"
     ];
     firewallFilter = "-i br0 -p tcp -m tcp --dport 9100";
+    extraFlags = [ "--web.listen-address=0.0.0.0:9100" ];
   };
 
   networking.firewall.allowedTCPPorts = [ 9100 ];
