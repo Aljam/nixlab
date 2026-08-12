@@ -6,10 +6,8 @@
     ../features/node-exporter.nix
   ];
 
-  networking.defaultGateway = "${subnets.lan}.1";
+  networking.defaultGateway = { address = "${subnets.lan}.1"; interface = "eno1"; };
   networking.nameservers = [ "${subnets.lan}.1" ];
-  networking.defaultGateway.interface = "eno1";
-
   networking.enableIPv6 = false;
 
   networking.networkmanager.enable = false;
