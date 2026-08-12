@@ -9,7 +9,7 @@
   networking.defaultGateway = { address = "${subnets.lan}.1"; };
   networking.nameservers = [ "${subnets.lan}.1" ];
   networking.enableIPv6 = false;
-  networking.firewall.trustedInterfaces = [ "eno1 br0" ];
+  networking.firewall.trustedInterfaces = [ "eno1" ];
   networking.firewall.allowPing = true;
 
   networking.networkmanager.enable = false;
