@@ -15,6 +15,7 @@
           ]; 
         }]; 
       }
+    ];
   };
 
   # Ensure the prometheus port is open on the server hosting it
