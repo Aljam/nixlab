@@ -8,7 +8,6 @@
     port = 9100;
     enabledCollectors = lib.mkForce [
       "systemd"
-      "processes"
       "cpu"
       "diskstats"
       "filesystem"
