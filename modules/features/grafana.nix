@@ -24,12 +24,16 @@
       }];
       dashboards.settings.providers = [{
         name = "Default";
-        options.path = pkgs.fetchurl {
-          url = "https://grafana.com/api/dashboards/1860/revisions/37/download";
-          sha256 = "sha256-1DE1aaanRHHeCOMWDGdOS1wBXxOF84UXAjJzT5Ek6mM=";
-        };
+        options.path = pkgs.runCommand "grafana-dashboards" {} ''
+          mkdir -p $out
+          cp ${pkgs.fetchurl {
+            url = "https://grafana.com/api/dashboards/1860/revisions/37/download";
+            sha256 = "sha256-1DE1aaanRHHeCOMWDGdOS1wBXxOF84UXAjJzT5Ek6mM=";
+          }} $out/node-exporter-full.json
+        '';
       }];
     };
   };
+  
   networking.firewall.allowedTCPPorts = [ 3000 ];
 }
