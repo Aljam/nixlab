@@ -3,6 +3,7 @@
 {
   imports = [
     ../features/monitoring.nix
+    ../features/node-exporter.nix
   ];
 
   networking.defaultGateway = "${subnets.lan}.1";
