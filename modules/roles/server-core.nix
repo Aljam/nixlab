@@ -8,6 +8,7 @@
 
   networking.defaultGateway = "${subnets.lan}.1";
   networking.nameservers = [ "${subnets.lan}.1" ];
+  networking.defaultGateway.interface = "eno1";
 
   networking.enableIPv6 = false;
 
