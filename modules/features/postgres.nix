@@ -22,7 +22,7 @@
     '';
 
     # Optional: Automatically create a default database and user on first boot
-    ensureDatabases = [ "homelab_db" ];
+    ensureDatabases = [ "webscraper" "admin" " ];
     ensureUsers = [
       {
         name = "admin";
