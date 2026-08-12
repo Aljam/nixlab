@@ -35,6 +35,7 @@
   services.pgadmin = {
     enable = true;
     initialEmail = "admin@derezzed.info"; # Using your existing domain
+    openFirewall = true;
     initialPasswordFile = config.sops.secrets.pgadmin_password.path;
     port = 5050; # Default port for the web interface
   };
