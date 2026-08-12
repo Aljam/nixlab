@@ -80,56 +80,6 @@
     };
   };
 
-  services.prometheus = {
-    enable = true;
-    port = 9090;
-
-    alertmanagers = [
-      {
-        scheme = "http";
-        static_configs = [ { targets = [ "127.0.0.1:9093" ]; } ];
-      }
-    ];
-    
-    scrapeConfigs = [
-      {
-        job_name = "nixos-local";
-        static_configs = [ { targets = [ "127.0.0.1:9100" ]; } ];
-      }
-    ];
-
-    rules = [
-      ''
-        groups:
-          - name: hardware_alerts
-            rules:
-              - alert: InstanceDown
-                expr: up == 0
-                for: 5m
-                labels:
-                  severity: critical
-                annotations:
-                  summary: "Host {{ $labels.instance }} is unreachable."
-
-              - alert: HighCpuLoad
-                expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 85
-                for: 10m
-                labels:
-                  severity: warning
-                annotations:
-                  summary: "CPU load on {{ $labels.instance }} has been > 85% for 10 minutes."
-
-              - alert: ZfsPoolCapacityWarning
-                expr: zfs_pool_capacity > 85
-                for: 5m
-                labels:
-                  severity: warning
-                annotations:
-                  summary: "ZFS Pool {{ $labels.pool }} on {{ $labels.instance }} is dangerously full."
-      ''
-    ];
-  };
-
   services.grafana = {
     enable = true;
     settings = {
