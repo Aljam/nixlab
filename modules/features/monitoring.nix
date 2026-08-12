@@ -63,33 +63,6 @@
     };
   };
 
-  services.grafana = {
-    enable = true;
-    settings = {
-      server = {
-        http_addr = "0.0.0.0";
-        http_port = 3000;
-        root_url = "https://grafana.${domains.primary}"; 
-        domain = "grafana.${domains.primary}";
-        serve_from_sub_path = true;
-      };
-      security = {
-        secret_key = config.sops.secrets.grafana-secret-key.path;
-      };
-    };
-    provision = {
-      enable = true;
-      datasources.settings.datasources = [
-        {
-          name = "Prometheus";
-          type = "prometheus";
-          access = "proxy";
-          url = "http://127.0.0.1:9090"; 
-          isDefault = true;
-        }
-      ];
-    };
-  };
 
   networking.firewall.allowedTCPPorts = [ 9090 3000 9100 9093 ];
 }
