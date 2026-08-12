@@ -19,5 +19,4 @@
   };
 
   networking.firewall.allowedTCPPorts = [ 9100 ];
-  networking.firewall.extraCommands = "ip saddr 192.168.1.2 tcp dport 9100 accept";
 }
