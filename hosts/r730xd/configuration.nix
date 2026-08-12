@@ -9,6 +9,7 @@
     ../../modules/features/nvidia-headless.nix
     ../../modules/roles/media-node.nix
     ../../modules/roles/storage-node.nix
+    ../../modules/features/prometheus-server.nix
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_1;  
