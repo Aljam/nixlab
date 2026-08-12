@@ -16,6 +16,7 @@
       "hwmon"
       "nvme"
     ];
+    extraFlags = [ "--web.listen-address=0.0.0.0:9100" ];
   };
 
   networking.firewall.allowedTCPPorts = [ 9100 ];
