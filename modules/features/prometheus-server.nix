@@ -15,9 +15,6 @@
           ]; 
         }]; 
       }
-    ];
-
-    extraFlags = [ "--web.listen-address=0.0.0.0:9100" ];
   };
 
   # Ensure the prometheus port is open on the server hosting it
