@@ -4,7 +4,7 @@
   services.prometheus.exporters.node = {
     enable = true;
     openFirewall = true;
-    listenAddress = "0.0.0.0";
+    listenAddress = "192.168.1.2";
     port = 9100;
     enabledCollectors = lib.mkForce [
       "systemd"
