@@ -5,6 +5,7 @@ keys:
   - &oryx age1cmqwuvuflmhg30sz5j6h9cztavahx8ep3rkshmfuqswdt0h9u48qa3x298
   - &r730xd age1wydscnqxyykujdxnpq0ekf84535dtz4vzhfz5el0h4h3us9vpusqhhctar
   - &r730 age19ld0986nwpmydnq9smwc47grdqektew3pv8hk9rcasw32vss49xqmsayuw
+  - &r820 age1m63qqf3u6n7dlsjdh6mke4wejntwuarm8y7jrjzp59zaua809gsskgddvk
 
 creation_rules:
   # Any file in the secrets folder will be encrypted so BOTH you and the server can unlock it
@@ -16,3 +17,4 @@ creation_rules:
       - *oryx
       - *r730xd
       - *r730
+      - *r820
