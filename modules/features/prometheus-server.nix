@@ -7,7 +7,7 @@
     scrapeConfigs = [
       { 
         job_name = "fleet-nodes"; 
-        static_configs = [{ targets = [ "r730xd:9100" "r820:9100" "r730:9100" ]; }]; 
+        static_configs = [{ targets = [ "192.168.1.2:9100" "192.168.1.3:9100" "192.168.1.4:9100" ]; }]; 
       }
     ];
   };
