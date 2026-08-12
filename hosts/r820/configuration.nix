@@ -21,7 +21,7 @@
   networking.interfaces.eno1.useDHCP = false;
   
   networking.interfaces.br0.ipv4.addresses = [{
-    address = "${subnets.lan}.3";
+    address = "${subnets.lan}.4";
     prefixLength = 24;
   }];
 
