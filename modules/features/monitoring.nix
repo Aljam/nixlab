@@ -64,5 +64,5 @@
   };
 
 
-  networking.firewall.allowedTCPPorts = [ 9090 3000 9100 9093 ];
+  networking.firewall.allowedTCPPorts = [ 9093 ];
 }
