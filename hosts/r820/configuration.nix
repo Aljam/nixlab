@@ -12,7 +12,7 @@
   networking.hostName = "r820";
 
   
-  networking.interfaces.br0.ipv4.addresses = [{
+  networking.interfaces.eno1.ipv4.addresses = [{
     address = "${subnets.lan}.4";
     prefixLength = 24;
   }];
