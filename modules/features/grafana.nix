@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+   sops.secrets.grafana-secret-key = {};
+
    services.grafana = {
     enable = true;
     settings = {
