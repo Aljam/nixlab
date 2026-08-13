@@ -43,6 +43,10 @@
     };
   };
 
+  systemd.services.pgadmin.environment = {
+    PGADMIN_LISTEN_ADDRESS = "0.0.0.0";
+  };
+
   # 4. Open the Firewall
   # 5432 = PostgreSQL | 5050 = pgAdmin Web UI
   networking.firewall.allowedTCPPorts = [ 5432 5050 ];
