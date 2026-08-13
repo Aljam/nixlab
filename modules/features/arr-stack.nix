@@ -45,6 +45,13 @@ in
 
   # Ensure all service daemons bind to all local network interfaces
   systemd.services = {
+    sonarr.environment.SONARR__SERVER__BINDADDRESS = "127.0.0.1";
+    radarr.environment.RADARR__SERVER__BINDADDRESS = "127.0.0.1";
+    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "127.0.0.1";
+    bazarr.environment.BAZARR__SERVER__BINDADDRESS = "127.0.0.1";
+    readarr.environment.READARR__SERVER__BINDADDRESS = "127.0.0.1";
+    lidarr.environment.LIDARR__SERVER__BINDADDRESS = "127.0.0.1";
+
     bazarr.serviceConfig.UMask = "0002";
 
     shoko.environment = {
