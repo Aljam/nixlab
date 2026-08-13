@@ -15,7 +15,7 @@
     authentication = pkgs.lib.mkOverride 10 ''
       # type database  DBuser  auth-method
       local all       all     trust
-      host  all       all     127.0.0.1/32   trust
+      host  all       all     ${subnets.lan}.4/32   trust
       host  all       all     ::1/128        trust
       # Allow your entire Tailscale or local subnet to authenticate with a password
       host  all       all     ${subnets.lan}.0/24 md5
@@ -38,11 +38,11 @@
     initialPasswordFile = config.sops.secrets.pgadmin_password.path;
     port = 5050; # Default port for the web interface
     settings = {
-      DEFAULT_SERVER = "127.0.0.1";
+      DEFAULT_SERVER = "${subnets.lan}.4";
     };
   };
 
   systemd.services.pgadmin.environment = {
-    PGADMIN_LISTEN_ADDRESS = "127.0.0.1";
+    PGADMIN_LISTEN_ADDRESS = "${subnets.lan}.4";
   };
 }
