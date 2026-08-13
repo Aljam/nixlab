@@ -14,6 +14,9 @@
     presets:
       default:
         ytdl_options:
+          sleep_requests: 1.5
+          sleep_interval: 10
+          max_sleep_interval: 20
           live_from_start: true
           download_sections: "*00:00:00-inf"
           cookiefile: "/var/lib/ytdl-sub/cookies.txt"
