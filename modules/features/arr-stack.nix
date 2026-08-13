@@ -13,7 +13,7 @@ in
   # SOPS secret declarations
   sops.secrets."autobrr_api_key" = {
     owner = "autobrr";
-    group = "media;
+    group = "media";
   };
   sops.secrets."sonarr_api_key" = { 
     owner = "sonarr";
