@@ -14,7 +14,12 @@
       noto-fonts-color-emoji
       liberation_ttf
       corefonts # Microsoft Arial, Times New Roman, etc.
-      nerd-fonts
+
+      nerd-fonts.fira-code
+      nerd-fonts.meslo-lg
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.hack
+      nerd-fonts.cascadia-code
     ];
 
     # System-wide default font configurations
