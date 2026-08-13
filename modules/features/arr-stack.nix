@@ -38,17 +38,17 @@ in
   # Service definitions tied to the shared media group
   services.sonarr   = mkArr { user = "sonarr"; };
   services.radarr   = mkArr { user = "radarr"; };
-  services.bazarr   = mkArr { user = "bazarr"; };
+  services.bazarr   = mkArr { user = "bazarr"; listenAddress = "127.0.0.1"; };
   services.lidarr   = mkArr { user = "lidarr"; dataDir = "/var/lib/lidarr"; };
   services.readarr  = mkArr { user = "readarr"; };
-  services.prowlarr = { enable = true; };
+  services.prowlarr = mkArr { user = "prowlarr"; };
+  services.shoko = mkArr { user = "shoko"; };
 
   # Ensure all service daemons bind to localhost
   systemd.services = {
     sonarr.environment.SONARR__SERVER__BINDADDRESS = "127.0.0.1";
     radarr.environment.RADARR__SERVER__BINDADDRESS = "127.0.0.1";
     prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "127.0.0.1";
-    bazarr.environment.BAZARR__SERVER__BINDADDRESS = "127.0.0.1";
     readarr.environment.READARR__SERVER__BINDADDRESS = "127.0.0.1";
     lidarr.environment.LIDARR__SERVER__BINDADDRESS = "127.0.0.1";
 
