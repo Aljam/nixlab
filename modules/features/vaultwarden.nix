@@ -11,6 +11,4 @@
       DOMAIN = "https://vault.${domains.primary}";
     };
   };
-
-  networking.firewall.allowedTCPPorts = [ 8222 ]; # Vaultwarden
 }
