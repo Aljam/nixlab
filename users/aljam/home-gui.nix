@@ -10,7 +10,6 @@
     # --- KDE Plasma / Global Themes ---
     catppuccin-kde    
     arc-kde-theme     
-    sweet
     sweet-nova
     
     # --- Icon Themes ---
