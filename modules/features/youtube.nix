@@ -16,6 +16,7 @@
         ytdl_options:
           live_from_start: true
           download_sections: "*00:00:00-inf"
+          cookiefile: "/var/lib/ytdl-sub/cookies.txt"
         output_options:
           output_directory: "/mnt/media/youtube"
           file_name: "{channel}/{upload_date}_{title}.{ext}"
