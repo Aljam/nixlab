@@ -6,7 +6,7 @@ let
     group = "media";
   } // extra;
 
-  mediaUsers = [ "sonarr" "radarr" "prowlarr" "bazarr" "readarr" "lidarr" "shoko" ];
+  mediaUsers = [ "autobrr" "sonarr" "radarr" "prowlarr" "bazarr" "readarr" "lidarr" "shoko" ];
 in
 {
   # SOPS secret declarations
