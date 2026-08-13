@@ -18,6 +18,4 @@
       "char-drm rwm"
     ];
   };
-
-  networking.firewall.allowedTCPPorts = [ 8096 ]; # Jellyfin
 }
