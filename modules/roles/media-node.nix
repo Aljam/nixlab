@@ -41,6 +41,7 @@
       {
         "System & Monitoring" = [
           { Grafana = { href = "https://grafana.${domains.primary}"; description = "Metrics & Dashboards"; icon = "grafana.png"; }; }
+          { Pgadmin = { href = "https://db.${domains.primary}"; description = "Databases"; icon = "pgadmin.png"; }; }
         ];
       }
     ];
