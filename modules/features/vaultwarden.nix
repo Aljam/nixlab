@@ -1,4 +1,4 @@
-{ config, pkgs, domains, ... }:
+{ config, pkgs, domains, subnets, ... }:
 
 {
   services.vaultwarden = {
