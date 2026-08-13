@@ -1,4 +1,4 @@
-{ config, pkgs, subnets ... }:
+{ config, pkgs, subnets, ... }:
 
 {
   nix = {
