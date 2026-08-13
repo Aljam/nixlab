@@ -4,7 +4,6 @@ let
   mkArr = extra: {
     enable = true;
     group = "media";
-    openFirewall = true;
   } // extra;
 
   mediaUsers = [ "sonarr" "radarr" "prowlarr" "bazarr" "readarr" "lidarr" "shoko" ];
@@ -63,7 +62,6 @@ in
   services.seerr = {
     enable = true;
     port = 5055;
-    openFirewall = true;
   };
 
   # Recyclarr TRaSH Guides synchronization
@@ -111,18 +109,15 @@ in
     enable = true;
     port = 13378;
     host = "127.0.0.1";
-    openFirewall = true;
   };
 
   services.autobrr = {
     enable = true;
-    openFirewall = true;
     secretFile = config.sops.secrets.autobrr_api_key.path;
     settings = { host = "127.0.0.1"; port = 7474; };
   };
 
   services.shoko = {
     enable = true;
-    openFirewall = true;
   };
 }
