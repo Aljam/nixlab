@@ -1,6 +1,6 @@
 { config, pkgs, lib, ... }: {
 
-  networking.firewall.allowedTCPPorts [ "8888" ];
+  networking.firewall.allowedTCPPorts = [ "8888" ];
   # 1. The Headless Browser (Accessible via Web UI)
   virtualisation.oci-containers.containers.firefox = {
     image = "lscr.io/linuxserver/firefox:latest";
