@@ -23,7 +23,7 @@
     port = 9090;
     settings = {
       WebService = {
-        AllowUnencrypted = false; # Safe since it sits behind pfSense/HAProxy
+        AllowUnencrypted = false;
       };
     };
   };
