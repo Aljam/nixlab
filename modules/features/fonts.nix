@@ -14,7 +14,6 @@
       noto-fonts-color-emoji
       liberation_ttf
       corefonts # Microsoft Arial, Times New Roman, etc.
-      ubuntu_font_family
 
       # Coding & Terminal Fonts (Nerd Fonts)
       # In newer NixOS versions, you cherry-pick specific Nerd Fonts to save space
