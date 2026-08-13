@@ -6,7 +6,7 @@ let
     group = "media";
   } // extra;
 
-  mediaUsers = [ "autobrr" "sonarr" "radarr" "bazarr" "readarr" "lidarr" "shoko" ];
+  mediaUsers = [ "autobrr" "sonarr" "prowlarr" "radarr" "bazarr" "readarr" "lidarr" "shoko" ];
 in
 {
   # SOPS secret declarations
@@ -124,5 +124,4 @@ in
     settings = { host = "${subnets.lan}.2"; port = 7474; };
   };
 
-  users.users.prowlarr.group = lib.mkForce "media";
 }
