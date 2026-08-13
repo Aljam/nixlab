@@ -5,6 +5,27 @@
               ./modules/desktop/kitty.nix
               ./modules/desktop/obs.nix
             ];
-
+ 
+  home.packages = with pkgs; [
+    # --- KDE Plasma / Global Themes ---
+    catppuccin-kde     
+    dracula-theme        
+    nordic         
+    arc-kde-theme     
+    sweet
+    sweet-nova
+    
+    # --- Icon Themes ---
+    papirus-icon-theme   
+    tela-icon-theme      
+    
+    # --- Cursor Themes ---
+    bibata-cursors      
+    capitaine-cursors  
+    
+    # (Optional) Kvantum engine if you want deep widget theming
+    # kdePackages.qtstyleplugin-kvantum
+  ];
+  
  xdg.enable = true;
 }
