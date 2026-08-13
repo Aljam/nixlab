@@ -17,6 +17,6 @@
   };
   
   networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.0/24 tcp dport 9100 accept
+    ip saddr ${subnets.lan}.2 tcp dport 9100 accept
   '';
 }
