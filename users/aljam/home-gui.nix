@@ -8,8 +8,7 @@
  
   home.packages = with pkgs; [
     # --- KDE Plasma / Global Themes ---
-    catppuccin-kde     
-    nordic         
+    catppuccin-kde    
     arc-kde-theme     
     sweet
     sweet-nova
