@@ -43,7 +43,7 @@ in
   services.readarr  = mkArr { user = "readarr"; };
   services.prowlarr = { enable = true; };
 
-  # Ensure all service daemons bind to all local network interfaces
+  # Ensure all service daemons bind to localhost
   systemd.services = {
     sonarr.environment.SONARR__SERVER__BINDADDRESS = "127.0.0.1";
     radarr.environment.RADARR__SERVER__BINDADDRESS = "127.0.0.1";
