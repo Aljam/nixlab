@@ -12,7 +12,7 @@ in
   # Enforce system user identities assigned to the media group
   users.users = lib.genAttrs mediaUsers (name: {
     isSystemUser = true;
-    group = "media";
+    group = lib.mkForce "media";
   });
   
   # SOPS secret declarations
@@ -44,9 +44,9 @@ in
   # Service definitions tied to the shared media group
   services.sonarr   = mkArr { user = "sonarr"; };
   services.radarr   = mkArr { user = "radarr"; };
-  services.bazarr   = mkArr { user = "bazarr"; };
-  services.lidarr   = mkArr { user = "lidarr"; dataDir = "/var/lib/lidarr"; };
-  services.readarr  = mkArr { user = "readarr"; };
+  services.bazarr   = { enable = true; };
+  services.lidarr   = { enable = true; dataDir = "/var/lib/lidarr"; };
+  services.readarr  = { enable = true; };
   services.prowlarr = { enable = true; };
   services.shoko = { enable = true; };
 
