@@ -47,7 +47,7 @@ in
   services.bazarr   = mkArr { user = "bazarr"; };
   services.lidarr   = mkArr { user = "lidarr"; dataDir = "/var/lib/lidarr"; };
   services.readarr  = mkArr { user = "readarr"; };
-  services.prowlarr = { user = "prowlarr"; };
+  services.prowlarr = { enable = true; };
   services.shoko = { user = "shoko"; };
 
   # Ensure all service daemons bind to localhost
