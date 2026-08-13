@@ -48,7 +48,7 @@ in
   services.lidarr   = mkArr { user = "lidarr"; dataDir = "/var/lib/lidarr"; };
   services.readarr  = mkArr { user = "readarr"; };
   services.prowlarr = { enable = true; };
-  services.shoko = { user = "shoko"; };
+  services.shoko = { enable = true; };
 
   # Ensure all service daemons bind to localhost
   systemd.services = {
