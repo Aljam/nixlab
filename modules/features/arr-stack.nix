@@ -11,9 +11,18 @@ let
 in
 {
   # SOPS secret declarations
-  sops.secrets.autobrr_api_key = { };
-  sops.secrets.sonarr_api_key = { };
-  sops.secrets.radarr_api_key = { };
+  sops.secrets."autobrr_api_key" = {
+    owner = "autobrr";
+    group = "media;
+  };
+  sops.secrets."sonarr_api_key" = { 
+    owner = "sonarr";
+    group = "media";
+  };
+  sops.secrets."radarr_api_key" = { 
+    owner = "radarr"
+    group = "media"
+  };
 
   # Declarative directory creation and permissions
   systemd.tmpfiles.rules = [
