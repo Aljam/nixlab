@@ -20,8 +20,8 @@ in
     group = "media";
   };
   sops.secrets."radarr_api_key" = { 
-    owner = "radarr"
-    group = "media"
+    owner = "radarr";
+    group = "media";
   };
 
   # Declarative directory creation and permissions
