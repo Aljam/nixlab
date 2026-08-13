@@ -11,7 +11,7 @@
       # Standard essential fonts
       noto-fonts
       noto-fonts-cjk-sans # Chinese, Japanese, Korean
-      noto-fonts-emoji
+      noto-fonts-color-emoji
       liberation_ttf
       corefonts # Microsoft Arial, Times New Roman, etc.
       ubuntu_font_family
