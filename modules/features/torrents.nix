@@ -9,7 +9,7 @@
   };
 
   virtualisation.oci-containers.containers.qbitmanage = {
-    image = "ghcr.io/starbix/qbitmanage:v4.11.0";
+    image = "ghcr.io/stuffanthings/qbit_manage:v4.11.0";
     environment = {
       QBT_RUN = "true";
       QBT_SCHEDULE = "1440";
