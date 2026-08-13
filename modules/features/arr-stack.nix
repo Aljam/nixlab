@@ -124,7 +124,4 @@ in
     settings = { host = "${subnets.lan}.2"; port = 7474; };
   };
 
-  services.shoko = {
-    enable = true;
-  };
 }
