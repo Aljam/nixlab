@@ -3,7 +3,7 @@
 {
   programs.kitty = {
     enable = true;
-    themeFile = "Tokyo Night Moon"; # Or "Catppuccin-Mocha", "Rosé Pine", "Gruvbox Dark", "Nord"
+    themeFile = "tokyo_night_moon"; # Or "Catppuccin-Mocha", "Rosé Pine", "Gruvbox Dark", "Nord"
     settings = {
       scrollback_lines = 10000;
       enable_audio_bell = false;
