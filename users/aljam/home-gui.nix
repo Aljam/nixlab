@@ -9,7 +9,6 @@
   home.packages = with pkgs; [
     # --- KDE Plasma / Global Themes ---
     catppuccin-kde     
-    dracula-theme        
     nordic         
     arc-kde-theme     
     sweet
