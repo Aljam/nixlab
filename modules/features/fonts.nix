@@ -19,7 +19,6 @@
       nerd-fonts.meslo-lg
       nerd-fonts.jetbrains-mono
       nerd-fonts.hack
-      nerd-fonts.cascadia-code
     ];
 
     # System-wide default font configurations
