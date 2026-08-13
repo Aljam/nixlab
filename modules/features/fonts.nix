@@ -14,18 +14,7 @@
       noto-fonts-color-emoji
       liberation_ttf
       corefonts # Microsoft Arial, Times New Roman, etc.
-
-      # Coding & Terminal Fonts (Nerd Fonts)
-      # In newer NixOS versions, you cherry-pick specific Nerd Fonts to save space
-      (nerdfonts.override { 
-        fonts = [ 
-          "FiraCode" 
-          "Meslo" 
-          "JetBrainsMono" 
-          "Hack" 
-          "CascadiaCode"
-        ]; 
-      })
+      nerdfonts
     ];
 
     # System-wide default font configurations
