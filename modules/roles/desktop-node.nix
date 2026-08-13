@@ -14,6 +14,7 @@
     ../../modules/features/flatpak.nix
     ../../modules/features/remote-builder.nix
     ../../modules/features/restic-client.nix
+    ../../modules/features/fonts.nix
   ];
 
   nixpkgs.overlays = [
