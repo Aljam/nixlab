@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ../../modules/features/boot.nix
+    ../features/boot.nix
   ];
   
   nixpkgs.config.allowUnfree = true;
