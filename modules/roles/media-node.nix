@@ -13,7 +13,6 @@
 
   services.homepage-dashboard = {
     enable = true;
-    openFirewall = true;
     # Binds to localhost to prevent HAProxy Host header validation errors
     allowedHosts = "home.${domains.primary},127.0.0.1:8082";
     
