@@ -41,7 +41,7 @@ in
   services.bazarr   = mkArr { user = "bazarr"; };
   services.lidarr   = mkArr { user = "lidarr"; dataDir = "/var/lib/lidarr"; };
   services.readarr  = mkArr { user = "readarr"; };
-  services.prowlarr = { enable = true; openFirewall = true; };
+  services.prowlarr = { enable = true; };
 
   # Ensure all service daemons bind to all local network interfaces
   systemd.services = {
