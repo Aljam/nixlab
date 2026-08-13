@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, subnets, ... }:
 
 let
   mkArr = extra: {
@@ -38,7 +38,7 @@ in
   # Service definitions tied to the shared media group
   services.sonarr   = mkArr { user = "sonarr"; };
   services.radarr   = mkArr { user = "radarr"; };
-  services.bazarr   = mkArr { user = "bazarr"; listenAddress = "127.0.0.1"; };
+  services.bazarr   = mkArr { user = "bazarr"; listenAddress = "${subnets.lan}.2"; };
   services.lidarr   = mkArr { user = "lidarr"; dataDir = "/var/lib/lidarr"; };
   services.readarr  = mkArr { user = "readarr"; };
   services.prowlarr = mkArr { user = "prowlarr"; };
@@ -46,16 +46,16 @@ in
 
   # Ensure all service daemons bind to localhost
   systemd.services = {
-    sonarr.environment.SONARR__SERVER__BINDADDRESS = "127.0.0.1";
-    radarr.environment.RADARR__SERVER__BINDADDRESS = "127.0.0.1";
-    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "127.0.0.1";
-    readarr.environment.READARR__SERVER__BINDADDRESS = "127.0.0.1";
-    lidarr.environment.LIDARR__SERVER__BINDADDRESS = "127.0.0.1";
+    sonarr.environment.SONARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
+    radarr.environment.RADARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
+    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
+    readarr.environment.READARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
+    lidarr.environment.LIDARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
 
     bazarr.serviceConfig.UMask = "0002";
 
     shoko.environment = {
-      ASPNETCORE_URLS = "http://127.0.0.1:8111";
+      ASPNETCORE_URLS = "http://${subnets.lan}.2:8111";
       SHOKO_PORT = "8111";
     };
   };
@@ -115,13 +115,13 @@ in
   services.audiobookshelf = {
     enable = true;
     port = 13378;
-    host = "127.0.0.1";
+    host = "${subnets.lan}.2";
   };
 
   services.autobrr = {
     enable = true;
     secretFile = config.sops.secrets.autobrr_api_key.path;
-    settings = { host = "127.0.0.1"; port = 7474; };
+    settings = { host = "${subnets.lan}.2"; port = 7474; };
   };
 
   services.shoko = {
