@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, subnets ... }:
 
 {
   nix = {
@@ -8,7 +8,7 @@
     settings.builders-use-substitutes = true;
 
     buildMachines = [{
-      hostName = "192.168.1.4"; # Replace with the R820's actual IP (e.g., "192.168.1.XX") if DNS isn't resolving
+      hostName = "${subnets.lan}.4";
       system = "x86_64-linux";
       protocol = "ssh-ng"; # The modern, faster Nix SSH protocol
       
