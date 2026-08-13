@@ -9,6 +9,8 @@ let
   mediaUsers = [ "autobrr" "sonarr" "radarr" "bazarr" "readarr" "lidarr" "shoko" ];
 in
 {
+  users.users.prowlarr.group = lib.mkForce "media";
+
   # SOPS secret declarations
   sops.secrets."autobrr_api_key" = {
     owner = "autobrr";
