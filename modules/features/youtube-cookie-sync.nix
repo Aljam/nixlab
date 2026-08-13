@@ -4,7 +4,7 @@
   virtualisation.oci-containers.containers.firefox = {
     image = "lscr.io/linuxserver/firefox:latest";
     autoStart = true;
-    ports = [ "3000:3000" ]; # Access the browser via http://SERVER_IP:3000
+    ports = [ "8888:8888" ]; # Access the browser via http://SERVER_IP:3000
     environment = {
       PUID = "1000"; # Match your media user ID
       PGID = "1000"; # Match your media group ID
