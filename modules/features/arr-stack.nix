@@ -9,6 +9,12 @@ let
   mediaUsers = [ "autobrr" "sonarr" "prowlarr" "radarr" "bazarr" "readarr" "lidarr" "shoko" ];
 in
 {
+  # Enforce system user identities assigned to the media group
+  users.users = lib.genAttrs mediaUsers (name: {
+    isSystemUser = true;
+    group = "media";
+  });
+  
   # SOPS secret declarations
   sops.secrets."autobrr_api_key" = {
     owner = "autobrr";
@@ -59,12 +65,6 @@ in
       SHOKO_PORT = "8111";
     };
   };
-
-  # Enforce system user identities assigned to the media group
-  users.users = lib.genAttrs mediaUsers (name: {
-    isSystemUser = true;
-    group = "media";
-  });
 
   services.seerr = {
     enable = true;
