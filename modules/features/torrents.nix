@@ -17,7 +17,7 @@
       Preferences = {
         WebUI = {
           # WebUI only on localhost; HAProxy / local access only
-          Address = "127.0.0.1";
+          Address = "${subnets.lan}.2";
           Port = 8080;
           # Optional: skip auth for pure localhost (keep auth if you prefer)
           # LocalHostAuth = false;
