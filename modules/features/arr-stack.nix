@@ -41,8 +41,8 @@ in
   services.bazarr   = mkArr { user = "bazarr"; };
   services.lidarr   = mkArr { user = "lidarr"; dataDir = "/var/lib/lidarr"; };
   services.readarr  = mkArr { user = "readarr"; };
-  services.prowlarr = mkArr { user = "prowlarr"; };
-  services.shoko = mkArr { user = "shoko"; };
+  services.prowlarr = { user = "prowlarr"; };
+  services.shoko = { user = "shoko"; };
 
   # Ensure all service daemons bind to localhost
   systemd.services = {
