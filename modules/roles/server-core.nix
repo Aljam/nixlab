@@ -10,7 +10,7 @@
   networking.nameservers = [ "${subnets.lan}.1" ];
   networking.enableIPv6 = false;
   networking.firewall.allowPing = true;
-  networking.nftables.enable = true
+  networking.nftables.enable = true;
   networking.networkmanager.enable = false;
   networking.useDHCP = false;
 
