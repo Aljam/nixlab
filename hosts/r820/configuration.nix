@@ -11,7 +11,7 @@
   ];
   
   networking.interfaces.eno1.ipv4.addresses = [{
-    address = "${fleet.r820.ip}";
+    address = fleet.r820.ip;
     prefixLength = 24;
   }];
 
