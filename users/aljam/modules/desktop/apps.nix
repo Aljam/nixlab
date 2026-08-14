@@ -41,7 +41,6 @@
     cliphist
     libnotify
     reaper
-    audacity
     lmms
   ];
 }
