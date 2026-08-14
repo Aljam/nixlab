@@ -10,9 +10,7 @@
   networking.nameservers = [ "${subnets.lan}.1" ];
   networking.enableIPv6 = false;
   networking.firewall.allowPing = true;
-  networking.firewall.extraCommands = ''
-      iptables -A INPUT -s ${subnets.lan}.1 -j ACCEPT
-    '';
+  networking.nftables.enable = true
   networking.networkmanager.enable = false;
   networking.useDHCP = false;
 
