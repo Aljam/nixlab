@@ -1,4 +1,4 @@
-{ config, pkgs, lib, subnets, ... }:
+{ config, pkgs, lib, fleet, ... }:
 
 {
   imports = [
