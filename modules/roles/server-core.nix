@@ -3,7 +3,6 @@
 {
   imports = [
     ../features/node-exporter.nix
-    ../features/restic-client.nix
   ];
 
   networking.defaultGateway.address = "${subnets.lan}.1";
