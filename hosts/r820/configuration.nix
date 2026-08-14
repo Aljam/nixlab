@@ -18,18 +18,6 @@
     prefixLength = 24;
   }];
 
-  services.cockpit = {
-    enable = true;
-    port = 9090;
-    settings = {
-      WebService = {
-        AllowUnencrypted = false;
-      };
-    };
-  };
-
-  networking.firewall.allowedTCPPorts = [ 9090 ];
-
   # Override ZFS scrub from server-core since this host uses Hardware RAID
   services.zfs.autoScrub.enable = false;
 
