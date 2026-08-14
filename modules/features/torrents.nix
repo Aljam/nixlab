@@ -1,4 +1,4 @@
-{ config, pkgs, subnets, ... }:
+{ config, pkgs, fleet, ... }:
 
 {
   services.qbittorrent = {
@@ -17,7 +17,7 @@
       Preferences = {
         WebUI = {
           # WebUI only on localhost; HAProxy / local access only
-          Address = "${subnets.lan}.2";
+          Address = "${fleet.r730xd.ip}";
           Port = 8080;
           # Optional: skip auth for pure localhost (keep auth if you prefer)
           # LocalHostAuth = false;
