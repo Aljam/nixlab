@@ -17,7 +17,6 @@
   boot.zfs.forceImportRoot = false;
   boot.kernelParams = [ "zfs.zfs_arc_max=68719476736" ];
 
-  networking.hostName = "r730xd";
   networking.hostId = "d2083fdc"; # Required for ZFS
 
   networking.interfaces.eno1.ipv4.addresses = [
@@ -26,6 +25,4 @@
       prefixLength = 24;
     }
   ];
-
-  system.stateVersion = lib.mkDefault "26.05";
 }
