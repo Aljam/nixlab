@@ -1,4 +1,4 @@
-{ config, pkgs, domains, subnets, ... }:
+{ config, pkgs, domains, fleet, ... }:
 
 {
   sops.secrets."grafana-secret-key".owner = "grafana";
@@ -7,7 +7,7 @@
     enable = true;
     settings = {
       server = {
-        http_addr = "${subnets.lan}.2";
+        http_addr = "${fleet.r730xd.ip}";
         http_port = 3000;
         root_url = "https://grafana.${domains.primary}"; 
         domain = "grafana.${domains.primary}";
@@ -19,7 +19,7 @@
       datasources.settings.datasources = [{
         name = "Prometheus";
         type = "prometheus";
-        url = "http://${subnets.lan}.2:9090";
+        url = "http://${fleet.r730xd.ip}:9090";
         isDefault = true;
       }];
       dashboards.settings.providers = [{
