@@ -37,4 +37,7 @@
   };
 
   networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 ];
+  networking.firewall.extraInputRules = ''
+    ip saddr ${subnets.lan}.1 tcp dport 5050 accept
+  '';
 }
