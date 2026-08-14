@@ -35,4 +35,6 @@
   systemd.services.pgadmin.environment = {
     PGADMIN_LISTEN_ADDRESS = "${subnets.lan}.4";
   };
+
+  networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 ];
 }
