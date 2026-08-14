@@ -6,6 +6,4 @@
     ../../modules/roles/desktop-node.nix
     ../../modules/hardware/system76-laptop.nix
   ];
-
-  networking.networkmanager.enable = true;
 }
