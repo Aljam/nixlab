@@ -1,11 +1,6 @@
 { config, pkgs, lib, subnets, ... }:
 
 let
-  mkArr = extra: {
-    enable = true;
-    group = "media";
-  } // extra;
-
   mediaUsers = [ "autobrr" "sonarr" "prowlarr" "radarr" "bazarr" "readarr" "lidarr" "shoko" ];
 in
 {
@@ -42,10 +37,10 @@ in
   ];
 
   # Service definitions tied to the shared media group
-  services.sonarr   = mkArr { user = "sonarr"; };
-  services.radarr   = mkArr { user = "radarr"; };
+  services.sonarr   = mkArr { enable = true; user = "sonarr"; group = media; };
+  services.radarr   = mkArr { enable = true; user = "radarr"; group = media; };
   services.bazarr   = { enable = true; };
-  services.lidarr   = { enable = true; dataDir = "/var/lib/lidarr"; };
+  services.lidarr   = { enable = true; };
   services.readarr  = { enable = true; };
   services.prowlarr = { enable = true; };
   services.shoko = { enable = true; };
