@@ -37,8 +37,8 @@ in
   ];
 
   # Service definitions tied to the shared media group
-  services.sonarr   = { enable = true; user = "sonarr"; group = media; };
-  services.radarr   = { enable = true; user = "radarr"; group = media; };
+  services.sonarr   = { enable = true; user = "sonarr"; group = "media"; };
+  services.radarr   = { enable = true; user = "radarr"; group = "media"; };
   services.bazarr   = { enable = true; };
   services.lidarr   = { enable = true; };
   services.readarr  = { enable = true; };
