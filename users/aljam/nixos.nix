@@ -3,6 +3,9 @@
 {
   programs.fish.enable = true;
 
+  # secrets.yaml: aljam_password = output of `mkpasswd -m yescrypt`
+  sops.secrets.aljam_password.neededForUsers = true; # required — decrypt before user
+    
   users.users.aljam = {
     isNormalUser = true;
     openssh.authorizedKeys.keys = [
@@ -10,5 +13,6 @@
     ];
     extraGroups = [ "networkmanager" "wheel" "libvirtd" "docker" "wireshark" "ubridge" "video" "render" "media" "input" "plugdev" ];
     shell = pkgs.fish; # Or whichever shell you use
+    hashedPasswordFile = config.sops.secrets.aljam_password.path;
   };
 }
