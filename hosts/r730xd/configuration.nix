@@ -1,4 +1,4 @@
-{ config, pkgs, lib, subnets, ... }:
+{ config, pkgs, lib, fleet, ... }:
 
 {
   imports = [
@@ -21,7 +21,7 @@
 
   networking.interfaces.eno1.ipv4.addresses = [
     {
-      address = "${subnets.lan}.2";
+      address = "${fleet.r730xd.ip}";
       prefixLength = 24;
     }
   ];
