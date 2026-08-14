@@ -18,9 +18,6 @@
     prefixLength = 24;
   }];
 
-  # Override ZFS scrub from server-core since this host uses Hardware RAID
-  services.zfs.autoScrub.enable = false;
-
   # Remote builder configuration
   nix.settings.trusted-users = [ "root" "aljam" ];
   nix.settings.allowed-users = [ "@users" ];
