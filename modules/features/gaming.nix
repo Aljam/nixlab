@@ -26,11 +26,11 @@
         libpng
       ]);
     };
-    # package = inputs.millennium.packages.x86_64-linux.millennium-steam.override {
-    #   extraPkgs = (pkgs: with pkgs; [
-    #     gamemode
-    #   ]);
-    # };
+     package = inputs.millennium.packages.x86_64-linux.millennium-steam.override {
+       extraPkgs = (pkgs: with pkgs; [
+         gamemode
+       ]);
+     };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
