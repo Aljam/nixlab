@@ -6,13 +6,19 @@ on:
     branches: [ "main" ]
 jobs:
   check:
+  runs-on: ubuntu-latest
+  strategy:
+    fail-fast: false
+  matrix:
+    host: [ navi, oryx, r820, r730, r730xd ]
+  steps:
+    - uses: actions/checkout@v4
+    - uses: DeterminateSystems/nix-installer-action@v22
+    - run: nix build --dry-run ".#nixosConfigurations.${{ matrix.host }}.config.sys
+
+  flake-check:
     runs-on: ubuntu-latest
     steps:
-     uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v22
-      - run: nix flake check --all-systems
-      - run: | for h in navi oryx r820 r730 r730xd; 
-                do
-                  nix build --dry-run ".#nixosConfigurations.$h.config.system.build.topleve
-                done
-
+      - run: nix flake check
