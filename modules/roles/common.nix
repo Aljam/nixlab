@@ -37,7 +37,6 @@
     iotop
     nvd
     nix-tree
-    iperf3
     duf
     sops
   ];
