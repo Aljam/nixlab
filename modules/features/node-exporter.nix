@@ -4,6 +4,7 @@
   services.prometheus.exporters.node = {
     enable = true;
     port = 9100;
+    openFirewall = true;
     enabledCollectors = lib.mkForce [
       "systemd"
       "cpu"
