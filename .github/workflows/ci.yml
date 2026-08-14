@@ -8,9 +8,11 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4.4.0
+     uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v22
-      - run: nix build .#nixosConfigurations.<host>.config.system.build.toplevel --dry-run
       - run: nix flake check --all-systems
-
+      - run: | for h in navi oryx r820 r730 r730xd; 
+                do
+                  nix build --dry-run ".#nixosConfigurations.$h.config.system.build.topleve
+                done
 
