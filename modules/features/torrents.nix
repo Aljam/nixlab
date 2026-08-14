@@ -34,6 +34,8 @@
   networking.firewall.allowedTCPPorts = [ 6881 ];
   networking.firewall.allowedUDPPorts = [ 6881 ];
 
+  virtualisation.oci-containers.backend = "podman";
+
   virtualisation.oci-containers.containers.qbitmanage = {
     image = "ghcr.io/starbix/qbitmanage:v4.11.0";
     environment = {
