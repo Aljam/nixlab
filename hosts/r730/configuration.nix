@@ -30,7 +30,7 @@
   #   nvidiaPersistenced = true; # Prevents power-state latency drops during AI training
   # };
 
-  nixpkgs.config.cudaSupport = true;
+  #nixpkgs.config.cudaSupport = true;
 
   environment.systemPackages = with pkgs; [
     cudatoolkit
