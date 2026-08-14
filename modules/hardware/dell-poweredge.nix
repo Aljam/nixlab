@@ -3,7 +3,6 @@
 {
   # Ensure required utilities are available in the system environment
   environment.systemPackages = with pkgs; [
-    lm_sensors
     ipmitool
     gawk
     coreutils
