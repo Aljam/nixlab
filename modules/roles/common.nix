@@ -9,7 +9,7 @@
   hardware.enableRedistributableFirmware = true;
 
   networking.hostName = hostname;
-  system.stateVersion = "26.05";
+  system.stateVersion = lib.mkDefault "26.05";
 
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
@@ -53,6 +53,8 @@
     nvd
     nix-tree
     duf
+    sysstat
+    sops
   ];
 
   services.openssh = {
