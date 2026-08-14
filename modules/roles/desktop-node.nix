@@ -19,7 +19,6 @@
 
   nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ]
   
-  hardware.enableRedistributableFirmware = true;
   boot.kernelPackages = inputs.nix-cachyos-kernel.legacyPackages.x86_64-linux.linuxPackages-cachyos-lts;
 
   services.tailscale = {
