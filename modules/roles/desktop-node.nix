@@ -21,6 +21,8 @@
   
   boot.kernelPackages = inputs.nix-cachyos-kernel.legacyPackages.x86_64-linux.linuxPackages-cachyos-lts;
 
+  networking.networkmanager.enable = true;
+  
   services.tailscale = {
     enable = true;
     useRoutingFeatures = "both";
