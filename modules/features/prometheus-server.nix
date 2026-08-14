@@ -1,4 +1,4 @@
-{ config, pkgs, subnets, ... }: 
+{ config, pkgs, fleet, ... }: 
 {
   services.prometheus = {
     enable = true;
@@ -10,8 +10,8 @@
         static_configs = [{ 
           targets = [ 
             "127.0.0.1:9100"
-            "${subnets.lan}.3:9100"
-            "${subnets.lan}.4:9100"
+            "${fleet.r730.ip}:9100"
+            "${fleet.r820.ip}:9100"
           ]; 
         }]; 
       }
