@@ -38,7 +38,6 @@
     nvd
     nix-tree
     duf
-    sops
   ];
 
   services.openssh = {
