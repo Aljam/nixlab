@@ -17,7 +17,7 @@
     ../../modules/features/fonts.nix
   ];
 
-  nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ]
+  nixpkgs.overlays = [ inputs.nix-cachyos-kernel.overlays.pinned ];
   
   boot.kernelPackages = inputs.nix-cachyos-kernel.legacyPackages.x86_64-linux.linuxPackages-cachyos-lts;
 
