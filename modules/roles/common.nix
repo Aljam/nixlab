@@ -9,17 +9,17 @@
   hardware.enableRedistributableFirmware = true;
 
   networking.hostName = hostname;
-  system.stateVersion = "26.05"
+  system.stateVersion = "26.05";
 
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   security.sudo.enable = true;
-  users.mutableUsers = false
-  services.fail2ban.enable = true
-  security.sudo.execWheelOnly = true
-  boot.tmp.cleanOnBoot = true
+  users.mutableUsers = false;
+  services.fail2ban.enable = true;
+  security.sudo.execWheelOnly = true;
+  boot.tmp.cleanOnBoot = true;
   
 
   environment.systemPackages = with pkgs; [
@@ -42,7 +42,7 @@
 
   services.openssh = {
     enable = true;
-    settings.AllowUsers = [ "aljam" ]
+    settings.AllowUsers = [ "aljam" ];
     settings.PasswordAuthentication = false;
     settings.KbdInteractiveAuthentication = false;
     settings.PermitRootLogin = "no";
