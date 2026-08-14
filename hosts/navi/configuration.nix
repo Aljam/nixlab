@@ -8,6 +8,4 @@
   ];
 
   programs.corectrl.enable = true; # AMD Overclocking/Undervolting
-
-  networking.networkmanager.enable = true;
 }
