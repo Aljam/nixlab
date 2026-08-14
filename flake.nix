@@ -109,7 +109,6 @@
       };
 
       desktop = { home-manager.users.aljam.imports = [ ./users/aljam/home-gui.nix ]; };
-      serverDisko = disko.nixosModules.disko;
       flatpakModule = inputs.nix-flatpak.nixosModules.nix-flatpak;
 
     in {
@@ -135,12 +134,12 @@
 
         r730 = mkHost {
           hostname = "r730";
-          extraModules = [ serverDisko ];
+          extraModules = [ disko.nixosModules.disko ];
         };
 
         r730xd = mkHost {
           hostname = "r730xd";
-          extraModules = [ serverDisko ];
+          extraModules = [ disko.nixosModules.disko ];
         };
 
       };
