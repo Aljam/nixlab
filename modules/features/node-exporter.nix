@@ -1,4 +1,4 @@
-{ lib, subnets, ... }:
+{ lib, fleet, ... }:
 
 {
   services.prometheus.exporters.node = {
@@ -18,6 +18,6 @@
   };
   
   networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.2 tcp dport 9100 accept
+    ip saddr ${fleet.r730xd.ip} tcp dport 9100 accept
   '';
 }
