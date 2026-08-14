@@ -45,13 +45,13 @@ in
   services.prowlarr = { enable = true; };
   services.shoko = { enable = true; };
 
-  # Ensure all service daemons bind to ${fleet.r730xd.ip}
+  # Ensure all service daemons bind to fleet.r730xd.ip
   systemd.services = {
-    sonarr.environment.SONARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
-    radarr.environment.RADARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
-    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
-    readarr.environment.READARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
-    lidarr.environment.LIDARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
+    sonarr.environment.SONARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
+    radarr.environment.RADARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
+    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
+    readarr.environment.READARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
+    lidarr.environment.LIDARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
 
     bazarr.serviceConfig.UMask = "0002";
 
@@ -110,13 +110,13 @@ in
   services.audiobookshelf = {
     enable = true;
     port = 13378;
-    host = "${fleet.r730xd.ip}";
+    host = fleet.r730xd.ip;
   };
 
   services.autobrr = {
     enable = true;
     secretFile = config.sops.secrets.autobrr_api_key.path;
-    settings = { host = "${fleet.r730xd.ip}"; port = 7474; };
+    settings = { host = fleet.r730xd.ip; port = 7474; };
   };
 
 }
