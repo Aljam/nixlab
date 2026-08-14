@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ../features/monitoring.nix
     ../features/node-exporter.nix
   ];
 
