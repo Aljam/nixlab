@@ -1,109 +1,246 @@
 ![NixOS](https://img.shields.io/badge/NixOS-Unstable-blue.svg?style=flat-square&logo=NixOS&logoColor=white)
 ![Flakes Enabled](https://img.shields.io/badge/Flakes-Enabled-blueviolet.svg?style=flat-square)
-![GitOps](https://img.shields.io/badge/GitOps-Ready-brightgreen.svg?style=flat-square)
 ![Home Manager](https://img.shields.io/badge/Home%20Manager-Managed-orange.svg?style=flat-square)
-![Sops-Nix](https://img.shields.io/badge/Encrypted-sops--nix-critical.svg?style=flat-square)
+![sops-nix](https://img.shields.io/badge/Secrets-sops--nix%20%2B%20age-critical.svg?style=flat-square)
+![Disko](https://img.shields.io/badge/Storage-Disko%20%2B%20ZFS-9cf.svg?style=flat-square)
+![License](https://img.shields.io/badge/License-GPL--2.0-lightgrey.svg?style=flat-square)
 
-Welcome to **Nixlab**, a fully declarative, reproducible, and GitOps-driven multi-machine homelab infrastructure governed by a unified Nix flake. 
+# nixlab
 
-This repository manages everything from daily-driver workstations and mobile laptops to an enterprise PowerEdge server rack. By utilizing **NixOS**, **Home Manager**, **Disko**, and **sops-nix**, the entire fleet's OS packages, kernel configurations, ZFS storage arrays, user dotfiles, and encrypted secrets are defined entirely as code.
+A single Nix flake that defines five machines: two workstations and a three-node Dell PowerEdge rack. Kernels, ZFS pool topology, services, firewall rules, user dotfiles, and encrypted secrets all live in this repository — there is no manual configuration on any host.
 
----
-
-## 🏛️ Executive Overview & Core Architecture Tenets
-
-Nixlab manages a diverse heterogeneous computing fleet ranging from daily-driver workstations and mobile development laptops to enterprise-grade server hardware. By leveraging NixOS, Home Manager, Disko, and sops-nix, the entire operating system state—including kernel configurations, ZFS storage topologies, localized user dotfiles, and encrypted application secrets—is completely defined as code and version controlled.
-
-> **Core Architecture Tenets:**
-> - **Reproducibility:** Pinned flake inputs ensure byte-for-byte identical system builds across all nodes.
-> - **Modularity:** Decoupled roles, opt-in feature modules, and explicit hardware mapping eliminate duplication (DRY).
-> - **Declarative Storage:** Automated disk partitioning, formatting, and ZFS pool creation via Disko.
-> - **Secret Management:** Zero plaintext secrets; encrypted at rest via Age and managed dynamically with sops-nix.
+**Flake:** `x86_64-linux` only · nixpkgs `nixos-unstable` (with `nixos-25.11` available as `pkgs-stable`) · Home Manager · Disko · sops-nix
 
 ---
 
-## 🖥️ Fleet Architecture & Hardware Profiles
+## Fleet
 
-The lab consists of 5 distinct machines, strictly separated by hardware capabilities and operational roles using a DRY modular layout:
-
-| Hostname | Type | Hardware Profile | Purpose & Core Workloads |
+| Host | Hardware | Role modules | What it actually runs |
 | :--- | :--- | :--- | :--- |
-| **`navi`** | Desktop | Custom Desktop | Primary workstation. KDE Plasma, Hyprland Wayland compositor, Steam/Gaming, virtualization, and local development environment. |
-| **`oryx`** | Laptop | System76 Laptop | Portable development node. Nvidia PRIME graphics offloading, battery management daemon tuning, and mobile networking profiles. |
-| **`r730`** | Server | Dell PowerEdge R730 | AI compute & VM host. Dual Intel Xeon CPUs, dual Tesla P40 GPUs (Pascal architecture), and high-performance ZFS mirrored VDEVs. |
-| **`r730xd`** | Server | Dell PowerEdge R730xd | Mass media & storage vault. 24-drive chassis with three 8-drive RAID-Z2 ZFS pools, Jellyfin (NVENC acceleration), Arr automation stack, and Vaultwarden. |
-| **`r820`** | Server | Dell PowerEdge R820 | Heavy CI/CD compute & virtualization node. Quad-socket headless architecture, hardware RAID controller, and isolated network test beds. |
+| **`navi`** | Custom AMD desktop | `desktop-node` + `navi-desktop` | Primary workstation. Plasma 6 (SDDM) and Hyprland, CachyOS LTS kernel, Steam/gaming, libvirt, emulation, Flatpak, CoreCtrl for AMD tuning. Dispatches heavy builds to `r820`. |
+| **`oryx`** | System76 laptop | `desktop-node` + `system76-laptop` + `nixos-hardware.system76` | Portable workstation. Same desktop stack; NVIDIA PRIME sync, System76 firmware/power daemons, `system76-scheduler`. |
+| **`r730`** | Dell PowerEdge R730 | `server-core` + `storage-node` + `dell-poweredge` | ZFS host on `r730pool`, kernel pinned to 6.1, Docker enabled. Staged for AI/GPU work — see [Staged, not active](#staged-not-active). |
+| **`r730xd`** | Dell PowerEdge R730xd (24-bay) | `server-core` + `media-node` + `storage-node` + `dell-poweredge` | The workhorse. Media stack, Vaultwarden, Prometheus + Grafana, headless NVIDIA for Jellyfin transcoding, `mediapool`. |
+| **`r820`** | Dell PowerEdge R820 (quad-socket) | `server-core` + `dell-poweredge` | PostgreSQL + pgAdmin, libvirt, and the distributed Nix build target for both workstations (`maxJobs = 32`). |
+
+### Network
+
+Static addressing on `eno1`, defined once in the `fleet` attribute set in `flake.nix` and consumed by each host — the table is the single source of truth, so a host's address and its `fleet` entry cannot drift.
+
+| Host | Address | ZFS pool |
+| :--- | :--- | :--- |
+| `r730xd` | `192.168.1.2` | `mediapool` |
+| `r730` | `192.168.1.3` | `r730pool` |
+| `r820` | `192.168.1.4` | — (hardware RAID) |
+| gateway / DNS | `192.168.1.1` | — |
+
+`navi` and `oryx` are DHCP clients and reach the rack over Tailscale when off-LAN. IPv6 is disabled fleet-wide on servers.
 
 ---
 
-## 📂 Repository Codebase Structure
-
-The codebase follows a strict modular design pattern. Logic is decoupled into reusable roles, opt-in feature modules, and hardware-specific configurations.
+## Layout
 
 ```text
 nixlab/
-├── flake.nix                # Central entry point defining inputs, outputs, and specialArgs routing
-├── flake.lock               # Pinned package commit snapshot ensuring absolute build reproducibility
-├── hosts/                   # Host-specific configurations and hardware mapping
-│   ├── navi/                # Desktop configuration & hardware-configuration.nix
-│   ├── oryx/                # Laptop configuration & hardware-configuration.nix
-│   ├── r730/                # AI compute configuration & Disko Mirrored VDEV layout
-│   ├── r730xd/              # Media server configuration & Disko 24-drive RAID-Z2 layout
-│   └── r820/                # Quad-socket compute node configuration (hardware RAID/ext4)
-├── modules/                 # Reusable system modules
-│   ├── features/            # Opt-in software services & toolsets (arr-stack, jellyfin, vaultwarden, 
-│   │                        #   torrents, monitoring, restic-client, sanoid, hyprland, gaming, nvidia-headless)
-│   ├── hardware/            # Hardware-specific quirks (dell-poweredge, system76-laptop, navi-desktop)
-│   └── roles/               # Fleet-wide baselines (common.nix, server-core.nix, desktop-node.nix, media-node.nix)
-├── users/aljam/             # Modular Home Manager user profiles
-│   ├── home.nix             # Core CLI environment hub (Fish shell, Git, Neovim, CLI utilities)
-│   ├── home-gui.nix         # Graphical desktop extensions (Kitty, window managers, app suites)
-│   ├── nixos.nix            # User account definitions and system bindings
-│   └── modules/             # Modularized user sub-configs (git.nix, shell.nix, nvim.nix, etc.)
-└── secrets/                 # Encrypted infrastructure secrets
-    └── secrets.yaml         # Master sops-nix encrypted credential store
+├── flake.nix                     # inputs, the `fleet` table, mkHost, per-host outputs
+├── flake.lock
+├── .sops.yaml                    # age recipients: your user key + all five host keys
+├── .github/workflows/ci.yml      # per-host dry-run build matrix + nix flake check
+├── hosts/
+│   ├── navi/                     # configuration + hardware-configuration
+│   ├── oryx/
+│   ├── r730/                     # + disko-config.nix (4 × 2-disk mirror vdevs)
+│   ├── r730xd/                   # + disko-config.nix (3 × 8-disk raidz2 vdevs)
+│   └── r820/
+├── modules/
+│   ├── roles/                    # composed baselines — see below
+│   ├── features/                 # opt-in services, one concern per file
+│   └── hardware/                 # machine-specific quirks (GRUB modes, PRIME, iDRAC fans)
+├── users/aljam/
+│   ├── nixos.nix                 # system-level account, groups, password secret
+│   ├── home.nix                  # CLI baseline: fish, git, neovim, packages
+│   ├── home-gui.nix              # desktop-only: themes, kitty, obs, GUI apps
+│   └── modules/{core,desktop}/
+└── secrets/secrets.yaml          # sops-encrypted, one file, all hosts
 ```
 
-## ⚙️ Deep-Dive Component Breakdown
+### How a host is composed
 
-### 1. Flake Architecture & Inputs (`flake.nix`)
-The root flake orchestrates all configurations by consuming upstream stable and unstable channels, hardware modules, and specialized toolsets such as Disko and sops-nix. Each host is instantiated via `nixpkgs.lib.nixosSystem`, binding system definitions directly to corresponding hardware manifests.
+`mkHost` in `flake.nix` gives every machine the same base, then layers on role and feature modules:
 
-### 2. Declarative Storage & Disko
-Storage topologies on production servers (`r730` and `r730xd`) are provisioned entirely through declarative Disko scripts. This guarantees that disk partitioning, GUID partition tables, ZFS pool creation (`zpool`), dataset hierarchies, and mount options are reproducible across bare-metal reinstalls without manual partitioning.
+```
+hosts/<name>/configuration.nix
+  └─ modules/roles/common.nix          always: hostname, locale, SSH, sops, nix.settings, GC
+  └─ modules/roles/{desktop-node|server-core}.nix
+       └─ modules/features/*.nix       audio, hyprland, jellyfin, arr-stack, …
+  └─ modules/hardware/<machine>.nix
+  └─ users/aljam/{nixos.nix,home.nix}
+```
 
-### 3. Role & Feature Modularity
-System behavior is divided into two structural layers:
-- **Roles (`modules/roles/`):** Establish mandatory baselines for all systems (`common.nix`), lightweight headless servers (`server-core.nix`), desktop workstations (`desktop-node.nix`), and storage nodes (`media-node.nix`).
-- **Features (`modules/features/`):** Opt-in service modules containing containerized or native systemd service definitions for applications like Jellyfin, Vaultwarden, the Arr media stack, and monitoring agents.
+Modules receive `hostname`, `domains`, `subnets`, and `fleet` through `specialArgs` (and the same set through `home-manager.extraSpecialArgs`), so no module hardcodes a hostname or an IP literal.
 
-### 4. Home Manager & User Dotfiles
-User `aljam` is managed via Home Manager, separating core CLI tool configurations (`home.nix` featuring Fish, Neovim, Git, and modern CLI utilities) from graphical desktop components (`home-gui.nix` featuring Kitty, window managers, and application suites). This configuration applies identically across desktop (`navi`) and laptop (`oryx`) hosts.
+**Roles**
 
-### 5. Secret Management with sops-nix
-Infrastructure credentials, API tokens, and environment overrides (such as `autobrr.enc.env`) are encrypted at rest using Age keys via `sops-nix`. Secrets are decrypted directly into runtime systemd service environments or secure runtime paths during system activation, ensuring zero credential leakage in version control.
+| Module | Applies to | Provides |
+| :--- | :--- | :--- |
+| `common.nix` | all five | `stateVersion`, timezone/locale, substituters, SSH (keys only, `AllowUsers`), sops, fail2ban, `execWheelOnly`, weekly GC + store optimisation, base CLI tools |
+| `server-core.nix` | the rack | static networking, nftables, Podman (with Docker socket), smartd, node-exporter |
+| `desktop-node.nix` | `navi`, `oryx` | CachyOS LTS kernel, NetworkManager, Tailscale, KDE Connect, audio/bluetooth/graphics/Hyprland, gaming, emulation, Flatpak, NAS mount, remote builder |
+| `storage-node.nix` | `r730`, `r730xd` | ZFS weekly scrub + sanoid snapshots |
+| `media-node.nix` | `r730xd` | the `media` group, Jellyfin, arr-stack, torrents, Vaultwarden, ytdl-sub, homepage-dashboard |
 
 ---
 
-## 🚀 Getting Started & Deployment
+## Services
 
-### Prerequisites
-- Install Nix with Flakes enabled (`experimental-features = nix-command flakes`).
-- Ensure Git is installed on the control machine.
+All on `r730xd` unless noted. Everything currently binds LAN addresses over plain HTTP — see [Known gaps](#known-gaps).
 
-### Initial Flake Deployment
-To deploy a specific host configuration (e.g., `navi`) from within the repository working directory, execute:
+| Service | Port | Notes |
+| :--- | :--- | :--- |
+| Jellyfin | 8096 (default) | NVENC via `nvidia-headless.nix` |
+| Sonarr / Radarr | 8989 / 7878 | `media` group, API keys from sops |
+| Prowlarr / Bazarr / Lidarr / Readarr | defaults | |
+| Shoko | 8111 | AniDB metadata |
+| Jellyseerr | 5055 | |
+| Audiobookshelf | 13378 | |
+| Autobrr | 7474 | IRC announce filtering |
+| qBittorrent (nox) | 8080 web / 6881 peer | container backend is Podman |
+| Vaultwarden | 8222 | |
+| homepage-dashboard | 8082 (default) | `allowedHosts` set to `home.derezzed.info` |
+| Prometheus | 9090 | scrapes node-exporter on all servers |
+| Grafana | 3000 | admin key from sops |
+| node-exporter | 9100 | firewalled to `192.168.1.2` only |
+| PostgreSQL / pgAdmin | 5432 / 5050 | **`r820`** — 5432 scoped to `eno1`, scram-sha-256 |
+| Ollama / Open WebUI | 11434 / 8085 | **`r730`** — staged, not enabled |
+
+---
+
+## Storage
+
+Both ZFS hosts are provisioned declaratively with [Disko](https://github.com/nix-community/disko), so a bare-metal reinstall reproduces partitioning, pool topology, and datasets with no manual `zpool create`.
+
+**`r730` — `r730pool`:** four 2-disk mirror vdevs (8 disks), datasets `root` → `/`, `nix` → `/nix`, `home` → `/home`.
+
+**`r730xd` — `mediapool`:** three 8-disk raidz2 vdevs (24 disks), datasets `root` → `/`, `media` → `/mnt/media`. ARC capped at 64 GiB via `zfs.zfs_arc_max`.
+
+Both use `compression = zstd`, `atime = off`, and a dual-ESP layout (`/boot`, `/boot2`) mirrored across the first two disks. Weekly scrubs Sunday 02:00; sanoid snapshots via `storage-node`.
+
+---
+
+## Secrets
+
+One `sops`-encrypted file, `secrets/secrets.yaml`, encrypted to your user key plus the age-converted SSH host key of all five machines. Each host decrypts at activation with `/etc/ssh/ssh_host_ed25519_key` — nothing depends on a user keyring being unlocked.
+
+| Key | Consumer |
+| :--- | :--- |
+| `aljam_password` | user login / sudo (`neededForUsers = true`) |
+| `sonarr_api_key`, `radarr_api_key` | Recyclarr |
+| `autobrr_api_key` | Autobrr |
+| `grafana-secret-key` | Grafana |
+| `pgadmin_password` | pgAdmin |
+| `alertmanager_smtp_password` | Alertmanager (not yet wired) |
+| `restic-password` | reserved — see [Known gaps](#known-gaps) |
+
+```bash
+sops secrets/secrets.yaml               # edit
+sops updatekeys secrets/secrets.yaml    # after adding a host to .sops.yaml
+```
+
+> `users.mutableUsers = false` is set fleet-wide, so passwords come **only** from `hashedPasswordFile`. If a host's SSH host key is ever regenerated it can no longer decrypt `aljam_password`, which means no console login and no `sudo` on that host. Re-run `sops updatekeys` and rebuild before rebooting after any host-key change.
+
+---
+
+## Usage
+
+### Requirements
+
+Nix with flakes enabled, and `git`:
+
+```bash
+experimental-features = nix-command flakes
+```
+
+### Build and switch
+
 ```bash
 sudo nixos-rebuild switch --flake .#navi
 ```
 
-### Remote Deployment via Deploy-rs (Optional)
-For remote server management across the rack (`r730`, `r730xd`, `r820`), remote activation can be triggered directly from the workstation:
+### Check before you deploy
+
 ```bash
-deploy .#r730xd
+nix flake check                                                    # eval every host
+nix build --dry-run '.#nixosConfigurations.r730xd.config.system.build.toplevel'
+nixos-rebuild build --flake .#r730xd && nvd diff-closure /run/current-system result
 ```
+
+`nvd` is in the base package set, so closure diffs work on every host.
+
+### Deploy to the rack
+
+```bash
+nixos-rebuild switch --flake .#r730xd --target-host aljam@192.168.1.2 --use-remote-sudo
+```
+
+Both workstations use `r820` as a distributed builder (`nix.settings.trusted-users` includes `aljam` there), so large rebuilds are offloaded automatically. This relies on root's SSH key at `/root/.ssh/id_ed25519` on the client.
+
+### First install on new hardware
+
+```bash
+# from the NixOS installer, with the flake available
+sudo nix run github:nix-community/disko -- --mode disko --flake .#r730xd
+sudo nixos-install --flake .#r730xd
+```
+
+Then convert the new host key and add it to `.sops.yaml`:
+
+```bash
+ssh-keyscan -t ed25519 <host> | ssh-to-age
+sops updatekeys secrets/secrets.yaml
+```
+
+### Formatting and linting
+
+```bash
+nix run nixpkgs#nixfmt-rfc-style -- .
+nix run nixpkgs#statix -- check
+nix run nixpkgs#deadnix
+nix run nixpkgs#actionlint            # validates .github/workflows/
+```
+
+### CI
+
+`.github/workflows/ci.yml` runs `nix flake check` plus a `nix build --dry-run` matrix across all five hosts on every push and PR, so an eval error is caught per-host rather than as a single opaque failure.
 
 ---
 
-## 📜 License & Maintenance
-Maintained under GNU General Public License version 2. Contributions, issue reports, and pull requests to improve modularity or expand hardware support are welcome.
+## Staged, not active
+
+Present in the tree but intentionally not imported. Enabling any of these needs the listed prerequisites.
+
+| Module | Status |
+| :--- | :--- |
+| `modules/roles/ai-node.nix` | Ollama + Open WebUI for the Tesla P40s in `r730`. Needs `acceleration = "cuda"`, `nixpkgs.config.cudaSupport`, and `nvidia-container-toolkit` re-enabled — expect a long from-source rebuild. |
+| `modules/features/nvidia-headless.nix` (on `r730`) | Commented out alongside `ai-node`. `r730` still installs `cudatoolkit` and `linuxPackages.nvidia_x11`; note the latter targets the default kernel while the host pins `linuxPackages_6_1`. |
+| `modules/roles/mail-node.nix` | Imported nowhere. Needs `mailserver.nixosModules.mailserver` added to the module list and `smtp_relay_password` + `mail_password_aljam` added to `secrets.yaml`. |
+
+---
+
+## Known gaps
+
+Tracked honestly rather than left for the next reader to discover.
+
+- **No backups.** `restic-client.nix` was removed; `restic-password` remains in `secrets.yaml` unused. ZFS snapshots live on the same pool as the data and are not a substitute. Vaultwarden's DB, the PostgreSQL instances on `r820`, and `/var/lib/*` service state are currently unprotected.
+- **No TLS or reverse proxy.** Every web UI above is plain HTTP on a LAN address. `homepage-dashboard` links to `https://*.derezzed.info` names that nothing yet serves, and Vaultwarden's `DOMAIN` does not match its real origin, which breaks passkeys.
+- **Sanoid only covers `mediapool`.** `r730pool` has scrubs but no snapshots, even though `fleet.r730.zpool` is defined.
+- **`nas-mount.nix`** reads CIFS credentials from an unmanaged plaintext `/etc/nixos/smb-secrets` and points at a `192.168.2.x` address that is not on this LAN.
+- **Fan control** (`dell-poweredge.nix`) falls back to a low fan speed if sensor parsing fails, and has no `ExecStopPost` to hand control back to the iDRAC if the unit dies.
+- **Partial `follows`.** `nixos-hardware`, `nix-cachyos-kernel`, `nix-flatpak`, and `millennium` don't follow the root `nixpkgs`, so the lock file carries several extra nixpkgs copies.
+- **NUR and the Millennium overlay** are applied to every host, including `r730xd`, rather than only to desktops.
+- **`users.users.aljam.extraGroups`** requests `plugdev` and `ubridge`, which nothing creates, and `docker`, which doesn't exist on Podman-only servers.
+
+---
+
+## License
+
+[GNU General Public License v2](LICENSE.md).
