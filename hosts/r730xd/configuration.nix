@@ -21,7 +21,7 @@
 
   networking.interfaces.eno1.ipv4.addresses = [
     {
-      address = "${fleet.r730xd.ip}";
+      address = fleet.r730xd.ip;
       prefixLength = 24;
     }
   ];
