@@ -12,7 +12,7 @@
     gimp
     krita
     blender
-    qbittorrent
+    qbittorrent-nox
     inkscape
     audacity
     super-slicer
