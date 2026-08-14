@@ -1,18 +1,23 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
+let
+  groupExists = g: builtins.hasAttr g config.users.groups;
+in
 {
-  programs.fish.enable = true;
-
-  # secrets.yaml: aljam_password = output of `mkpasswd -m yescrypt`
-  sops.secrets.aljam_password.neededForUsers = true; # required — decrypt before user
-    
   users.users.aljam = {
+    extraGroups =
+    [ "wheel" "video" "render" "input" ]
+    ++ lib.filter groupExists [ "networkmanager" "libvirtd" "wireshark" "media" "podman" ];
     isNormalUser = true;
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHzrMiro1XD8krk5Kb4EWQ+rGjmgKXha/OuOmUZcopRL navi-desktop"
-    ];
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" "docker" "wireshark" "video" "render" "media" "input" ];
+        openssh.authorizedKeys.keys = [
+          "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHzrMiro1XD8krk5Kb4EWQ+rGjmgKXha/OuOmUZcopRL navi-desktop"
+        ];
     shell = pkgs.fish; # Or whichever shell you use
     hashedPasswordFile = config.sops.secrets.aljam_password.path;
   };
+
+  programs.fish.enable = true;
+
+  # secrets.yaml: aljam_password = output of `mkpasswd -m yescrypt`
+  sops.secrets.aljam_password.neededForUsers = true; # required — decrypt before user    
 }
