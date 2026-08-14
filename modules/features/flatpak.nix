@@ -4,9 +4,8 @@
   services.flatpak = {
     enable = true;
     update = {
-      onActivation = true;
       auto = {
-        enable = false;
+        enable = true;
       };
     };
     remotes = [
