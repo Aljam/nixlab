@@ -99,9 +99,7 @@
 
       mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = {
-          inherit inputs pkgs-stable hostname domains subnets;
-        };
+        specialArgs = { inherit inputs pkgs-stable hostname domains subnets fleet; };
 
         modules = [
           ./hosts/${hostname}/configuration.nix
@@ -125,7 +123,7 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.users.aljam = import ./users/aljam/home.nix;
-            home-manager.extraSpecialArgs = { inherit inputs pkgs-stable domains subnets; };
+            home-manager.extraSpecialArgs = { inherit inputs pkgs-stable hostname domains subnets fleet; };
           }
         ] ++ extraModules;
       };
