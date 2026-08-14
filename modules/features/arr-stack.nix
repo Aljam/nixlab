@@ -50,7 +50,7 @@ in
   services.prowlarr = { enable = true; };
   services.shoko = { enable = true; };
 
-  # Ensure all service daemons bind to localhost
+  # Ensure all service daemons bind to ${subnets.lan}.2
   systemd.services = {
     sonarr.environment.SONARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
     radarr.environment.RADARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
@@ -76,7 +76,7 @@ in
     enable = true;
     configuration = {
       sonarr.anime = {
-        base_url = "http://localhost:8989";
+        base_url = "http://${subnets.lan}.2:8989";
         api_key._secret = config.sops.secrets.sonarr_api_key.path;
         quality_profiles = [
           { trash_id = "72dae194fc92bf828f32cde7744e51a1"; }
@@ -95,7 +95,7 @@ in
         ];
       };
       radarr.movies = {
-        base_url = "http://localhost:7878";
+        base_url = "http://${subnets.lan}.2:7878";
         api_key._secret = config.sops.secrets.radarr_api_key.path;
         quality_profiles = [
           { trash_id = "d1d67249d3890e49bc12e275d989a7e9"; }
