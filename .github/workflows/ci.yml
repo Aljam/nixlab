@@ -6,15 +6,15 @@ on:
     branches: [ "main" ]
 jobs:
   check:
-  runs-on: ubuntu-latest
-  strategy:
-    fail-fast: false
-  matrix:
-    host: [ navi, oryx, r820, r730, r730xd ]
-  steps:
-    - uses: actions/checkout@v4
-    - uses: DeterminateSystems/nix-installer-action@v22
-    - run: nix build --dry-run ".#nixosConfigurations.${{ matrix.host }}.config.sys
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    matrix:
+      host: [ navi, oryx, r820, r730, r730xd ]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v22
+      - run: nix build --dry-run ".#nixosConfigurations.${{ matrix.host }}.config.sys"
 
   flake-check:
     runs-on: ubuntu-latest
