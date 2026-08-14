@@ -10,9 +10,4 @@
     pulse.enable = true;
     jack.enable = true;       # Required for ultra-low latency rhythm gaming
   };
-
-  environment.systemPackages = with pkgs; [
-    qjackctl
-    pavucontrol
-  ];
 }
