@@ -1,7 +1,6 @@
 { config, pkgs, ... }:
 
 {              
-  home.enableNixpkgsReleaseCheck = false;
   home.username = "aljam";
   home.homeDirectory = "/home/aljam";
   home.stateVersion = "26.05";
