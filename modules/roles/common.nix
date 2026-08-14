@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ hostname, config, pkgs, lib, ... }:
 
 {
   imports = [
@@ -7,6 +7,9 @@
   
   nixpkgs.config.allowUnfree = true;
   hardware.enableRedistributableFirmware = true;
+
+  networking.hostName = hostname;
+  system.stateVersion = "26.05"
 
   time.timeZone = "America/Toronto";
   i18n.defaultLocale = "en_CA.UTF-8";
