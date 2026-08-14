@@ -15,5 +15,9 @@
     fastfetch
     gh
     sops
+    gcc
+    gnumake
+    unzip
+    xclip
   ];
 }
