@@ -13,6 +13,11 @@
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   security.sudo.enable = true;
+  users.mutableUsers = false
+  services.fail2ban.enable = true
+  security.sudo.execWheelOnly = true
+  boot.tmp.cleanOnBoot = true
+  
 
   environment.systemPackages = with pkgs; [
     home-manager
@@ -30,14 +35,13 @@
     nvd
     nix-tree
     iperf3
-    nmap
-    tcpdump
     duf
     sops
   ];
 
   services.openssh = {
     enable = true;
+    settings.AllowUsers = [ "aljam" ]
     settings.PasswordAuthentication = false;
     settings.KbdInteractiveAuthentication = false;
     settings.PermitRootLogin = "no";
