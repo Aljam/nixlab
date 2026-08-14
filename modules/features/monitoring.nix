@@ -1,8 +1,6 @@
-{ config, pkgs, lib, domains, ... }:
+{ config, pkgs, lib, ... }:
 
-{   
-   imports = [ ../../modules/features/grafana.nix ];
-   
+{     
    environment.systemPackages = with pkgs; [
     btop
     iotop
