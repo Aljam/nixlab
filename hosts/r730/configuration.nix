@@ -11,7 +11,6 @@
     # ../../modules/features/nvidia-headless.nix
   ];
 
-  networking.hostName = "r730";
   networking.hostId = "acccc16e"; # Required for ZFS
 
   networking.interfaces.eno1.ipv4.addresses = [
@@ -38,5 +37,4 @@
     linuxPackages.nvidia_x11
   ];
 
-  system.stateVersion = lib.mkDefault "26.05";
 }
