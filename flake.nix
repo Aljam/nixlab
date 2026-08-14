@@ -72,9 +72,19 @@
         glow_dev   = "glowrunner.dev";
         glow_xyz   = "glowrunner.xyz";
       };
+
       subnets = {
         lan = "192.168.1";
       };
+
+      fleet = {
+        navi = { };
+        oryx = { };
+        r820 = { ip = "${subnets.lan}.4"; };
+        r730 = { ip = "${subnets.lan}.3"; zpool = "r730pool"; };
+        r730xd = { ip = "${subnets.lan}.2"; zpool = "mediapool"; };
+      };
+
       mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
         inherit system;
         specialArgs = {
