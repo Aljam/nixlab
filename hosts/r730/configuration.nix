@@ -15,7 +15,7 @@
 
   networking.interfaces.eno1.ipv4.addresses = [
     {
-      address = "${subnets.lan}.3";
+      address = "${fleet.r730.ip};
       prefixLength = 24;
     }
   ];
