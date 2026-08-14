@@ -1,4 +1,4 @@
-{ config, pkgs, lib, subnets, ... }:
+{ config, pkgs, lib, fleet, ... }:
 
 let
   mediaUsers = [ "autobrr" "sonarr" "prowlarr" "radarr" "bazarr" "readarr" "lidarr" "shoko" ];
@@ -45,18 +45,18 @@ in
   services.prowlarr = { enable = true; };
   services.shoko = { enable = true; };
 
-  # Ensure all service daemons bind to ${subnets.lan}.2
+  # Ensure all service daemons bind to ${fleet.r730xd.ip}
   systemd.services = {
-    sonarr.environment.SONARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
-    radarr.environment.RADARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
-    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
-    readarr.environment.READARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
-    lidarr.environment.LIDARR__SERVER__BINDADDRESS = "${subnets.lan}.2";
+    sonarr.environment.SONARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
+    radarr.environment.RADARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
+    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
+    readarr.environment.READARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
+    lidarr.environment.LIDARR__SERVER__BINDADDRESS = "${fleet.r730xd.ip}";
 
     bazarr.serviceConfig.UMask = "0002";
 
     shoko.environment = {
-      ASPNETCORE_URLS = "http://${subnets.lan}.2:8111";
+      ASPNETCORE_URLS = "http://${fleet.r730xd.ip}:8111";
       SHOKO_PORT = "8111";
     };
   };
@@ -71,7 +71,7 @@ in
     enable = true;
     configuration = {
       sonarr.anime = {
-        base_url = "http://${subnets.lan}.2:8989";
+        base_url = "http://${fleet.r730xd.ip}:8989";
         api_key._secret = config.sops.secrets.sonarr_api_key.path;
         quality_profiles = [
           { trash_id = "72dae194fc92bf828f32cde7744e51a1"; }
@@ -90,7 +90,7 @@ in
         ];
       };
       radarr.movies = {
-        base_url = "http://${subnets.lan}.2:7878";
+        base_url = "http://${fleet.r730xd.ip}:7878";
         api_key._secret = config.sops.secrets.radarr_api_key.path;
         quality_profiles = [
           { trash_id = "d1d67249d3890e49bc12e275d989a7e9"; }
@@ -110,13 +110,13 @@ in
   services.audiobookshelf = {
     enable = true;
     port = 13378;
-    host = "${subnets.lan}.2";
+    host = "${fleet.r730xd.ip}";
   };
 
   services.autobrr = {
     enable = true;
     secretFile = config.sops.secrets.autobrr_api_key.path;
-    settings = { host = "${subnets.lan}.2"; port = 7474; };
+    settings = { host = "${fleet.r730xd.ip}"; port = 7474; };
   };
 
 }
