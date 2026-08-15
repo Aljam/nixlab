@@ -2,6 +2,7 @@
 {
   sops.secrets."autobrr_api_key" = {
     owner = "autobrr";
+    group = "autobrr";
   };
 
   services.autobrr = {
