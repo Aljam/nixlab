@@ -18,6 +18,6 @@ jobs:
         with:
           name: aljam
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          extraPullNames: nix-community hyprland cuda-maintainers
+          extraPullNames: nix-community,hyprland,cuda-maintainers
       - name: Build ${{ matrix.host }}
         run: nix build --no-link ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel"
