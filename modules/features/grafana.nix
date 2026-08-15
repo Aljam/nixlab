@@ -19,9 +19,15 @@
   };
 
   config = lib.mkIf config.modules.features.grafana.enable {
-    # Declare SOPS secrets
-    sops.secrets."grafana-secret-key" = { };
-    sops.secrets."grafana-admin-password" = { };
+    # Declare SOPS secrets with proper permissions for grafana user
+    sops.secrets."grafana-secret-key" = {
+      owner = "grafana";
+      group = "grafana";
+    };
+    sops.secrets."grafana-admin-password" = {
+      owner = "grafana";
+      group = "grafana";
+    };
 
     services.grafana = {
       enable = true;
