@@ -1,18 +1,23 @@
-{ config, pkgs, domains, fleet, subnets, lib, ... }:
+# nixlab/modules/features/audiobookshelf.nix
+# Audiobookshelf audiobook and podcast server
+
+{ config, lib, pkgs, ... }:
+
+let
+  cfg = config.modules.features.audiobookshelf;
+in
 {
-  services.audiobookshelf = {
-    enable = true;
-    host = "0.0.0.0";
-    user = "media";
-    group = "media";
-    dataDir = "/var/lib/audiobookshelf";
-    openFirewall = false;
+  options.modules.features.audiobookshelf = {
+    enable = lib.mkEnableOption "Audiobookshelf audiobook and podcast server" // {
+      default = true;
+    };
   };
 
-  # Override broken WorkingDirectory in audiobookshelf systemd service
-  systemd.services.audiobookshelf.serviceConfig.WorkingDirectory = lib.mkForce "/var/lib/audiobookshelf";
-
-  networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 13378 accept
-  '';
+  config = lib.mkIf cfg.enable {
+    services.audiobookshelf = {
+      enable = true;
+      host = "0.0.0.0";
+      port = 13378;
+    };
+  };
 }
