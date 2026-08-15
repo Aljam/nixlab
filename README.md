@@ -5,70 +5,141 @@
 [![License](https://img.shields.io/github/license/Aljam/nixlab)](LICENSE.md)
 [![Last Commit](https://img.shields.io/github/last-commit/Aljam/nixlab)](https://github.com/Aljam/nixlab/commits/main/)
 
-Declarative NixOS homelab configuration managed with flakes.
+A declarative NixOS homelab built from reusable modules, encrypted secrets, and reproducible host configurations.
 
-## What this repository provides
+nixlab is the configuration repository for a multi-host homelab. It turns servers, services, networking, storage, monitoring, and user environments into version-controlled Nix code that can be reviewed, tested, and deployed consistently.
 
-- Reproducible NixOS configurations for the homelab hosts.
-- Reusable feature modules for infrastructure, monitoring, media services, and desktop functionality.
-- Role-based composition for keeping host configuration small and auditable.
-- Secret management with sops-nix.
-- PostgreSQL-backed services, including Grafana and the webscraper database.
-- Optional Vaultwarden and pgAdmin services with explicit service ports.
-- Firewall and reverse-proxy integration for services exposed by a host.
+## Why nixlab
+
+- **Declarative infrastructure:** System behavior is described in Nix instead of assembled manually on each machine.
+- **Reusable composition:** Hardware modules, roles, and feature modules can be combined for different hosts.
+- **Reproducible deployments:** Flakes pin inputs and provide explicit host configuration outputs.
+- **Secure by default:** Credentials and sensitive configuration are managed with sops-nix rather than stored as plaintext.
+- **Operationally documented:** Deployment, backup, secrets, alerts, and architecture guidance live alongside the code.
+
+## Architecture at a glance
+
+The repository is organized into layers:
+
+```text
+flake.nix
+├── hosts/                 Host-specific configuration
+├── modules/hardware/      Hardware profiles and machine integration
+├── modules/roles/         Reusable system compositions
+├── modules/features/      Opt-in services and capabilities
+├── users/                 User and Home Manager configuration
+├── secrets/               Encrypted sops-nix data
+├── tests/                 Configuration and evaluation tests
+└── docs/                  Architecture and operations documentation
+```
+
+Hosts select the hardware, roles, and features they need. Shared values such as `DEFAULT_SERVER`, service ports, and public backend ports are kept in host settings so modules remain reusable and operator-visible behavior stays centralized.
+
+## Hosts
+
+The current host profiles are:
+
+| Host | Intended role |
+| --- | --- |
+| `navi` | General-purpose host profile. |
+| `oryx` | Host profile for additional homelab workloads. |
+| `r730` | Dell PowerEdge R730 profile. |
+| `r730xd` | Dell PowerEdge R730xd profile. |
+| `r820` | Dell PowerEdge R820 profile. |
+
+Host-specific hardware and deployment details should be confirmed in the corresponding directory before applying a configuration.
+
+## Services and capabilities
+
+Feature modules currently cover infrastructure, databases, monitoring, media, networking, desktop, and security-related workloads. Notable services include:
+
+- PostgreSQL, including Grafana database support.
+- pgAdmin, configured through the NixOS service module on port `5050`.
+- Vaultwarden on port `8222`.
+- Grafana, Prometheus, node exporter, and alerting components.
+- Jellyfin and the Arr ecosystem, including Sonarr, Radarr, Lidarr, Readarr, Prowlarr, Bazarr, and related tools.
+- Audiobookshelf, Seerr, Shoko, Autobrr, Recyclarr, torrents, and YouTube-related tooling.
+- ZFS, Sanoid, NAS mounts, remote builders, reverse-proxy integration, networking tools, and hardware acceleration.
+
+Service exposure is deliberate: ports, firewall rules, and optional reverse-proxy backends must remain aligned. A service being enabled does not by itself mean it should be reachable from the public Internet.
+
+## Quick start
+
+### Prerequisites
+
+Install Nix with flakes enabled and ensure you have access to the target host and the repository's encrypted secret keys. Review the secret-management guide before attempting a deployment.
+
+### Check the flake
+
+```bash
+nix flake check
+```
+
+### Test a host
+
+Replace `<host>` with one of the configured host names:
+
+```bash
+sudo nixos-rebuild test --flake .#<host>
+```
+
+This activates the configuration temporarily so services and hardware changes can be verified without making the generation the default boot configuration.
+
+### Apply a host configuration
+
+After testing and reviewing service status, apply the configuration persistently:
+
+```bash
+sudo nixos-rebuild switch --flake .#<host>
+```
+
+For a production-style rollout, follow [docs/DEPLOYMENT-CHECKLIST.md](docs/DEPLOYMENT-CHECKLIST.md).
 
 ## Repository layout
 
-| Path | Purpose |
+| Path | Description |
 | --- | --- |
 | `flake.nix` | Flake inputs and NixOS configuration outputs. |
-| `hosts/` | Host-specific hardware and system configuration. |
-| `modules/features/` | Opt-in service and capability modules. |
-| `modules/roles/` | Higher-level compositions of features. |
-| `modules/hardware/` | Hardware-specific configuration. |
-| `users/` | User and Home Manager configuration. |
-| `secrets/` | Encrypted secrets; never commit plaintext credentials. |
-| `tests/` | Evaluation and configuration tests. |
-| `docs/` | Operational, architecture, deployment, backup, and secret-management guides. |
-
-## Current service notes
-
-### PostgreSQL and webscraper
-
-The PostgreSQL feature provisions the databases required by the homelab. The current configuration includes a dedicated `webscraper` database with database ownership enabled. PostgreSQL remains the backend for Grafana and other configured services.
-
-### pgAdmin
-
-The pgAdmin service is configured through the NixOS `services.pgadmin` module. Its initial email and password are supplied through the module's initialization options, and the service listens on port `5050`. The firewall allows the configured pgAdmin port, and a systemd override makes pgAdmin listen on `0.0.0.0` when remote access is required.
-
-Treat the initial password as a bootstrap credential: keep it in encrypted secret material and change it after first login.
-
-### Vaultwarden
-
-Vaultwarden is exposed on port `8222`. Its service configuration and firewall exposure are managed by the feature module; verify the host's network boundary and reverse-proxy policy before exposing it beyond the trusted network.
-
-### Service settings and firewall ports
-
-Service defaults are centralized in host settings. In particular, `DEFAULT_SERVER` is read from settings rather than being hard-coded in individual modules. Public service ports are collected into the host's backend-port configuration, while custom firewall rules use the NixOS firewall integration and nftables syntax.
-
-## Getting started
-
-1. Review [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
-2. Inspect [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) before adding a feature or host.
-3. Configure secrets according to [docs/SECRETS.md](docs/SECRETS.md).
-4. Validate a configuration with:
-
-   ```bash
-   nix flake check
-   sudo nixos-rebuild test --flake .#<host>
-   ```
-
-5. Use [docs/DEPLOYMENT-CHECKLIST.md](docs/DEPLOYMENT-CHECKLIST.md) for a rollout.
+| `flake.lock` | Locked input revisions for reproducible evaluation. |
+| `hosts/` | Machine-specific configuration for each host. |
+| `modules/hardware/` | Hardware and platform integration. |
+| `modules/roles/` | Higher-level combinations of features. |
+| `modules/features/` | Individual services and reusable capabilities. |
+| `users/` | User accounts and Home Manager configuration. |
+| `secrets/` | Encrypted secrets managed with sops-nix. |
+| `tests/` | Configuration and evaluation tests. |
+| `docs/` | Operational and architectural documentation. |
+| `.sops.yaml` | sops-nix encryption rules and recipients. |
 
 ## Documentation
 
-Start at [docs/docs-index.md](docs/docs-index.md) for the complete documentation map. The repository also includes [CACHIX.md](CACHIX.md) for binary-cache setup.
+- [Getting started](docs/GETTING-STARTED.md) — Initial setup and first deployment.
+- [Architecture](docs/ARCHITECTURE.md) — Configuration layers, service design, ports, and proxy behavior.
+- [Deployment checklist](docs/DEPLOYMENT-CHECKLIST.md) — Preflight, validation, rollout, and post-deployment checks.
+- [Secrets](docs/SECRETS.md) — Encrypted secret layout and safe editing.
+- [Backup and recovery](docs/BACKUP-RECOVERY.md) — Data protection and restoration procedures.
+- [Alerts](docs/ALERTS.md) — Monitoring and alerting guidance.
+- [Roles](docs/ROLES.md) — Role composition and responsibilities.
+- [Cachix](CACHIX.md) — Binary-cache setup and troubleshooting.
+- [Complete documentation index](docs/docs-index.md) — Full documentation map.
 
-## Safety
+## Security and operations
 
-This repository contains encrypted secret files and infrastructure configuration. Do not commit decrypted secrets, generated credentials, private keys, or machine-specific sensitive data.
+- Never commit decrypted secrets, passwords, private keys, tokens, or generated credentials.
+- Keep bootstrap credentials in encrypted secret files and rotate them after first use.
+- Treat pgAdmin on port `5050` and Vaultwarden on port `8222` as trusted-network services unless they are protected by an appropriately configured TLS reverse proxy.
+- Include persistent service data and databases in backup planning.
+- Review firewall and public backend port changes as part of every service change.
+- Validate configurations before switching generations, and record the deployed revision for operational traceability.
+
+## Contributing
+
+Keep changes focused and composable:
+
+1. Add or update a feature under `modules/features/`.
+2. Put host-specific values in host settings rather than hard-coding them in reusable modules.
+3. Update roles or host imports as needed.
+4. Update operator-facing documentation when ports, databases, secrets, or access behavior changes.
+5. Run `nix flake check` and a host-specific test activation before deployment.
+
+See [LICENSE.md](LICENSE.md) for licensing information.
