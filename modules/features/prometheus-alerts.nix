@@ -246,7 +246,7 @@
       };
       
       route = {
-        group_by = ["alertname", "severity"];
+        group_by = ["alertname" "severity"];
         group_wait = "30s";
         group_interval = "5m";
         repeat_interval = "4h";
