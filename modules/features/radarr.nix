@@ -1,4 +1,4 @@
-{ config, pkgs, domains, fleet, ... }:
+{ config, pkgs, domains, fleet, subnets, ... }:
 {
   services.radarr = {
     enable = true;
@@ -10,6 +10,6 @@
 
   # Firewall: Only HAProxy (pfSense) can access
   networking.firewall.extraInputRules = ''
-    ip saddr ${fleet.r730xd.ip} tcp dport 7878 accept
+    ip saddr ${subnets.lan}.1 tcp dport 7878 accept
   '';
 }
