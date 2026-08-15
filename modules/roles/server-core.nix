@@ -18,7 +18,6 @@
     allowedUDPPorts = [];
   };  
 
-
   networking.nftables.enable = true;
   networking.networkmanager.enable = false;
   networking.useDHCP = false;
