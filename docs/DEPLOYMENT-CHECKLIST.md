@@ -6,7 +6,7 @@ Use this checklist when deploying nixlab to ensure nothing is missed.
 
 ### System Requirements
 
-- [ ] NixOS installed (24.05 or later recommended)
+- [ ] NixOS installed (26.05 or later recommended)
 - [ ] Flakes enabled in Nix
 - [ ] Minimum 4GB RAM (8GB+ recommended)
 - [ ] Minimum 20GB free storage
