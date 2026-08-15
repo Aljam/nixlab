@@ -5,7 +5,6 @@
 ![SOPS](https://img.shields.io/badge/Secrets-SOPS-green?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/Tests-NixOS-orange?style=for-the-badge)
 ![Monitoring](https://img.shields.io/badge/Monitoring-Prometheus-red?style=for-the-badge&logo=prometheus&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
 > **A modular NixOS flake configuration for managing desktops, servers, and specialized nodes with comprehensive monitoring and alerting.**
 
@@ -229,7 +228,7 @@ http://<host>:9093
 
 ## License
 
-MIT License - See [LICENSE.md](LICENSE.md)
+See [LICENSE.md](LICENSE.md)
 
 ---
 
