@@ -6,6 +6,7 @@
 {
   services.readarr = {
     enable = true;
+    port = 8787
     settings.server.bindAddress = "0.0.0.0";
   };
 
