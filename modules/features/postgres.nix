@@ -21,6 +21,11 @@
       default = "/var/backup/postgresql";
       description = "PostgreSQL backup directory";
     };
+    pgadminPort = lib.mkOption {
+      type = lib.types.port;
+      default = 5050;
+      description = "pgadmin port";
+    };
   };
 
   config = lib.mkIf config.modules.features.postgres.enable {
@@ -35,6 +40,11 @@
         }
       ];
       ensureDatabases = [ "grafana" ];
+    };
+
+    services.pgadmin = {
+      enable = true;
+      port = config.modules.features.postgres.pgadminPort;
     };
 
     # Custom backup service
