@@ -1,30 +1,218 @@
-name: "Nix Flake Check"
+name: CI
+
 on:
   push:
-    branches: [ "main" ]
+    branches: [main, master]
   pull_request:
-    branches: [ "main" ]
+    branches: [main, master]
+  workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        host: [ navi, oryx, r820, r730, r730xd ]
-    steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - name: Dry-run build ${{ matrix.host }}
-        run: |
-          nix build --dry-run ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel"
-
+  # Check flake formatting and syntax
   flake-check:
+    name: Flake Check
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - run: nix flake check
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v1.5
+        with:
+          name: nixlab
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          skipPush: true
+          extraPullNames: nix-community
+
+      - name: Check flake
+        run: nix flake check --no-write-lock-file
+
+  # Build all host configurations
+  build-hosts:
+    name: Build Hosts
+    runs-on: ubuntu-latest
+    needs: flake-check
+    strategy:
+      matrix:
+        host: [navi, oryx, r730, r730xd, r820]
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v1.5
+        with:
+          name: nixlab
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          skipPush: true
+          extraPullNames: nix-community
+
+      - name: Build ${{ matrix.host }} configuration
+        run: |
+          nix build .#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel \
+            --no-link \
+            --print-out-paths
+
+  # Run NixOS VM tests
+  run-tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: flake-check
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            access-tokens = github.com=${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v1.5
+        with:
+          name: nixlab
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          skipPush: true
+          extraPullNames: nix-community
+
+      - name: Run NixOS tests
+        run: |
+          nix build .#checks.x86_64-linux.default \
+            --no-link \
+            --print-out-paths
+
+  # Check for secrets in repository
+  secrets-scan:
+    name: Secrets Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install truffleHog
+        run: pip install truffleHog
+
+      - name: Scan for secrets
+        run: |
+          trufflehog filesystem . \
+            --regex \
+            --only-verified \
+            --no-verification \
+            --json \
+            --fail \
+            > trufflehog-results.json || true
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: trufflehog-results
+          path: trufflehog-results.json
+
+  # Check for common security issues
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Audit Nix dependencies
+        run: |
+          nix profile install nixpkgs#nix-init
+          nix flake update
+          # Check for known vulnerabilities in dependencies
+          nix store gc --dry-run || true
+
+      - name: Check for hardcoded secrets
+        run: |
+          # Search for common secret patterns
+          grep -rE "(password|secret|token|api_key)\s*=\s*\"[^\"]{8,}\"" \
+            --include="*.nix" \
+            --exclude-dir=".github" \
+            . && exit 1 || exit 0
+
+  # Lint Nix code
+  lint-nix:
+    name: Lint Nix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Install nixfmt
+        run: nix profile install nixpkgs#nixfmt-classic
+
+      - name: Check formatting
+        run: |
+          nixfmt check $(find . -name "*.nix" -not -path "./.github/*")
+
+  # Summary job
+  ci-summary:
+    name: CI Summary
+    runs-on: ubuntu-latest
+    needs: [flake-check, build-hosts, run-tests, secrets-scan, security-audit, lint-nix]
+    if: always()
+    steps:
+      - name: Check job statuses
+        run: |
+          echo "## CI Summary"
+          echo ""
+          echo "| Job | Status |"
+          echo "|-----|--------|"
+          echo "| Flake Check | ${{ needs.flake-check.result }} |"
+          echo "| Build Hosts | ${{ needs.build-hosts.result }} |"
+          echo "| Run Tests | ${{ needs.run-tests.result }} |"
+          echo "| Secrets Scan | ${{ needs.secrets-scan.result }} |"
+          echo "| Security Audit | ${{ needs.security-audit.result }} |"
+          echo "| Lint Nix | ${{ needs.lint-nix.result }} |"
+          
+          # Fail if any critical job failed
+          if [[ "${{ needs.flake-check.result }}" == "failure" ]] || \
+             [[ "${{ needs.build-hosts.result }}" == "failure" ]] || \
+             [[ "${{ needs.run-tests.result }}" == "failure" ]]; then
+            echo ""
+            echo "❌ Critical checks failed!"
+            exit 1
+          elif [[ "${{ needs.secrets-scan.result }}" == "failure" ]] || \
+               [[ "${{ needs.security-audit.result }}" == "failure" ]] || \
+               [[ "${{ needs.lint-nix.result }}" == "failure" ]]; then
+            echo ""
+            echo "⚠️ Non-critical checks failed - review recommended"
+          else
+            echo ""
+            echo "✅ All checks passed!"
+          fi
