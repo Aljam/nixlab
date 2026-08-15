@@ -1,135 +1,154 @@
 # nixlab
 
-A modular NixOS flake configuration for managing multiple hosts including desktops, servers, and specialized nodes.
+![NixOS](https://img.shields.io/badge/NixOS-24.05-blue?style=for-the-badge&logo=nixos&logoColor=white)
+![Flakes](https://img.shields.io/badge/Flakes-enabled-purple?style=for-the-badge&logo=nix&logoColor=white)
+![SOPS](https://img.shields.io/badge/Secrets-SOPS-green?style=for-the-badge)
+![Tests](https://img.shields.io/badge/Tests-NixOS-orange?style=for-the-badge)
+![Monitoring](https://img.shields.io/badge/Monitoring-Prometheus-red?style=for-the-badge&logo=prometheus&logoColor=white)
+![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)
 
-## Overview
+> **A modular NixOS flake configuration for managing desktops, servers, and specialized nodes with comprehensive monitoring and alerting.**
 
-This repository contains my complete NixOS infrastructure configuration using flakes, SOPS for secrets management, and a modular architecture that separates hardware, roles, and features.
-
-### Key Features
-
-- **Modular Design**: Three-layer architecture (hardware → roles → features)
-- **Multi-host Management**: Manage desktops, servers, and specialized nodes from one repository
-- **Secrets Management**: SOPS-encrypted secrets with GPG
-- **CI/CD**: Automated testing and build verification
-- **Home Manager Integration**: User configurations with Home Manager
+---
 
 ## Quick Start
 
-### Prerequisites
+### Build a Host
 
 ```bash
-# NixOS with flakes enabled
-# SOPS for secrets management
-# GPG for encryption
-```
-
-### Building a Host
-
-```bash
-# Test a configuration (recommended first)
+# Test configuration
 nixos-rebuild build --flake .#hostname
 
-# Switch to a new configuration
+# Deploy
 nixos-rebuild switch --flake .#hostname
 
-# Boot into a configuration once (for testing)
+# Boot once (testing)
 nixos-rebuild boot --flake .#hostname
 ```
 
-### Adding a New Host
+### Add a New Host
 
 1. Create directory: `hosts/<hostname>/`
-2. Add `configuration.nix` importing desired roles and hardware modules
+2. Add `configuration.nix` with role imports
 3. Generate hardware config: `nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix`
-4. Add secrets if needed (see [Secrets Management](docs/SECRETS.md))
-5. Build: `nixos-rebuild switch --flake .#<hostname>`
+4. Build: `nixos-rebuild switch --flake .#<hostname>`
 
-See [Getting Started Guide](docs/GETTING-STARTED.md) for detailed instructions.
+📖 **See**: [Getting Started Guide](docs/GETTING-STARTED.md)
+
+---
+
+## Features
+
+### 🏗️ Architecture
+- **Three-layer modular design**: hardware → roles → features
+- **Multi-host management** from single repository
+- **SOPS-encrypted secrets** with GPG
+- **Home Manager integration** for user configs
+
+### 🖥️ Desktop
+- Hyprland Wayland compositor
+- Gaming support (Steam, emulation)
+- Flatpak support
+- Audio (PipeWire), Bluetooth, Graphics
+
+### 🖧 Infrastructure
+- **PostgreSQL** database with monitoring
+- **Grafana** dashboards with alerts
+- **Prometheus** metrics collection
+- **Node Exporter** system metrics
+
+### 🎬 Media
+- Jellyfin media server
+- *arr stack (Radarr, Sonarr)
+- qBittorrent torrents
+- Homepage dashboard
+
+### 🔒 Security
+- SOPS secrets management
+- SSH hardening (no passwords, no root)
+- Firewall enabled on all hosts
+- Vaultwarden password manager
+
+### 🤖 AI/ML
+- NVIDIA GPU drivers (headless)
+- CUDA toolkit
+- Docker support
+- Libvirt virtualization
+
+### 📊 Monitoring & Alerting
+- Prometheus alerting rules
+- Grafana dashboards
+- Alertmanager notifications
+- SSL certificate monitoring
+
+---
 
 ## Repository Structure
 
 ```
 nixlab/
-├── hosts/                    # Host-specific configurations
-│   ├── navi/                 # Desktop machine
-│   ├── oryx/                 # Desktop machine
-│   ├── r730/                 # Dell PowerEdge server
-│   ├── r730xd/               # Dell PowerEdge server
-│   └── r820/                 # Dell PowerEdge server
+├── hosts/                    # Host configurations (5 hosts)
+│   ├── navi/                 # Desktop workstation
+│   ├── oryx/                 # Desktop workstation
+│   ├── r730/                 # Dell PowerEdge (media server)
+│   ├── r730xd/               # Dell PowerEdge (storage)
+│   └── r820/                 # Dell PowerEdge (AI compute)
 ├── modules/
-│   ├── features/             # Feature modules (23 modules)
-│   ├── hardware/             # Hardware-specific configurations
-│   └── roles/                # Role-based configurations (7 roles)
+│   ├── features/             # 26 feature modules
+│   ├── hardware/             # 3 hardware modules
+│   └── roles/                # 7 role modules
+├── tests/                    # NixOS integration tests
 ├── secrets/                  # SOPS-encrypted secrets
-├── users/
-│   └── aljam/                # User configuration
-├── docs/                     # Documentation
+├── users/                    # User configurations
+├── docs/                     # Documentation (7 files)
 ├── .github/workflows/        # CI/CD pipelines
 ├── flake.nix                 # Main flake entry point
 └── README.md                 # This file
 ```
 
+---
+
 ## Available Roles
 
 | Role | Description | Use For |
 |------|-------------|---------||
-| `common` | Base configuration for all nodes | Every host imports this |
-| `desktop-node` | Desktop workstation setup | Personal computers with GUI |
-| `server-core` | Minimal server configuration | Headless servers |
-| `media-node` | Media server (Jellyfin, *arr stack) | Home media servers |
+| `common` | Base configuration | Every host imports this |
+| `desktop-node` | Desktop with GUI | Personal computers |
+| `server-core` | Minimal server | Headless servers |
+| `media-node` | Media server | Jellyfin, *arr stack |
 | `mail-node` | Email server | Self-hosted email |
-| `storage-node` | Storage/NAS configuration | File servers |
-| `ai-node` | AI/ML compute node | GPU compute servers |
+| `storage-node` | NAS/Storage | File servers |
+| `ai-node` | AI/ML compute | GPU workloads |
 
-See [Roles Documentation](docs/ROLES.md) for details.
+📖 **See**: [Roles Documentation](docs/ROLES.md)
 
-## Available Features
+---
 
-### Desktop & GUI
-- `hyprland` - Wayland compositor
-- `graphics` - GPU drivers and display
-- `fonts` - Font configuration
-- `audio` - PulseAudio/PipeWire
-- `bluetooth` - Bluetooth support
-- `gaming` - Gaming tools (Steam, etc.)
-- `flatpak` - Flatpak support
-- `emulation` - Emulation tools
+## Hosts Inventory
 
-### Media & Entertainment
-- `arr-stack` - Radarr, Sonarr, etc.
-- `jellyfin` - Media server
-- `torrents` - Torrent client (qBittorrent)
-- `youtube` - YouTube download tools
+| Hostname | Type | Hardware | Roles | Purpose |
+|----------|------|----------|-------|---------||
+| `navi` | Desktop | Custom | desktop-node | Primary workstation |
+| `oryx` | Desktop | Custom | desktop-node | Secondary desktop |
+| `r730` | Server | Dell R730 | server-core, media-node | Media server |
+| `r730xd` | Server | Dell R730 XD | server-core, storage-node | Storage server |
+| `r820` | Server | Dell R820 | server-core, ai-node | AI/ML compute |
 
-### Infrastructure
-- `postgres` - PostgreSQL database
-- `grafana` - Monitoring dashboards
-- `prometheus-server` - Metrics collection
-- `node-exporter` - System metrics
-- `reverse-proxy-backends` - Reverse proxy configuration
-
-### System & Hardware
-- `boot` - Bootloader configuration
-- `zfs-base` - ZFS filesystem support
-- `nas-mount` - Network storage mounts
-- `libvirt` - Virtualization
-- `remote-builder` - Distributed builds
-- `nvidia-headless` - NVIDIA GPU compute
-- `sanoid` - ZFS backup tool
-
-### Security
-- `vaultwarden` - Password manager
-
-See individual feature modules in `modules/features/` for configuration options.
+---
 
 ## Documentation
 
-- **[Getting Started](docs/GETTING-STARTED.md)** - Detailed setup guide
-- **[Architecture](docs/ARCHITECTURE.md)** - System design and modules
-- **[Roles](docs/ROLES.md)** - Role system documentation
-- **[Secrets Management](docs/SECRETS.md)** - SOPS workflow
-- **[Backup & Recovery](docs/BACKUP-RECOVERY.md)** - Disaster recovery
+| Document | Description |
+|----------|-------------||
+| [Getting Started](docs/GETTING-STARTED.md) | Setup guide for new hosts |
+| [Architecture](docs/ARCHITECTURE.md) | System design and modules |
+| [Roles](docs/ROLES.md) | Role system documentation |
+| [Secrets](docs/SECRETS.md) | SOPS secrets management |
+| [Backup & Recovery](docs/BACKUP-RECOVERY.md) | Backup strategies and DR |
+| [Alerts](docs/ALERTS.md) | Monitoring alerts and runbooks |
+| [Deployment Checklist](docs/DEPLOYMENT-CHECKLIST.md) | Deployment checklist |
+
+---
 
 ## Common Operations
 
@@ -155,38 +174,75 @@ nix-store --gc
 # Verify flake
 nix flake check
 
-# Show available outputs
+# Show outputs
 nix flake show
 ```
 
-## Hosts Inventory
+### Run Tests
 
-| Hostname | Type | Hardware | Roles | Purpose |
-|----------|------|----------|-------|---------||
-| `navi` | Desktop | Custom | desktop-node | Primary workstation |
-| `oryx` | Desktop | Custom | desktop-node | Secondary desktop |
-| `r730` | Server | Dell PowerEdge R730 | server-core, media-node | Media server |
-| `r730xd` | Server | Dell PowerEdge R730 XD | server-core, storage-node | Storage server |
-| `r820` | Server | Dell PowerEdge R820 | server-core, ai-node | AI/ML compute |
+```bash
+# Run all tests
+nix-build tests/default.nix
 
-## Security Notes
+# Run individual test
+nix-build tests/default.nix -A postgresql
+```
 
-- All secrets are encrypted with SOPS
-- GPG keys required for decryption
-- Firewall enabled on all hosts
-- Regular security updates via NixOS channels
+---
+
+## Monitoring
+
+### Access Grafana
+
+```bash
+# Default port: 3000
+http://<host>:3000
+```
+
+### Access Prometheus
+
+```bash
+# Default port: 9090
+http://<host>:9090
+```
+
+### View Alerts
+
+```bash
+# Alertmanager UI
+http://<host>:9093
+```
+
+📖 **See**: [Alerts Documentation](docs/ALERTS.md)
+
+---
+
+## Security
+
+- ✅ All secrets encrypted with SOPS
+- ✅ SSH: No password auth, no root login
+- ✅ Firewall enabled on all hosts
+- ✅ Regular security updates via NixOS
+- ✅ Polkit for privilege management
+
+---
 
 ## License
 
-See [LICENSE.md](LICENSE.md)
+MIT License - See [LICENSE.md](LICENSE.md)
+
+---
 
 ## Contributing
 
 This is a personal infrastructure repository, but feel free to:
-- Open issues for bugs or suggestions
-- Submit PRs for improvements
-- Fork and adapt for your own use
+- ⭐ Star the repo if you find it useful
+- 🐛 Open issues for bugs or suggestions
+- 💡 Submit PRs for improvements
+- 🔀 Fork and adapt for your own use
 
 ---
 
-**Last Updated**: August 2026
+**Last Updated**: August 2026  
+**NixOS Version**: 24.05  
+**Flake**: Enabled
