@@ -269,7 +269,7 @@
           name = "default-receiver";
           email_configs = [
             {
-              to = "admin@example.com";
+              to = "aljam@live.ca";
               send_resolved = true;
             }
           ];
@@ -278,7 +278,7 @@
           name = "critical-receiver";
           email_configs = [
             {
-              to = "admin@example.com";
+              to = "aljam@live.ca";
               send_resolved = true;
               html = ''
                 <html>
@@ -298,7 +298,7 @@
           name = "warning-receiver";
           email_configs = [
             {
-              to = "admin@example.com";
+              to = "aljam@live.ca";
               send_resolved = true;
             }
           ];
