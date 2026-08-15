@@ -13,7 +13,7 @@
     };
     publicBackendPorts = lib.mkOption {
       type = lib.types.listOf lib.types.port;
-      default = [ 80 443 3000 5055 7474 7878 8000 8080 8082 8096 8111 8686 8787 8989 9090 9093 9094 9100 9696 13378 ];
+      default = [ 80 443 3000 5055 7474 7878 8000 8080 8082 8096 8111 8222 8686 8787 8989 9090 9093 9094 9100 9696 13378 ];
       description = "Public backend ports";
     };
     sensitivePorts = lib.mkOption {
