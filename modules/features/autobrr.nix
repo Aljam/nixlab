@@ -15,8 +15,9 @@
     enable = true;
     secretFile = config.sops.secrets."autobrr_api_key".path;
     openFirewall = false;
+    settings.host = "0.0.0.0";
   };
   networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 7777 accept
+    ip saddr ${subnets.lan}.1 tcp dport 7474 accept
   '';
 }
