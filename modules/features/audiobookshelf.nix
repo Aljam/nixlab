@@ -2,6 +2,7 @@
 {
   services.audiobookshelf = {
     enable = true;
+    host = "0.0.0.0";
     user = "media";
     group = "media";
     dataDir = "/var/lib/audiobookshelf";
