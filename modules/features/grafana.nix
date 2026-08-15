@@ -17,9 +17,12 @@ in
     services.grafana = {
       enable = true;
       openFirewall = false;
-      settings.server = {
-        http_addr = "0.0.0.0";
-        http_port = 3000;
+      settings = {
+        server = {
+          http_addr = "0.0.0.0";
+          http_port = 3000;
+        };
+        security.secret_key = config.sops.secrets."grafana-secret-key".path;
       };
     };
   };
