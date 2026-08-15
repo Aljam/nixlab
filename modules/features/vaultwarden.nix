@@ -3,8 +3,8 @@
   services.vaultwarden = {
     enable = true;
     config = {
-      DOMAIN = "https://vaultwarden.${domains.main}";
-      SIGNUPS_ALLOWED = false;
+      ROCKET_ADDRESS = "0.0.0.0";
+      ROCKET_PORT = 8000;
     };
     openFirewall = false;
   };
