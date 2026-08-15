@@ -12,7 +12,7 @@
     ../features/shoko.nix
     ../features/torrents.nix
     ../features/jellyfin.nix
-    ../features/nas-mount.nix
+    #../features/nas-mount.nix
   ];
 
   # Media user and group
