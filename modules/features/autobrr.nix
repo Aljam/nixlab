@@ -1,5 +1,11 @@
 { config, pkgs, domains, fleet, subnets, ... }:
 {
+  users.groups.autobrr = {};
+  users.users.autobrr = {
+    isSystemUser = true;
+    group = "autobrr";
+  };
+
   sops.secrets."autobrr_api_key" = {
     owner = "autobrr";
     group = "autobrr";
