@@ -11,6 +11,7 @@
   config = lib.mkIf config.modules.features.readarr.enable {
     services.readarr = {
       enable = true;
+      settings.server.bindAddress = "0.0.0.0"
     };
 
     # Firewall: readarr accessible only from HAProxy (192.168.1.1)
