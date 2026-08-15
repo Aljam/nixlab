@@ -20,6 +20,7 @@
   services.pgadmin = {
     enable = true;
     port = 5050;
+    defaultEmail = "admin@derezzed.info";
   };
 
   # Custom backup service
