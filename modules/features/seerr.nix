@@ -1,13 +1,19 @@
-{ config, pkgs, domains, fleet, ... }:
+# nixlab/modules/features/seerr.nix
+# Overseerr - Media request management
+
+{ config, lib, pkgs, ... }:
+
 {
-  services.seerr = {
-    enable = true;
-    user = "media";
-    group = "media";
-    dataDir = "/var/lib/seerr";
-    openFirewall = false;
+  options.modules.features.seerr = {
+    enable = lib.mkEnableOption "Overseerr media request management";
   };
-  networking.firewall.extraInputRules = ''
-    ip saddr ${fleet.r730xd.ip} tcp dport 5055 accept
-  '';
+
+  config = lib.mkIf config.modules.features.seerr.enable {
+    services.seerr = {
+      enable = true;
+    };
+
+    # Firewall: seerr accessible only from HAProxy
+    networking.firewall.allowedTCPPorts = [ 5055 ];
+  };
 }
