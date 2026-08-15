@@ -1,122 +1,41 @@
-{ config, pkgs, lib, fleet, ... }:
+# DEPRECATED: arr-stack.nix
+#
+# This file is deprecated and will be removed in a future release.
+# Please use modules/roles/media-node.nix instead, which imports all
+# individual ARR service modules directly.
+#
+# Individual modules are now available:
+# - radarr.nix
+# - sonarr.nix
+# - lidarr.nix
+# - readarr.nix
+# - bazarr.nix
+# - seerr.nix (formerly jellyseerr)
+# - audiobookshelf.nix
+# - autobrr.nix
+# - shoko.nix
+#
+# To use individual services, import them directly or use media-node.nix.
 
-let
-  mediaUsers = [ "autobrr" "sonarr" "prowlarr" "radarr" "bazarr" "readarr" "lidarr" "shoko" ];
-in
-{
-  # Enforce system user identities assigned to the media group
-  users.users = lib.genAttrs mediaUsers (name: {
-    isSystemUser = true;
-    group = lib.mkForce "media";
-  });
-  
-  # SOPS secret declarations
-  sops.secrets."autobrr_api_key" = {
-    owner = "autobrr";
-    group = "media";
-  };
-  sops.secrets."sonarr_api_key" = { 
-    owner = "sonarr";
-    group = "media";
-  };
-  sops.secrets."radarr_api_key" = { 
-    owner = "radarr";
-    group = "media";
-  };
-
-  # Declarative directory creation and permissions
-  systemd.tmpfiles.rules = [
-    "d /mnt/media/movies           0770 root media -"
-    "d /mnt/media/tv               0770 root media -"
-    "d /mnt/media/downloads        0770 root media -"
-    "d /mnt/media/downloads/tv     0770 root media -"
-    "d /mnt/media/downloads/movies 0770 root media -"
-    "d /mnt/media/downloads/music  0770 root media -"
-    "d /mnt/media/books            0770 root media -"
-    "d /mnt/media/music            0770 root media -"
+{ config, pkgs, domains, fleet, ... }: {
+  imports = [
+    ./radarr.nix
+    ./sonarr.nix
+    ./lidarr.nix
+    ./readarr.nix
+    ./bazarr.nix
+    ./seerr.nix
+    ./audiobookshelf.nix
+    ./autobrr.nix
+    ./shoko.nix
   ];
-
-  # Service definitions tied to the shared media group
-  services.sonarr   = { enable = true; user = "sonarr"; group = "media"; };
-  services.radarr   = { enable = true; user = "radarr"; group = "media"; };
-  services.bazarr   = { enable = true; };
-  services.lidarr   = { enable = true; };
-  services.readarr  = { enable = true; };
-  services.prowlarr = { enable = true; };
-  services.shoko = { enable = true; };
-
-  # Ensure all service daemons bind to fleet.r730xd.ip
-  systemd.services = {
-    sonarr.environment.SONARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
-    radarr.environment.RADARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
-    prowlarr.environment.PROWLARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
-    readarr.environment.READARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
-    lidarr.environment.LIDARR__SERVER__BINDADDRESS = fleet.r730xd.ip;
-
-    bazarr.serviceConfig.UMask = "0002";
-
-    shoko.environment = {
-      ASPNETCORE_URLS = "http://${fleet.r730xd.ip}:8111";
-      SHOKO_PORT = "8111";
-    };
-  };
-
-  services.seerr = {
-    enable = true;
-    port = 5055;
-  };
-
-  # Recyclarr TRaSH Guides synchronization
-  services.recyclarr = {
-    enable = true;
-    configuration = {
-      sonarr.anime = {
-        base_url = "http://${fleet.r730xd.ip}:8989";
-        api_key._secret = config.sops.secrets.sonarr_api_key.path;
-        quality_profiles = [
-          { trash_id = "72dae194fc92bf828f32cde7744e51a1"; }
-        ];
-        custom_formats = [
-          {
-            trash_ids = [ 
-              "ec8fa7296b64e8cd390a1600981f3923" # Repack/Proper (Sonarr)
-              "418f50b10f1907201b6cfdf881f467b7" # Anime Dual Audio
-              "026d5aadd1a6b4e550b134cb6c72b3ca" # uNCENSORED
-            ];
-            assign_scores_to = [
-              { name = "WEB-1080p"; score = 500; }
-            ];
-          }
-        ];
-      };
-      radarr.movies = {
-        base_url = "http://${fleet.r730xd.ip}:7878";
-        api_key._secret = config.sops.secrets.radarr_api_key.path;
-        quality_profiles = [
-          { trash_id = "d1d67249d3890e49bc12e275d989a7e9"; }
-        ];
-        custom_formats = [
-          {
-            trash_ids = [ "e7718d7a3ce595f289bfee26adc178f5" ];
-            assign_scores_to = [
-              { name = "HD Bluray + WEB"; score = 500; }
-            ];
-          }
-        ];
-      };
-    };
-  };
-
-  services.audiobookshelf = {
-    enable = true;
-    port = 13378;
-    host = fleet.r730xd.ip;
-  };
-
-  services.autobrr = {
-    enable = true;
-    secretFile = config.sops.secrets.autobrr_api_key.path;
-    settings = { host = fleet.r730xd.ip; port = 7474; };
-  };
-
+  services.radarr.enable = true;
+  services.sonarr.enable = true;
+  services.lidarr.enable = true;
+  services.readarr.enable = true;
+  services.bazarr.enable = true;
+  services.seerr.enable = true;
+  services.audiobookshelf.enable = true;
+  services.autobrr.enable = true;
+  services.shoko.enable = true;
 }
