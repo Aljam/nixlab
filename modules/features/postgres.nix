@@ -25,6 +25,9 @@
 
   sops.secrets.pgadmin_password = {};
 
+  # Make pgadmin listen on all interfaces
+  systemd.services.pgadmin.serviceConfig.Environment = "DEFAULT_SERVER=0.0.0.0";
+
   # Custom backup service
   systemd.services.postgresql-backup = {
     description = "PostgreSQL backup service";
