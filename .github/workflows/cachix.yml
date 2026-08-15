@@ -7,6 +7,10 @@ on:
 jobs:
   cachix:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        host: [navi, oryx, r820, r730, r730xd]
     steps:
       - uses: actions/checkout@v4
       - uses: DeterminateSystems/nix-installer-action@v16
@@ -14,4 +18,5 @@ jobs:
         with:
           name: nixlab
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-      - run: nix build --no-link ".#nixosConfigurations.r730.config.system.build.toplevel"
+      - name: Build ${{ matrix.host }}
+        run: nix build --no-link ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel"
