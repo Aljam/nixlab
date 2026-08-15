@@ -38,7 +38,9 @@
       };
     };
 
-    # Firewall: Grafana accessible only from HAProxy
-    networking.firewall.allowedTCPPorts = [ config.modules.features.grafana.port ];
+    # Firewall: grafana accessible only from HAProxy (192.168.1.1)
+    networking.firewall.extraInputRules = ''
+      ip saddr 192.168.1.1 tcp dport ${toString config.modules.features.grafana.port} accept
+    '';
   };
 }

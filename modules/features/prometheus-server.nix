@@ -1,20 +1,21 @@
-{ config, pkgs, fleet, ... }: 
+# nixlab/modules/features/prometheus-server.nix
+# Prometheus monitoring server
+
+{ config, lib, pkgs, ... }:
+
 {
-  services.prometheus = {
-    enable = true;
-    port = 9090;
-    
-    scrapeConfigs = [
-      { 
-        job_name = "fleet-nodes"; 
-        static_configs = [{ 
-          targets = [ 
-            "127.0.0.1:9100"
-            "${fleet.r730.ip}:9100"
-            "${fleet.r820.ip}:9100"
-          ]; 
-        }]; 
-      }
-    ];
+  options.modules.features.prometheus-server = {
+    enable = lib.mkEnableOption "Prometheus monitoring server";
+  };
+
+  config = lib.mkIf config.modules.features.prometheus-server.enable {
+    services.prometheus = {
+      enable = true;
+    };
+
+    # Firewall: prometheus accessible only from HAProxy (192.168.1.1)
+    networking.firewall.extraInputRules = ''
+      ip saddr 192.168.1.1 tcp dport 9090 accept
+    '';
   };
 }
