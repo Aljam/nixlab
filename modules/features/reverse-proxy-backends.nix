@@ -24,7 +24,7 @@
   };
 
   config = lib.mkIf config.modules.features.reverse-proxy-backends.enable {
-    networking.firewall.extraRules = [
+    networking.firewall.extraInputRules = [
       "ip saddr ${config.modules.features.reverse-proxy-backends.lanSubnet} tcp dport { ${lib.concatMapStringsSep ", " toString (lib.filter (p: !(lib.elem p config.modules.features.reverse-proxy-backends.sensitivePorts)) config.modules.features.reverse-proxy-backends.publicBackendPorts)} } accept comment \"Allow LAN to backend ports\""
     ];
   };
