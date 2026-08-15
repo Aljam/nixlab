@@ -21,7 +21,7 @@
     port = 5050;
     initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets.pgadmin_password.path;
-    extraConfig = {
+    settings = {
       DEFAULT_SERVER = "0.0.0.0";
     };
   };
