@@ -56,6 +56,6 @@
     };
   };
 
-  # Firewall: PostgreSQL accessible only from HAProxy
-  networking.firewall.allowedTCPPorts = [ 5432 ];
+  # Firewall: allow pgadmin and postgres
+  networking.firewall.allowedTCPPorts = [ 5050 5432 ];
 }
