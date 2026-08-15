@@ -24,13 +24,12 @@
   };
 
   config = lib.mkIf config.modules.features.reverse-proxy-backends.enable {
-    networking.firewall = {
-      extraCommands = lib.mkBefore ''
-        # Allow LAN subnet to access public backend ports (excluding sensitive ports)
-        ip saddr ${config.modules.features.reverse-proxy-backends.lanSubnet} tcp dport {
-          ${lib.concatMapStringsSep ", " toString (lib.filter (p: !(lib.elem p config.modules.features.reverse-proxy-backends.sensitivePorts)) config.modules.features.reverse-proxy-backends.publicBackendPorts)}
-        } accept
-      '';
+    networking.nftables = {
+      extraRules = [{
+        table = "inet filter";
+        chain = "input";
+        rule = "ip saddr ${config.modules.features.reverse-proxy-backends.lanSubnet} tcp dport { ${lib.concatMapStringsSep ", " toString (lib.filter (p: !(lib.elem p config.modules.features.reverse-proxy-backends.sensitivePorts)) config.modules.features.reverse-proxy-backends.publicBackendPorts)} } accept comment \"Allow LAN to backend ports\"";
+      }];
     };
   };
 }
