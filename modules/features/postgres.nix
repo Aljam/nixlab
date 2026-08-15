@@ -4,31 +4,6 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.modules.features.postgres = {
-    enable = lib.mkEnableOption "PostgreSQL database";
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 5432;
-      description = "PostgreSQL port";
-    };
-    dataDir = lib.mkOption {
-      type = lib.types.path;
-      default = "/var/lib/postgresql";
-      description = "PostgreSQL data directory";
-    };
-    backupDir = lib.mkOption {
-      type = lib.types.path;
-      default = "/var/backup/postgresql";
-      description = "PostgreSQL backup directory";
-    };
-    pgadminPort = lib.mkOption {
-      type = lib.types.port;
-      default = 5050;
-      description = "pgadmin port";
-    };
-  };
-
-  config = lib.mkIf config.modules.features.postgres.enable {
     services.postgresql = {
       enable = true;
       port = config.modules.features.postgres.port;
