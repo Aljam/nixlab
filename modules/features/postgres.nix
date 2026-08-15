@@ -55,5 +55,4 @@
 
     # Firewall: PostgreSQL accessible only from HAProxy
     networking.firewall.allowedTCPPorts = [ config.modules.features.postgres.port ];
-  };
 }
