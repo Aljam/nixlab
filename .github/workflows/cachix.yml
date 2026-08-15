@@ -16,7 +16,7 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@v16
       - uses: cachix/cachix-action@v16
         with:
-          name: nixlab
+          name: aljam
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
       - name: Build ${{ matrix.host }}
         run: nix build --no-link ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel"
