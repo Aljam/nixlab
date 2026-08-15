@@ -5,7 +5,7 @@
 
 {
   options.modules.features.sonarr = {
-    enable = lib.mkEnableOption "Sonarr TV show management";
+    enable = lib.mkEnableOption "Sonarr TV show management" // { default = true; };
   };
 
   config = lib.mkIf config.modules.features.sonarr.enable {

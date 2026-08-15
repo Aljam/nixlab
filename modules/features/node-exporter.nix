@@ -5,7 +5,7 @@
 
 {
   options.modules.features.node-exporter = {
-    enable = lib.mkEnableOption "Prometheus Node Exporter";
+    enable = lib.mkEnableOption "Prometheus Node Exporter" // { default = true; };
   };
 
   config = lib.mkIf config.modules.features.node-exporter.enable {

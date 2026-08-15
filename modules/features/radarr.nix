@@ -5,7 +5,7 @@
 
 {
   options.modules.features.radarr = {
-    enable = lib.mkEnableOption "Radarr movie management";
+    enable = lib.mkEnableOption "Radarr movie management" // { default = true; };
   };
 
   config = lib.mkIf config.modules.features.radarr.enable {

@@ -5,7 +5,7 @@
 
 {
   options.modules.features.grafana = {
-    enable = lib.mkEnableOption "Grafana monitoring dashboard";
+    enable = lib.mkEnableOption "Grafana monitoring dashboard" // { default = true; };
     port = lib.mkOption {
       type = lib.types.port;
       default = 3000;

@@ -5,7 +5,7 @@
 
 {
   options.modules.features.prometheus-server = {
-    enable = lib.mkEnableOption "Prometheus monitoring server";
+    enable = lib.mkEnableOption "Prometheus monitoring server" // { default = true; };
   };
 
   config = lib.mkIf config.modules.features.prometheus-server.enable {

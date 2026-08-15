@@ -5,7 +5,7 @@
 
 {
   options.modules.features.readarr = {
-    enable = lib.mkEnableOption "Readarr book management";
+    enable = lib.mkEnableOption "Readarr book management" // { default = true; };
   };
 
   config = lib.mkIf config.modules.features.readarr.enable {

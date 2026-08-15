@@ -5,7 +5,7 @@
 
 {
   options.modules.features.prowlarr = {
-    enable = lib.mkEnableOption "Prowlarr indexer management";
+    enable = lib.mkEnableOption "Prowlarr indexer management" // { default = true; };
   };
 
   config = lib.mkIf config.modules.features.prowlarr.enable {

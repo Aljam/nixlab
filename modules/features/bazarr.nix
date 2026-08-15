@@ -5,7 +5,7 @@
 
 {
   options.modules.features.bazarr = {
-    enable = lib.mkEnableOption "Bazarr subtitle management";
+    enable = lib.mkEnableOption "Bazarr subtitle management" // { default = true; };
   };
 
   config = lib.mkIf config.modules.features.bazarr.enable {

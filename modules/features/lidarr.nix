@@ -5,7 +5,7 @@
 
 {
   options.modules.features.lidarr = {
-    enable = lib.mkEnableOption "Lidarr music management";
+    enable = lib.mkEnableOption "Lidarr music management" // { default = true; };
   };
 
   config = lib.mkIf config.modules.features.lidarr.enable {
