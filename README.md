@@ -1,6 +1,6 @@
 # nixlab
 
-![NixOS](https://img.shields.io/badge/NixOS-24.05-blue?style=for-the-badge&logo=nixos&logoColor=white)
+![NixOS](https://img.shields.io/badge/NixOS-Unstable-blue?style=for-the-badge&logo=nixos&logoColor=white)
 ![Flakes](https://img.shields.io/badge/Flakes-enabled-purple?style=for-the-badge&logo=nix&logoColor=white)
 ![SOPS](https://img.shields.io/badge/Secrets-SOPS-green?style=for-the-badge)
 ![Tests](https://img.shields.io/badge/Tests-NixOS-orange?style=for-the-badge)
