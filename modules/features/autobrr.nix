@@ -1,7 +1,7 @@
 { config, pkgs, domains, fleet, subnets, ... }:
 {
   sops.secrets."autobrr_api_key" = {
-    owner = config.services.autobrr.user;
+    owner = "autobrr";
   };
 
   services.autobrr = {
