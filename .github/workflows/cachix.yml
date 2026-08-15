@@ -2,25 +2,30 @@ name: Cachix
 
 on:
   push:
-    branches: [main]
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    branches:
+      - main
+  workflow_dispatch:
 
 jobs:
   cachix:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        host: [navi, oryx, r820, r730, r730xd]
     steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@v22
-      - uses: cachix/cachix-action@v17
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
         with:
-          name: aljam
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Cachix
+        uses: cachix/cachix-action@v16
+        with:
+          name: nixlab
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          extraPullNames: nix-community,hyprland,cuda-maintainers
-      - name: Build ${{ matrix.host }}
-        run: nix build --no-link ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel"
+
+      - name: Build selected system closure
+        run: nix build .#nixosConfigurations.navi.config.system.build.toplevel --no-link --print-out-paths > result
+
+      - name: Push selected system closure
+        run: cachix push nixlab < result
