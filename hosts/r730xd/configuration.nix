@@ -11,7 +11,6 @@
     ../../modules/roles/storage-node.nix
     ../../modules/features/prometheus-server.nix
     ../../modules/features/grafana.nix
-    ../../modules/features/reverse-proxy-backends.nix
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_1;  
