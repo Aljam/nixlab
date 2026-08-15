@@ -1,44 +1,17 @@
-name: Cachix Cache
+name: Cachix
 
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
 
 jobs:
-  populate-cache:
+  cachix:
     runs-on: ubuntu-latest
-    
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
-      
-    - name: Install Nix
-      uses: DeterminateSystems/nix-installer-action@v0.26.1
-      
-    - name: Setup Cachix
-      uses: cachix/cachix-action@v1.5.0
-      with:
-        name: nixlab
-        authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
-        extraPullNames: nixpkgs
-        
-    - name: Build all hosts (populate cache)
-      run: |
-        # Build all host configurations to populate the cache
-        for host in navi oryx r730 r730xd r820; do
-          echo "Building configuration for $host..."
-          nix build .#nixosConfigurations.$host.config.system.build.toplevel \
-            --no-link \
-            --print-out-paths \
-            || echo "Build failed for $host (expected in PR)"
-        done
-      
-    - name: Build feature modules
-      run: |
-        # Build common feature modules
-        nix build .#nixosConfigurations.navi.config.system.build.toplevel \
-          --no-link \
-          --print-out-paths \
-          || true
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@v16
+      - uses: cachix/cachix-action@v16
+        with:
+          name: nixlab
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix build --no-link ".#nixosConfigurations.r730.config.system.build.toplevel"
