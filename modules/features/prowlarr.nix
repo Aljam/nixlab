@@ -13,7 +13,9 @@
       enable = true;
     };
 
-    # Firewall: prowlarr accessible only from HAProxy
-    networking.firewall.allowedTCPPorts = [ 9696 ];
+    # Firewall: prowlarr accessible only from HAProxy (192.168.1.1)
+    networking.firewall.extraInputRules = ''
+      ip saddr 192.168.1.1 tcp dport 9696 accept
+    '';
   };
 }

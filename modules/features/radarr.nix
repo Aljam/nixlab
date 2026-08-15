@@ -1,15 +1,21 @@
-{ config, pkgs, domains, fleet, subnets, ... }:
+# nixlab/modules/features/radarr.nix
+# Radarr - Movie management
+
+{ config, lib, pkgs, ... }:
+
 {
-  services.radarr = {
-    enable = true;
-    user = "media";
-    group = "media";
-    dataDir = "/var/lib/radarr";
-    openFirewall = false;  # Handled by reverse-proxy-backends
+  options.modules.features.radarr = {
+    enable = lib.mkEnableOption "Radarr movie management";
   };
 
-  # Firewall: Only HAProxy (pfSense) can access
-  networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 7878 accept
-  '';
+  config = lib.mkIf config.modules.features.radarr.enable {
+    services.radarr = {
+      enable = true;
+    };
+
+    # Firewall: radarr accessible only from HAProxy (192.168.1.1)
+    networking.firewall.extraInputRules = ''
+      ip saddr 192.168.1.1 tcp dport 7878 accept
+    '';
+  };
 }

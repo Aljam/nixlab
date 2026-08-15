@@ -1,13 +1,21 @@
-{ config, pkgs, domains, fleet, subnets, ... }:
+# nixlab/modules/features/sonarr.nix
+# Sonarr - TV show management
+
+{ config, lib, pkgs, ... }:
+
 {
-  services.sonarr = {
-    enable = true;
-    user = "media";
-    group = "media";
-    dataDir = "/var/lib/sonarr";
-    openFirewall = false;
+  options.modules.features.sonarr = {
+    enable = lib.mkEnableOption "Sonarr TV show management";
   };
-  networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 8989 accept
-  '';
+
+  config = lib.mkIf config.modules.features.sonarr.enable {
+    services.sonarr = {
+      enable = true;
+    };
+
+    # Firewall: sonarr accessible only from HAProxy (192.168.1.1)
+    networking.firewall.extraInputRules = ''
+      ip saddr 192.168.1.1 tcp dport 8989 accept
+    '';
+  };
 }

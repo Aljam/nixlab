@@ -1,13 +1,21 @@
-{ config, pkgs, domains, fleet, subnets, ... }:
+# nixlab/modules/features/readarr.nix
+# Readarr - Book management
+
+{ config, lib, pkgs, ... }:
+
 {
-  services.readarr = {
-    enable = true;
-    user = "media";
-    group = "media";
-    dataDir = "/var/lib/readarr";
-    openFirewall = false;
+  options.modules.features.readarr = {
+    enable = lib.mkEnableOption "Readarr book management";
   };
-  networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 8787 accept
-  '';
+
+  config = lib.mkIf config.modules.features.readarr.enable {
+    services.readarr = {
+      enable = true;
+    };
+
+    # Firewall: readarr accessible only from HAProxy (192.168.1.1)
+    networking.firewall.extraInputRules = ''
+      ip saddr 192.168.1.1 tcp dport 8787 accept
+    '';
+  };
 }
