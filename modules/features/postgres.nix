@@ -6,7 +6,7 @@
 {
   services.postgresql = {
     enable = true;
-    port = 5432;
+    settings.port = 5432;
     dataDir = "/var/lib/postgresql";
     ensureUsers = [
       {
@@ -21,7 +21,10 @@
     enable = true;
     port = 5050;
     initialEmail = "admin@derezzed.info";
+    initialPasswordFile = config.sops.secrets.pgadmin_password.path;
   };
+
+  sops.secrets.pgadmin_password = {};
 
   # Custom backup service
   systemd.services.postgresql-backup = {
