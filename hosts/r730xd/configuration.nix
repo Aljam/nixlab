@@ -58,13 +58,6 @@
     ../../modules/features/forgejo-runner-custom-shell-custom.nix
   ];
 
-  # Declare the SOPS secrets
-  sops.secrets."grafana-secret-key" = { };
-  sops.secrets."grafana-admin-password" = { };
-  
-  # Use the secret for Grafana
-  services.grafana.settings.security.secret_key_file = config.sops.secrets."grafana-secret-key".path;
-
   boot.kernelPackages = pkgs.linuxPackages_6_1;  
   boot.kernelParams = [ 
     "amd_iommu=pt" 
