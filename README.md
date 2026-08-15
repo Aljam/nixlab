@@ -1,247 +1,69 @@
 # nixlab
 
-![NixOS](https://img.shields.io/badge/NixOS-Unstable-blue?style=for-the-badge&logo=nixos&logoColor=white)
-![Flakes](https://img.shields.io/badge/Flakes-enabled-purple?style=for-the-badge&logo=nix&logoColor=white)
-![SOPS](https://img.shields.io/badge/Secrets-SOPS-green?style=for-the-badge)
-![Tests](https://img.shields.io/badge/Tests-NixOS-orange?style=for-the-badge)
-![Monitoring](https://img.shields.io/badge/Monitoring-Prometheus-red?style=for-the-badge&logo=prometheus&logoColor=white)
+Declarative NixOS homelab configuration managed with flakes.
 
-> **A modular NixOS flake configuration for managing desktops, servers, and specialized nodes with comprehensive monitoring and alerting.**
+## What this repository provides
 
----
+- Reproducible NixOS configurations for the homelab hosts.
+- Reusable feature modules for infrastructure, monitoring, media services, and desktop functionality.
+- Role-based composition for keeping host configuration small and auditable.
+- Secret management with sops-nix.
+- PostgreSQL-backed services, including Grafana and the webscraper database.
+- Optional Vaultwarden and pgAdmin services with explicit service ports.
+- Firewall and reverse-proxy integration for services exposed by a host.
 
-## Quick Start
+## Repository layout
 
-### Build a Host
+| Path | Purpose |
+| --- | --- |
+| `flake.nix` | Flake inputs and NixOS configuration outputs. |
+| `hosts/` | Host-specific hardware and system configuration. |
+| `modules/features/` | Opt-in service and capability modules. |
+| `modules/roles/` | Higher-level compositions of features. |
+| `modules/hardware/` | Hardware-specific configuration. |
+| `users/` | User and Home Manager configuration. |
+| `secrets/` | Encrypted secrets; never commit plaintext credentials. |
+| `tests/` | Evaluation and configuration tests. |
+| `docs/` | Operational, architecture, deployment, backup, and secret-management guides. |
 
-```bash
-# Test configuration
-nixos-rebuild build --flake .#hostname
+## Current service notes
 
-# Deploy
-nixos-rebuild switch --flake .#hostname
+### PostgreSQL and webscraper
 
-# Boot once (testing)
-nixos-rebuild boot --flake .#hostname
-```
+The PostgreSQL feature provisions the databases required by the homelab. The current configuration includes a dedicated `webscraper` database with database ownership enabled. PostgreSQL remains the backend for Grafana and other configured services.
 
-### Add a New Host
+### pgAdmin
 
-1. Create directory: `hosts/<hostname>/`
-2. Add `configuration.nix` with role imports
-3. Generate hardware config: `nixos-generate-config --show-hardware-config > hosts/<hostname>/hardware-configuration.nix`
-4. Build: `nixos-rebuild switch --flake .#<hostname>`
+The pgAdmin service is configured through the NixOS `services.pgadmin` module. Its initial email and password are supplied through the module's initialization options, and the service listens on port `5050`. The firewall allows the configured pgAdmin port, and a systemd override makes pgAdmin listen on `0.0.0.0` when remote access is required.
 
-📖 **See**: [Getting Started Guide](docs/GETTING-STARTED.md)
+Treat the initial password as a bootstrap credential: keep it in encrypted secret material and change it after first login.
 
----
+### Vaultwarden
 
-## Features
+Vaultwarden is exposed on port `8222`. Its service configuration and firewall exposure are managed by the feature module; verify the host's network boundary and reverse-proxy policy before exposing it beyond the trusted network.
 
-### 🏗️ Architecture
-- **Three-layer modular design**: hardware → roles → features
-- **Multi-host management** from single repository
-- **SOPS-encrypted secrets** with GPG
-- **Home Manager integration** for user configs
+### Service settings and firewall ports
 
-### 🖥️ Desktop
-- Hyprland Wayland compositor
-- Gaming support (Steam, emulation)
-- Flatpak support
-- Audio (PipeWire), Bluetooth, Graphics
+Service defaults are centralized in host settings. In particular, `DEFAULT_SERVER` is read from settings rather than being hard-coded in individual modules. Public service ports are collected into the host's backend-port configuration, while custom firewall rules use the NixOS firewall integration and nftables syntax.
 
-### 🖧 Infrastructure
-- **PostgreSQL** database with monitoring
-- **Grafana** dashboards with alerts
-- **Prometheus** metrics collection
-- **Node Exporter** system metrics
+## Getting started
 
-### 🎬 Media
-- Jellyfin media server
-- *arr stack (Radarr, Sonarr)
-- qBittorrent torrents
-- Homepage dashboard
+1. Review [docs/GETTING-STARTED.md](docs/GETTING-STARTED.md).
+2. Inspect [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) before adding a feature or host.
+3. Configure secrets according to [docs/SECRETS.md](docs/SECRETS.md).
+4. Validate a configuration with:
 
-### 🔒 Security
-- SOPS secrets management
-- SSH hardening (no passwords, no root)
-- Firewall enabled on all hosts
-- Vaultwarden password manager
+   ```bash
+   nix flake check
+   sudo nixos-rebuild test --flake .#<host>
+   ```
 
-### 🤖 AI/ML
-- NVIDIA GPU drivers (headless)
-- CUDA toolkit
-- Docker support
-- Libvirt virtualization
-
-### 📊 Monitoring & Alerting
-- Prometheus alerting rules
-- Grafana dashboards
-- Alertmanager notifications
-- SSL certificate monitoring
-
----
-
-## Repository Structure
-
-```
-nixlab/
-├── hosts/                    # Host configurations (5 hosts)
-│   ├── navi/                 # Desktop workstation
-│   ├── oryx/                 # Desktop workstation
-│   ├── r730/                 # Dell PowerEdge (media server)
-│   ├── r730xd/               # Dell PowerEdge (storage)
-│   └── r820/                 # Dell PowerEdge (AI compute)
-├── modules/
-│   ├── features/             # 26 feature modules
-│   ├── hardware/             # 3 hardware modules
-│   └── roles/                # 7 role modules
-├── tests/                    # NixOS integration tests
-├── secrets/                  # SOPS-encrypted secrets
-├── users/                    # User configurations
-├── docs/                     # Documentation (7 files)
-├── .github/workflows/        # CI/CD pipelines
-├── flake.nix                 # Main flake entry point
-└── README.md                 # This file
-```
-
----
-
-## Available Roles
-
-| Role | Description | Use For |
-|------|-------------|---------|
-| `common` | Base configuration | Every host imports this |
-| `desktop-node` | Desktop with GUI | Personal computers |
-| `server-core` | Minimal server | Headless servers |
-| `media-node` | Media server | Jellyfin, *arr stack |
-| `mail-node` | Email server | Self-hosted email |
-| `storage-node` | NAS/Storage | File servers |
-| `ai-node` | AI/ML compute | GPU workloads |
-
-📖 **See**: [Roles Documentation](docs/ROLES.md)
-
----
-
-## Hosts Inventory
-
-| Hostname | Type | Hardware | Roles | Purpose |
-|----------|------|----------|-------|---------|
-| `navi` | Desktop | Custom | desktop-node | Primary workstation |
-| `oryx` | Desktop | Custom | desktop-node | Secondary desktop |
-| `r730` | Server | Dell R730 | server-core, media-node | Media server |
-| `r730xd` | Server | Dell R730 XD | server-core, storage-node | Storage server |
-| `r820` | Server | Dell R820 | server-core, ai-node | AI/ML compute |
-
----
+5. Use [docs/DEPLOYMENT-CHECKLIST.md](docs/DEPLOYMENT-CHECKLIST.md) for a rollout.
 
 ## Documentation
 
-| Document | Description |
-|----------|-------------|
-| [Getting Started](docs/GETTING-STARTED.md) | Setup guide for new hosts |
-| [Architecture](docs/ARCHITECTURE.md) | System design and modules |
-| [Roles](docs/ROLES.md) | Role system documentation |
-| [Secrets](docs/SECRETS.md) | SOPS secrets management |
-| [Backup & Recovery](docs/BACKUP-RECOVERY.md) | Backup strategies and DR |
-| [Alerts](docs/ALERTS.md) | Monitoring alerts and runbooks |
-| [Deployment Checklist](docs/DEPLOYMENT-CHECKLIST.md) | Deployment checklist |
+Start at [docs/docs-index.md](docs/docs-index.md) for the complete documentation map. The repository also includes [CACHIX.md](CACHIX.md) for binary-cache setup.
 
----
+## Safety
 
-## Common Operations
-
-### Update Flake Inputs
-
-```bash
-nix flake update
-```
-
-### Garbage Collection
-
-```bash
-# Remove old generations
-nix-collect-garbage --delete-older-than 7d
-
-# Remove unused packages
-nix-store --gc
-```
-
-### Check Configuration
-
-```bash
-# Verify flake
-nix flake check
-
-# Show outputs
-nix flake show
-```
-
-### Run Tests
-
-```bash
-# Run all tests
-nix-build tests/default.nix
-
-# Run individual test
-nix-build tests/default.nix -A postgresql
-```
-
----
-
-## Monitoring
-
-### Access Grafana
-
-```bash
-# Default port: 3000
-http://<host>:3000
-```
-
-### Access Prometheus
-
-```bash
-# Default port: 9090
-http://<host>:9090
-```
-
-### View Alerts
-
-```bash
-# Alertmanager UI
-http://<host>:9093
-```
-
-📖 **See**: [Alerts Documentation](docs/ALERTS.md)
-
----
-
-## Security
-
-- ✅ All secrets encrypted with SOPS
-- ✅ SSH: No password auth, no root login
-- ✅ Firewall enabled on all hosts
-- ✅ Regular security updates via NixOS
-- ✅ Polkit for privilege management
-
----
-
-## License
-
-See [LICENSE.md](LICENSE.md)
-
----
-
-## Contributing
-
-This is a personal infrastructure repository, but feel free to:
-- ⭐ Star the repo if you find it useful
-- 🐛 Open issues for bugs or suggestions
-- 💡 Submit PRs for improvements
-- 🔀 Fork and adapt for your own use
-
----
-
-**Last Updated**: August 2026  
-**NixOS Version**: 24.05  
-**Flake**: Enabled
+This repository contains encrypted secret files and infrastructure configuration. Do not commit decrypted secrets, generated credentials, private keys, or machine-specific sensitive data.
