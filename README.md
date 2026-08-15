@@ -1,5 +1,10 @@
 # nixlab
 
+[![NixOS](https://img.shields.io/badge/NixOS-5277C3?logo=nixos&logoColor=white)](https://nixos.org/)
+[![Nix Flakes](https://img.shields.io/badge/Nix-Flakes-5277C3?logo=nixos&logoColor=white)](https://wiki.nixos.org/wiki/Flakes)
+[![License](https://img.shields.io/github/license/Aljam/nixlab)](LICENSE.md)
+[![Last Commit](https://img.shields.io/github/last-commit/Aljam/nixlab)](https://github.com/Aljam/nixlab/commits/main/)
+
 Declarative NixOS homelab configuration managed with flakes.
 
 ## What this repository provides
