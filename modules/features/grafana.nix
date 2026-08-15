@@ -5,52 +5,17 @@
 
 {
   options.modules.features.grafana = {
-    enable = lib.mkEnableOption "Grafana monitoring dashboard" // { default = true; };
-    port = lib.mkOption {
-      type = lib.types.port;
-      default = 3000;
-      description = "Grafana port";
-    };
-    domain = lib.mkOption {
-      type = lib.types.str;
-      default = "grafana.${config.networking.hostName}.local";
-      description = "Grafana domain";
-    };
+    enable = lib.mkEnableOption "Grafana monitoring dashboard";
   };
 
-  config = lib.mkIf config.modules.features.grafana.enable {
-    # Declare SOPS secrets with proper permissions for grafana user
-    sops.secrets."grafana-secret-key" = {
-      owner = "grafana";
-      group = "grafana";
-    };
-    sops.secrets."grafana-admin-password" = {
-      owner = "grafana";
-      group = "grafana";
-    };
-
+  config = lib.mkIf config.modules.features.grafana {
     services.grafana = {
       enable = true;
-      settings = {
-        server = {
-          http_port = config.modules.features.grafana.port;
-          domain = config.modules.features.grafana.domain;
-          root_url = "https://${config.modules.features.grafana.domain}";
-        };
-        security = {
-          secret_key = "$__file{${config.sops.secrets."grafana-secret-key".path}}";
-          admin_password = "$__file{${config.sops.secrets."grafana-admin-password".path}}";
-        };
-        users = {
-          allow_sign_up = false;
-          allow_org_create = false;
-        };
+      openFirewall = false;
+      settings.server = {
+        http_addr = "0.0.0.0";
+        http_port = 3000;
       };
     };
-
-    # Firewall: grafana accessible only from HAProxy (192.168.1.1)
-    networking.firewall.extraInputRules = ''
-      ip saddr 192.168.1.1 tcp dport ${toString config.modules.features.grafana.port} accept
-    '';
   };
 }
