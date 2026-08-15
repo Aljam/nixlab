@@ -19,6 +19,7 @@ in
     services.grafana = {
       enable = true;
       openFirewall = false;
+      dataDir = "/var/lib/grafana";
       settings = {
         server = {
           http_addr = "0.0.0.0";
