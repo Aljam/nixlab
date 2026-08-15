@@ -9,7 +9,16 @@
   networking.defaultGateway.address = "${subnets.lan}.1";
   networking.nameservers = [ "${subnets.lan}.1" ];
   networking.enableIPv6 = false;
-  networking.firewall.allowPing = true;
+  
+  networking.firewall = {
+    enable = true;
+    allowPing = true;
+    allowedTCPPorts = [ 80 443 ];
+    # Or if HAProxy is the only service:
+    allowedUDPPorts = [];
+  };  
+
+
   networking.nftables.enable = true;
   networking.networkmanager.enable = false;
   networking.useDHCP = false;
