@@ -11,12 +11,32 @@ Cachix is a binary cache service for Nix that:
 
 ## Quick Start
 
-### 1. Create Cachix Cache
+### 1. Install Cachix
+
+**Option A: Official Installer (Recommended)**
 
 ```bash
-# Install cachix CLI
-nix-env -iA nixpkgs.cachix
+# Install via official installer
+bash <(curl -L https://cachix.org/install.sh)
+```
 
+**Option B: From nixpkgs (if available)**
+
+```bash
+# If you have nixpkgs configured
+nix-env -iA cachix
+```
+
+**Option C: Nix shell (temporary)**
+
+```bash
+# Use in a temporary shell
+nix-shell -p cachix
+```
+
+### 2. Create Cachix Cache
+
+```bash
 # Login to Cachix
 cachix login
 
@@ -24,7 +44,16 @@ cachix login
 cachix create nixlab
 ```
 
-### 2. Configure Nix to Use Cachix
+### 3. Configure Nix to Use Cachix
+
+**Option A: Automatic (Recommended)**
+
+```bash
+# Automatically configure nix.conf
+cachix use nixlab
+```
+
+**Option B: Manual Configuration**
 
 Add to `/etc/nix/nix.conf` or `~/.config/nix/nix.conf`:
 
@@ -33,18 +62,10 @@ substituters = https://nixlab.cachix.org https://cache.nixos.org/
 trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nixlab.cachix.org-1:YOUR_CACHE_KEY=
 ```
 
-Or use the cachix command:
-
-```bash
-cachix use nixlab
-```
-
-### 3. Add Authentication Token (for pushing)
+### 4. Add Authentication Token (for pushing)
 
 ```bash
 # Get your auth token from https://app.cachix.org
-cachix authtoken
-
 # Add to environment
 export CACHIX_AUTH_TOKEN="your-token-here"
 ```
@@ -243,7 +264,7 @@ To optimize:
 
 1. **Attic** - Modern binary cache
    ```bash
-   nix-env -iA nixpkgs.attic
+   bash <(curl -L https://github.com/zhaofengli/attic/releases/latest/download/install.sh)
    ```
 
 2. **Nix Binary Cache** - Official NixOS cache server
@@ -260,6 +281,7 @@ To optimize:
 
 - [Cachix Documentation](https://docs.cachix.org/)
 - [Cachix Pricing](https://cachix.org/pricing)
+- [Cachix Install](https://cachix.org/)
 - [Nix Binary Cache](https://nix.dev/manual/nix/stable/command-ref/conf-file.html#conf-substituters)
 
 ---
