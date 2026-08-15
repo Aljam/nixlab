@@ -24,16 +24,8 @@
   };
 
   config = lib.mkIf config.modules.features.reverse-proxy-backends.enable {
-    networking.nftables.tables = {
-      filter = {
-        family = "inet";
-        content = ''
-          chain input {
-            type filter hook input priority 0; policy accept;
-            ip saddr ${config.modules.features.reverse-proxy-backends.lanSubnet} tcp dport { ${lib.concatMapStringsSep ", " toString (lib.filter (p: !(lib.elem p config.modules.features.reverse-proxy-backends.sensitivePorts)) config.modules.features.reverse-proxy-backends.publicBackendPorts)} } accept comment "Allow LAN to backend ports"
-          }
-        '';
-      };
-    };
+    networking.firewall.extraRules = [
+      "ip saddr ${config.modules.features.reverse-proxy-backends.lanSubnet} tcp dport { ${lib.concatMapStringsSep ", " toString (lib.filter (p: !(lib.elem p config.modules.features.reverse-proxy-backends.sensitivePorts)) config.modules.features.reverse-proxy-backends.publicBackendPorts)} } accept comment \"Allow LAN to backend ports\""
+    ];
   };
 }
