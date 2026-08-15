@@ -7,7 +7,6 @@
   services.postgresql = {
     enable = true;
     settings.port = 5432;
-    dataDir = "/var/lib/postgresql";
     ensureUsers = [
       {
         name = "grafana";
