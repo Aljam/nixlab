@@ -8,7 +8,4 @@
       ROCKET_PORT = 8000;
     };
   };
-  networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 8000 accept
-  '';
 }
