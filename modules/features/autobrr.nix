@@ -2,7 +2,6 @@
 {
   sops.secrets."autobrr_api_key" = {
     owner = config.services.autobrr.user;
-    group = config.services.autobrr.group;
   };
 
   services.autobrr = {
