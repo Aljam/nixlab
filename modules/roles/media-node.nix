@@ -12,6 +12,8 @@
     ../features/shoko.nix
     ../features/torrents.nix
     ../features/jellyfin.nix
+    ../features/recyclarr.nix
+    ../features/prowlarr.nix
     #../features/nas-mount.nix
   ];
 
