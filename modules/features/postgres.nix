@@ -21,12 +21,12 @@
     port = 5050;
     initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets.pgadmin_password.path;
+    extraConfig = {
+      DEFAULT_SERVER = "0.0.0.0";
+    };
   };
 
   sops.secrets.pgadmin_password = {};
-
-  # Make pgadmin listen on all interfaces
-  systemd.services.pgadmin.serviceConfig.Environment = "DEFAULT_SERVER=0.0.0.0";
 
   # Custom backup service
   systemd.services.postgresql-backup = {
