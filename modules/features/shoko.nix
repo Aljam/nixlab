@@ -1,19 +1,10 @@
-# nixlab/modules/features/shoko.nix
-# Shoko Server - Anime metadata and library management
-
-{ config, lib, pkgs, ... }:
-
+{ config, pkgs, domains, fleet, subnets, ... }:
 {
-  options.modules.features.shoko = {
-    enable = lib.mkEnableOption "Shoko Server anime library management";
+  services.shoko = {
+    enable = true;
+    openFirewall = false;
   };
-
-  config = lib.mkIf config.modules.features.shoko.enable {
-    services.shoko = {
-      enable = true;
-    };
-
-    # Firewall: shoko accessible only from HAProxy
-    networking.firewall.allowedTCPPorts = [ 8111 ];
-  };
+  networking.firewall.extraInputRules = ''
+    ip saddr ${subnets.lan}.1 tcp dport 44555 accept
+  '';
 }

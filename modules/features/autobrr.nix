@@ -1,19 +1,10 @@
-# nixlab/modules/features/autobrr.nix
-# autobrr - IRC torrent client automation
-
-{ config, lib, pkgs, ... }:
-
+{ config, pkgs, domains, fleet, subnets, ... }:
 {
-  options.modules.features.autobrr = {
-    enable = lib.mkEnableOption "autobrr IRC torrent client automation";
+  services.autobrr = {
+    enable = true;
+    openFirewall = false;
   };
-
-  config = lib.mkIf config.modules.features.autobrr.enable {
-    services.autobrr = {
-      enable = true;
-    };
-
-    # Firewall: autobrr accessible only from HAProxy
-    networking.firewall.allowedTCPPorts = [ 7777 ];
-  };
+  networking.firewall.extraInputRules = ''
+    ip saddr ${subnets.lan}.1 tcp dport 7777 accept
+  '';
 }

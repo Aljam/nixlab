@@ -1,14 +1,14 @@
-{ config, pkgs, domains, fleet, ... }:
-
+{ config, pkgs, domains, fleet, subnets, ... }:
 {
   services.vaultwarden = {
     enable = true;
-    backupDir = "/var/backup/vaultwarden";
     config = {
-      ROCKET_PORT = 8222;
-      ROCKET_ADDRESS = "${fleet.r730xd.ip}";
-      SIGNUPS_ALLOWED = false; # SET TO FALSE AFTER ACCOUNT CREATION
-      DOMAIN = "https://vault.${domains.primary}";
+      DOMAIN = "https://vaultwarden.${domains.main}";
+      SIGNUPS_ALLOWED = false;
     };
+    openFirewall = false;
   };
+  networking.firewall.extraInputRules = ''
+    ip saddr ${subnets.lan}.1 tcp dport 8000 accept
+  '';
 }

@@ -1,19 +1,10 @@
-# nixlab/modules/features/seerr.nix
-# Overseerr - Media request management
-
-{ config, lib, pkgs, ... }:
-
+{ config, pkgs, domains, fleet, subnets, ... }:
 {
-  options.modules.features.seerr = {
-    enable = lib.mkEnableOption "Overseerr media request management";
+  services.seerr = {
+    enable = true;
+    openFirewall = false;
   };
-
-  config = lib.mkIf config.modules.features.seerr.enable {
-    services.seerr = {
-      enable = true;
-    };
-
-    # Firewall: seerr accessible only from HAProxy
-    networking.firewall.allowedTCPPorts = [ 5055 ];
-  };
+  networking.firewall.extraInputRules = ''
+    ip saddr ${subnets.lan}.1 tcp dport 5055 accept
+  '';
 }
