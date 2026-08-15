@@ -110,7 +110,7 @@ nixlab/
 ## Available Roles
 
 | Role | Description | Use For |
-|------|-------------|---------||
+|------|-------------|---------|
 | `common` | Base configuration | Every host imports this |
 | `desktop-node` | Desktop with GUI | Personal computers |
 | `server-core` | Minimal server | Headless servers |
@@ -126,7 +126,7 @@ nixlab/
 ## Hosts Inventory
 
 | Hostname | Type | Hardware | Roles | Purpose |
-|----------|------|----------|-------|---------||
+|----------|------|----------|-------|---------|
 | `navi` | Desktop | Custom | desktop-node | Primary workstation |
 | `oryx` | Desktop | Custom | desktop-node | Secondary desktop |
 | `r730` | Server | Dell R730 | server-core, media-node | Media server |
@@ -138,7 +138,7 @@ nixlab/
 ## Documentation
 
 | Document | Description |
-|----------|-------------||
+|----------|-------------|
 | [Getting Started](docs/GETTING-STARTED.md) | Setup guide for new hosts |
 | [Architecture](docs/ARCHITECTURE.md) | System design and modules |
 | [Roles](docs/ROLES.md) | Role system documentation |
