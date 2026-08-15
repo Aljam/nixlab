@@ -1,48 +1,43 @@
-{ config, pkgs, domains, ... }: # <-- Added 'domains' here
-
-{
+{ config, pkgs, domains, fleet, ... }: {
   imports = [
-    ../features/jellyfin.nix
-    ../features/arr-stack.nix
+    ../features/radarr.nix
+    ../features/sonarr.nix
+    ../features/lidarr.nix
+    ../features/readarr.nix
+    ../features/bazarr.nix
+    ../features/seerr.nix
+    ../features/audiobookshelf.nix
+    ../features/autobrr.nix
+    ../features/shoko.nix
     ../features/torrents.nix
-    ../features/vaultwarden.nix
-    ../features/youtube.nix
+    ../features/jellyfin.nix
+    ../features/nas-mount.nix
   ];
+
+  # Media user and group
+  users.users.media = {
+    description = "Media services user";
+    group = "media";
+    home = "/var/lib/media";
+    createHome = true;
+    isSystemUser = true;
+  };
 
   users.groups.media = {};
 
-  services.homepage-dashboard = {
-    enable = true;
-    # Binds to localhost to prevent HAProxy Host header validation errors
-    allowedHosts = "home.${domains.primary}";
-    
-    services = [
-      {
-        "Media & Requests" = [
-          { Jellyfin = { href = "https://jellyfin.${domains.primary}"; description = "Media Streaming"; icon = "jellyfin.png"; }; }
-          { Seerr = { href = "https://seerr.${domains.primary}"; description = "Media Requests"; icon = "seerr.png"; }; }
-          { Audiobookshelf = { href = "https://audiobookshelf.${domains.primary}"; description = "Audiobooks & Podcasts"; icon = "audiobookshelf.png"; }; }
-        ];
-      }
-      {
-        "Automation & Downloads" = [
-          { Sonarr = { href = "https://sonarr.${domains.primary}"; description = "TV Shows"; icon = "sonarr.png"; }; }
-          { Radarr = { href = "https://radarr.${domains.primary}"; description = "Movies"; icon = "radarr.png"; }; }
-          { Prowlarr = { href = "https://prowlarr.${domains.primary}"; description = "Indexers"; icon = "prowlarr.png"; }; }
-          { Bazarr = { href = "https://bazarr.${domains.primary}"; description = "Subtitles Automation"; icon = "bazarr.png"; }; }
-          { Readarr = { href = "https://readarr.${domains.primary}"; description = "Books Automation"; icon = "readarr.png"; }; }
-          { Lidarr = { href = "https://lidarr.${domains.primary}"; description = "Music Automation"; icon = "lidarr.png"; }; }
-          { qBittorrent = { href = "https://qb.${domains.primary}"; description = "Torrents"; icon = "qbittorrent.png"; }; }
-          { Autobrr = { href = "https://autobrr.${domains.primary}"; description = "IRC Torrent Filters"; icon = "autobrr.png"; }; }
-          { Shoko = { href = "https://shoko.${domains.primary}"; description = "AniDB integration"; icon = "shoko.png"; }; }
-        ];
-      }
-      {
-        "System & Monitoring" = [
-          { Grafana = { href = "https://grafana.${domains.primary}"; description = "Metrics & Dashboards"; icon = "grafana.png"; }; }
-          { Pgadmin = { href = "https://db.${domains.primary}"; description = "Databases"; icon = "pgadmin.png"; }; }
-        ];
-      }
-    ];
-  };
+  # Common media directories
+  systemd.tmpfiles.rules = [
+    "d /var/lib/media 0755 media media -"
+    "d /var/lib/radarr 0755 media media -"
+    "d /var/lib/sonarr 0755 media media -"
+    "d /var/lib/lidarr 0755 media media -"
+    "d /var/lib/readarr 0755 media media -"
+    "d /var/lib/bazarr 0755 media media -"
+    "d /var/lib/seerr 0755 media media -"
+    "d /var/lib/audiobookshelf 0755 media media -"
+    "d /var/lib/autobrr 0755 media media -"
+    "d /var/lib/shoko 0755 media media -"
+    "d /var/lib/jellyfin 0755 media media -"
+    "d /var/lib/torrents 0755 media media -"
+  ];
 }
