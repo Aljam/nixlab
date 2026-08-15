@@ -8,7 +8,9 @@ let
 in
 {
   options.modules.features.grafana = {
-    enable = lib.mkEnableOption "Grafana monitoring dashboard";
+    enable = lib.mkEnableOption "Grafana monitoring dashboard" // {
+      default = true;
+    };
   };
 
   config = lib.mkIf cfg.enable {
