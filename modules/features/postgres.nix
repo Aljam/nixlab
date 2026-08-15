@@ -12,8 +12,15 @@
         name = "grafana";
         ensureDBOwnership = true;
       }
+      {
+        name = "webscraper";
+        ensureDBOwnership = true;
+      }
     ];
-    ensureDatabases = [ "grafana" ];
+    ensureDatabases = [
+      "grafana"
+      "webscraper"
+    ];
   };
 
   services.pgadmin = {
