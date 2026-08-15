@@ -1,14 +1,26 @@
-{ config, pkgs, domains, fleet, subnets, ... }:
+{ config, pkgs, domains, fleet, subnets, lib, ... }:
+
+let
+  cfg = config.modules.features.vaultwarden;
+in
 {
-  services.vaultwarden = {
-    enable = true;
-    config = {
-      ROCKET_ADDRESS = "0.0.0.0";
-      ROCKET_PORT = 8000;
+  options.modules.features.vaultwarden = {
+    enable = lib.mkEnableOption "Vaultwarden password manager" // {
+      default = true;
     };
-    openFirewall = false;
   };
-  networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 8000 accept
-  '';
+
+  config = lib.mkIf cfg.enable {
+    services.vaultwarden = {
+      enable = true;
+      config = {
+        ROCKET_ADDRESS = "0.0.0.0";
+        ROCKET_PORT = 8000;
+      };
+      openFirewall = false;
+    };
+    networking.firewall.extraInputRules = ''
+      ip saddr ${subnets.lan}.1 tcp dport 8000 accept
+    '';
+  };
 }
