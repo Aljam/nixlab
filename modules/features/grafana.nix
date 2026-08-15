@@ -1,4 +1,4 @@
-{ config, pkgs, domains, fleet, subnets ... }:
+{ config, pkgs, domains, fleet, subnets, ... }:
 
 let
   # HAProxy runs on pfSense gateway
