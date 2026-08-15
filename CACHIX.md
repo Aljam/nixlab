@@ -11,45 +11,28 @@ Cachix is a binary cache service for Nix that:
 
 ## Quick Start
 
-### 1. Install Cachix
-
-**Option A: Official Installer (Recommended)**
+### 1. Install Cachix CLI
 
 ```bash
 # Install via official installer
 bash <(curl -L https://cachix.org/install.sh)
 ```
 
-**Option B: From nixpkgs (if available)**
+### 2. Create Cachix Cache (Web Interface)
 
-```bash
-# If you have nixpkgs configured
-nix-env -iA cachix
-```
-
-**Option C: Nix shell (temporary)**
-
-```bash
-# Use in a temporary shell
-nix-shell -p cachix
-```
-
-### 2. Create Cachix Cache
-
-```bash
-# Login to Cachix
-cachix login
-
-# Create a new cache (replace 'nixlab' with your cache name)
-cachix create nixlab
-```
+1. Go to https://app.cachix.org
+2. Sign in with GitHub
+3. Click "Create cache"
+4. Enter cache name: `nixlab`
+5. Choose visibility (private recommended)
+6. Click "Create"
 
 ### 3. Configure Nix to Use Cachix
 
 **Option A: Automatic (Recommended)**
 
 ```bash
-# Automatically configure nix.conf
+# This adds the cache to your nix.conf
 cachix use nixlab
 ```
 
@@ -59,16 +42,19 @@ Add to `/etc/nix/nix.conf` or `~/.config/nix/nix.conf`:
 
 ```conf
 substituters = https://nixlab.cachix.org https://cache.nixos.org/
-trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nixlab.cachix.org-1:YOUR_CACHE_KEY=
+trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= nixlab.cachix.org-1:YOUR_PUBLIC_KEY=
 ```
 
-### 4. Add Authentication Token (for pushing)
+Get your public key from: https://app.cachix.org → Your cache → Settings
 
-```bash
-# Get your auth token from https://app.cachix.org
-# Add to environment
-export CACHIX_AUTH_TOKEN="your-token-here"
-```
+### 4. Get Authentication Token (for CI/CD)
+
+1. Go to https://app.cachix.org
+2. Select your cache: `nixlab`
+3. Click "Settings"
+4. Under "Authentication", click "Create token"
+5. Copy the token
+6. Add to GitHub secrets as `CACHIX_AUTH_TOKEN`
 
 ## CI/CD Integration
 
@@ -83,12 +69,12 @@ The repository includes `.github/workflows/cachix.yml` which:
 
 Add to GitHub repository settings → Secrets → Actions:
 
-- `CACHIX_AUTH_TOKEN`: Your Cachix authentication token
+- `CACHIX_AUTH_TOKEN`: Your Cachix authentication token from step 4
 
 ### Manual Cache Population
 
 ```bash
-# Build and cache all hosts
+# Build all hosts
 for host in navi oryx r730 r730xd r820; do
   nix build .#nixosConfigurations.$host.config.system.build.toplevel \
     --no-link
@@ -119,24 +105,7 @@ nix-build -A nixosConfigurations.navi.config.system.build.toplevel
 cachix push nixlab result
 ```
 
-## Cache Configuration
-
-### flake.nix
-
-The flake includes Cachix configuration:
-
-```nix
-{
-  nix = {
-    settings = {
-      substituters = ["https://nixlab.cachix.org"];
-      trusted-public-keys = ["nixlab.cachix.org-1:YOUR_KEY="];
-    };
-  };
-}
-```
-
-### Cache Settings
+## Cache Settings
 
 Recommended settings in Cachix dashboard:
 
@@ -147,16 +116,12 @@ Recommended settings in Cachix dashboard:
 
 ## Best Practices
 
-### 1. Cache Frequently Built Packages
+### 1. Use in Development
 
 ```bash
-# Cache common packages
-nix-env -iA nixpkgs.git
-nix-env -iA nixpkgs.vim
-nix-env -iA nixpkgs.htop
-
-# Push to cache
-cachix push nixlab /nix/store/*-git-*
+# Add to your shell
+export CACHIX_NAME="nixlab"
+cachix watch-exec $CACHIX_NAME -- nixos-rebuild switch --flake .#hostname
 ```
 
 ### 2. Build in CI
@@ -170,25 +135,11 @@ Always build in CI to populate the cache:
     cachix push nixlab result
 ```
 
-### 3. Use Cache in Development
+### 3. Monitor Cache Usage
 
 ```bash
-# Before starting work
-nix-shell -p cachix
-
-# Use cache
-export CACHIX_NAME="nixlab"
-cachix watch-exec $CACHIX_NAME -- nixos-rebuild switch --flake .#hostname
-```
-
-### 4. Monitor Cache Usage
-
-```bash
-# Check cache stats
-cachix show nixlab
-
-# List cached paths
-cachix list-paths nixlab
+# Check cache stats (via web UI)
+# https://app.cachix.org → Your cache → Stats
 ```
 
 ## Troubleshooting
@@ -205,7 +156,7 @@ nix show-config | grep substituters
 # Check trusted keys
 nix show-config | grep trusted-public-keys
 
-# Manually add cache
+# Re-add cache
 cachix use nixlab
 ```
 
@@ -214,13 +165,9 @@ cachix use nixlab
 **Problem**: "Permission denied" when pushing
 
 **Solution**:
-```bash
-# Refresh auth token
-cachix authtoken
-
-# Verify token
-env | grep CACHIX
-```
+1. Go to https://app.cachix.org
+2. Create a new token
+3. Update `CACHIX_AUTH_TOKEN` secret in GitHub
 
 ### Cache Miss
 
@@ -252,37 +199,12 @@ To optimize:
    - Most packages are already there
    - Only cache your custom builds
 
-3. **Clean old versions**:
-   ```bash
-   # Remove old paths from cache
-   cachix delete-path nixlab /nix/store/old-path
-   ```
-
-## Alternatives
-
-### Self-Hosted Options
-
-1. **Attic** - Modern binary cache
-   ```bash
-   bash <(curl -L https://github.com/zhaofengli/attic/releases/latest/download/install.sh)
-   ```
-
-2. **Nix Binary Cache** - Official NixOS cache server
-   ```bash
-   nix-env -iA nixpkgs.nix-binary-cache
-   ```
-
-3. **S3 + nix-serve**
-   ```bash
-   nix-env -iA nixpkgs.nix-serve
-   ```
-
 ## Resources
 
+- [Cachix App](https://app.cachix.org)
 - [Cachix Documentation](https://docs.cachix.org/)
 - [Cachix Pricing](https://cachix.org/pricing)
 - [Cachix Install](https://cachix.org/)
-- [Nix Binary Cache](https://nix.dev/manual/nix/stable/command-ref/conf-file.html#conf-substituters)
 
 ---
 
