@@ -1,5 +1,6 @@
 { config, pkgs, domains, fleet, ... }: {
   imports = [
+    ../features/homepage.nix
     ../features/radarr.nix
     ../features/sonarr.nix
     ../features/lidarr.nix
