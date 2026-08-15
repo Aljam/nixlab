@@ -32,8 +32,8 @@
           root_url = "https://${config.modules.features.grafana.domain}";
         };
         security = {
-          secret_key_file = config.sops.secrets."grafana-secret-key".path;
-          admin_password_file = config.sops.secrets."grafana-admin-password".path;
+          secret_key = "$__file{${config.sops.secrets."grafana-secret-key".path}}";
+          admin_password = "$__file{${config.sops.secrets."grafana-admin-password".path}}";
         };
         users = {
           allow_sign_up = false;
