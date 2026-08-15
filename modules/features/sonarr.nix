@@ -1,4 +1,4 @@
-{ config, pkgs, domains, fleet, ... }:
+{ config, pkgs, domains, fleet, subnets ... }:
 {
   services.sonarr = {
     enable = true;
@@ -8,6 +8,6 @@
     openFirewall = false;
   };
   networking.firewall.extraInputRules = ''
-    ip saddr ${fleet.r730xd.ip} tcp dport 8989 accept
+    ip saddr ${subnets.lan}.1 tcp dport 8989 accept
   '';
 }
