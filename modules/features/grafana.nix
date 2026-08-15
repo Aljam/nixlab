@@ -14,6 +14,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    sops.secrets."grafana-secret-key" = {};
+
     services.grafana = {
       enable = true;
       openFirewall = false;
