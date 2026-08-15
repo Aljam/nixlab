@@ -3,12 +3,15 @@
 
 { config, lib, pkgs, ... }:
 
+let
+  cfg = config.modules.features.grafana;
+in
 {
   options.modules.features.grafana = {
     enable = lib.mkEnableOption "Grafana monitoring dashboard";
   };
 
-  config = lib.mkIf config.modules.features.grafana {
+  config = lib.mkIf cfg.enable {
     services.grafana = {
       enable = true;
       openFirewall = false;
