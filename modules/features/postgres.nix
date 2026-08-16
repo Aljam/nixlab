@@ -27,9 +27,12 @@ in
     port = 5050;
     initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets."pgadmin_password".path;
-    # Bind to host IP for HAProxy
-    extraConfig = ''
-      SERVER_ADDRESS = "${bindAddr}"
-    '';
+  };
+
+  # Bind pgadmin to host IP via systemd
+  systemd.services.pgadmin = {
+    serviceConfig = {
+      Environment = "SERVER_ADDRESS=${bindAddr}";
+    };
   };
 }
