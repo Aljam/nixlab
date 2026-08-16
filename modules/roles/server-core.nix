@@ -1,39 +1,14 @@
-{ config, pkgs, lib, subnets, ... }:
+# modules/roles/server-core.nix
+# Core server configuration
+{ config, lib, pkgs, ... }:
 
 {
-  imports = [
-    ../features/node-exporter.nix
-    ../features/prometheus-alerts.nix
-    ../features/reverse-proxy-backends.nix
-  ];
-
-  networking.defaultGateway.address = "${subnets.lan}.1";
-  networking.nameservers = [ "${subnets.lan}.1" ];
-  networking.enableIPv6 = false;
-  
-  networking.firewall = {
-    enable = true;
-    allowPing = true;
-    allowedTCPPorts = [ 80 443 ];
-    # Or if HAProxy is the only service:
-    allowedUDPPorts = [];
-  };  
-  
-  modules.features.reverse-proxy-backends.enable = true;
-
-  networking.nftables.enable = true;
+  # Disable NetworkManager on servers
   networking.networkmanager.enable = false;
-  networking.useDHCP = false;
-  virtualisation.podman = { enable = true; dockerSocket.enable = true; };
-  
-  environment.systemPackages = with pkgs; [
-    smartmontools
-    tmux
-    pciutils
-  ];
 
-  services.smartd = {
-    enable = true;
-    autodetect = true;
-  };
+  # Disable IPv6 on servers
+  boot.kernelParams = [ "ipv6.disable=1" ];
+
+  # Enable nftables
+  networking.nftables.enable = true;
 }
