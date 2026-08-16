@@ -1,6 +1,4 @@
 # modules/features/grafana.nix
-# Security: Grafana should NOT be exposed to LAN
-# Only accessible via HAProxy gateway (192.168.1.1)
 { config, lib, pkgs, ... }:
 
 let
@@ -22,8 +20,8 @@ in
         secret_key = "$__file{${config.sops.secrets."grafana-secret-key".path}}";
       };
     };
-    # Disable default provisioning to avoid conflicts
-    provisioning = {
+    # Disable default provisioning
+    provision = {
       enable = false;
     };
   };
