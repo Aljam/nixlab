@@ -18,11 +18,6 @@
   # Configuration
   config = {
     system.stateVersion = lib.mkDefault "26.05";  
-    # Fleet wiring
-    networking.fleet = fleet;
-    networking.subnets = subnets;
-    networking.domain = domains.primary;
-    networking.hostName = hostname;
 
     # Enable flakes
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
