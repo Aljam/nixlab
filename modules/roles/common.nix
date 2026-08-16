@@ -71,18 +71,12 @@
     # Fail2ban for SSH
     services.fail2ban = {
       enable = true;
-      maxretry = 3;
-      bantime = 3600;
-      jails.sshd = ''
-        enabled = true
-        filter = sshd
-        port = ssh
-        logpath = %(sshd_log)s
-        backend = %(sshd_backend)s
-        maxretry = 3
-        findtime = 600
-        bantime = 3600
-      '';
+      jails.sshd = {
+        enable = true;
+        filter = "sshd";
+        port = "ssh";
+        logpath = "%(sshd_log)s";
+      };
     };
 
     # Users
