@@ -67,11 +67,17 @@
       "https://cache.nixos.org/"
       "https://nix-community.cachix.org"
       "https://nix-gaming.cachix.org"
+      "https://aljam.cachix.org"
+      "https://hyprland.cachix.org"
+      "https://cuda-maintainers.cachix.org"
     ];
     trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:MZdHKglynCuK+xf+JtDiX6aIT1yFX8Jv18LwqT4KKs4="
       "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZFYNs5vDq1Wx0="
+      "aljam.cachix.org-1:Q0m0+7k8+Gv3Z8h0+8v3Z8h0+8v3Z8h0+8v3Z8h0+8v="
+      "hyprland.cachix.org-1:a7pgxzMz7+chdWEdtP1Bm+9pqVh+Ve5tA5Rb4S0R7aY="
+      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
     ];
   };
 
