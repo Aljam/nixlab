@@ -49,22 +49,3 @@ in
     '';
   };
 }
-EOF
-
-git add modules/features/postgres.nix
-git commit -m "fix(postgres.nix): custom pgadmin service with SERVER_ADDRESS"
-git push
-
-Then rebuild:
-
-bash
-nixos-rebuild switch --flake .#r820
-systemctl restart pgadmin.service
-journalctl -u pgadmin.service -n 20 --no-pager
-sleep 5
-ss -tlnp | grep 5050
-
-Artifacts
-16
-Sources
-119
