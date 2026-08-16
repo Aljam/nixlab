@@ -9,12 +9,11 @@ in
     enable = true;
   };
 
-  # Override systemd service to set bind address and port
+  # Manually set config via systemd ExecStartPre
   systemd.services.readarr = {
     serviceConfig = {
-      Environment = [
-        "BIND_ADDRESS=${bindAddr}"
-        "PORT=8787"
+      ExecStartPre = [
+        "${pkgs.coreutils}/bin/sed -i 's|<InstanceName>Readarr</InstanceName>|<InstanceName>Readarr</InstanceName>\\n  <BindAddress>${bindAddr}</BindAddress>|' /var/lib/readarr/config.xml || true"
       ];
     };
   };
