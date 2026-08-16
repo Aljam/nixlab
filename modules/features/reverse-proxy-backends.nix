@@ -10,9 +10,6 @@ in
   # Backend services firewall rules
   # Only allow HAProxy gateway to reach these ports
   networking.firewall = {
-    # Allow SSH from LAN (for initial setup)
-    allowedTCPPorts = [ 22 ];
-
     # nftables rules to allow proxy IP to reach backend services
     extraInputRules = ''
       # Allow proxy IP to reach backend services
