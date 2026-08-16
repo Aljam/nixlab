@@ -73,9 +73,11 @@
       enable = true;
       jails.sshd = {
         enabled = true;
-        filter = "sshd";
-        port = "ssh";
-        logpath = "%(sshd_log)s";
+        settings = {
+          filter = "sshd";
+          port = "ssh";
+          logpath = "%(sshd_log)s";
+        };
       };
     };
 
