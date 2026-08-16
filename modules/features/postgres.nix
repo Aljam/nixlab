@@ -6,7 +6,7 @@ let
 in
 {
   sops.secrets.pgadmin_password = {
-    owner = "pgadmin";
+    owner = "postgres";
   };
 
   services.postgresql = {
@@ -31,17 +31,43 @@ in
     ];
   };
 
-  services.pgadmin = {
-    enable = true;
-    initialEmail = "admin@derezzed.info";
-    initialPasswordFile = config.sops.secrets.pgadmin_password.path;
-    port = 5050;
+  # Disable the NixOS pgadmin module
+  services.pgadmin.enable = false;
+  
+  # Create wrapper script using pgadmin4's actual entry point
+  environment.etc."pgadmin4-wrapper.py".text = ''
+    #!/usr/bin/env python3
+    import os
+    os.environ['SERVER_ADDRESS'] = '${bindAddr}'
+    os.environ['PGADMIN_PORT'] = '5050'
+    
+    # Import pgadmin4's app and run it
+    from pgadmin4 import create_app
+    app = create_app()
+    app.run(host='${bindAddr}', port=5050)
+  '';
+  
+  systemd.services.pgadmin = {
+    description = "pgAdmin4";
+    after = [ "network.target" "postgresql.service" ];
+    wants = [ "network.target" "postgresql.service" ];
+    wantedBy = [ "multi-user.target" ];
+    
+    serviceConfig = {
+      Type = "simple";
+      User = "postgres";
+      Group = "postgres";
+      WorkingDirectory = "/var/lib/pgadmin";
+      ExecStart = "${pkgs.python3.withPackages (p: [p.pgadmin4])}/bin/python3 /etc/pgadmin4-wrapper.py";
+      Restart = "always";
+    };
+    
+    preStart = ''
+      mkdir -p /var/lib/pgadmin
+      chown postgres:postgres /var/lib/pgadmin
+    '';
   };
 
-  # pgadmin4 NixOS module doesn't support changing bind address
-  # Allow access via firewall - pgadmin binds to 127.0.0.1:5050
+  # Allow direct access
   networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 5050 ];
-  networking.firewall.extraInputRules = ''
-    ip saddr ${config.networking.fleet.proxy.ip} tcp dport 5050 accept
-  '';
 }
