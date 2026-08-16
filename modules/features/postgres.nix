@@ -29,8 +29,8 @@ in
     initialPasswordFile = config.sops.secrets."pgadmin_password".path;
   };
 
-  # Generate pgadmin config file
-  environment.etc."pgadmin4/config_local.py".text = ''
-    SERVER_ADDRESS = '${bindAddr}'
-  '';
+  # Override service to set SERVER_ADDRESS env var
+  systemd.services.pgadmin.serviceConfig.Environment = [
+    "SERVER_ADDRESS=${bindAddr}"
+  ];
 }
