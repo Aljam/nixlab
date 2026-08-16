@@ -7,6 +7,7 @@ in
 {
   services.readarr = {
     enable = true;
+    group = "media";
   };
 
   # Generate config.xml declaratively with correct port
