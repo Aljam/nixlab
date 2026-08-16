@@ -3,11 +3,10 @@
 let
   hostname = config.networking.hostName;
   bindAddr = config.networking.fleet.${hostname}.ip;
-  pgadminPkg = pkgs.pgadmin4;
 in
 {
   sops.secrets.pgadmin_password = {
-    owner = "postgres";
+    owner = "pgadmin";
   };
 
   services.postgresql = {
@@ -32,53 +31,16 @@ in
     ];
   };
 
-  # Disable the NixOS pgadmin module service
-  services.pgadmin.enable = false;
-  
-  # Create a wrapper script
-  environment.etc."pgadmin4-run.py".text = ''
-    import os
-    import sys
-    import glob
-    
-    # Set SERVER_ADDRESS before importing pgadmin4
-    os.environ['SERVER_ADDRESS'] = '${bindAddr}'
-    
-    # Find pgadmin4 site-packages
-    for path in glob.glob('/nix/store/*pgadmin*/lib/python*/site-packages'):
-        if path not in sys.path:
-            sys.path.insert(0, path)
-    
-    # Import and run
-    from pgadmin4 import pgAdmin4
-    pgAdmin4.run()
-  '';
-  
-  # Create custom pgadmin service
-  systemd.services.pgadmin = {
-    description = "pgAdmin4";
-    after = [ "network.target" "postgresql.service" ];
-    wants = [ "network.target" "postgresql.service" ];
-    wantedBy = [ "multi-user.target" ];
-    
-    serviceConfig = {
-      Type = "simple";
-      User = "postgres";
-      Group = "postgres";
-      WorkingDirectory = "/var/lib/pgadmin";
-      ExecStart = "${pkgs.python3}/bin/python3 /etc/pgadmin4-run.py";
-      Restart = "always";
-    };
-    
-    preStart = ''
-      mkdir -p /var/lib/pgadmin
-      chown postgres:postgres /var/lib/pgadmin
-    '';
+  services.pgadmin = {
+    enable = true;
+    initialEmail = "admin@derezzed.info";
+    initialPasswordFile = config.sops.secrets.pgadmin_password.path;
+    port = 5050;
   };
 
-  # Allow direct access to pgadmin on the network interface
+  # pgadmin4 NixOS module doesn't support changing bind address
+  # Allow access via firewall - pgadmin binds to 127.0.0.1:5050
   networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 5050 ];
   networking.firewall.extraInputRules = ''
     ip saddr ${config.networking.fleet.proxy.ip} tcp dport 5050 accept
-  '';
-}
+  '
