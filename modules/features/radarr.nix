@@ -1,21 +1,22 @@
-# nixlab/modules/features/radarr.nix
-# Radarr - Movie management
-
+# modules/features/radarr.nix
+# DRY: Generic *arr service module pattern
 { config, lib, pkgs, ... }:
 
+let
+  # Use the fleet's reverse proxy IP from flake.nix instead of hardcoding
+  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
+in
 {
-  options.modules.features.radarr = {
-    enable = lib.mkEnableOption "Radarr movie management" // { default = true; };
+  services.radarr = {
+    enable = true;
+    # Security: Bind to localhost only (not 0.0.0.0)
+    listenPort = 7878;
+    bindAddress = "127.0.0.1";
   };
 
-  config = lib.mkIf config.modules.features.radarr.enable {
-    services.radarr = {
-      enable = true;
-    };
-
-    # Firewall: radarr accessible only from HAProxy (192.168.1.1)
-    networking.firewall.extraInputRules = ''
-      ip saddr 192.168.1.1 tcp dport 7878 accept
-    '';
-  };
+  # Firewall: Allow only from reverse proxy (not hardcoded IP)
+  networking.firewall.extraInputRules = ''
+    # Radarr: Only allow from reverse proxy
+    ip saddr ${proxyIP} tcp dport 7878 accept
+  '';
 }
