@@ -89,7 +89,7 @@
             home-manager.useUserPackages = true;
             home-manager.backupFileExtension = "backup";
             home-manager.users.aljam = import ./users/aljam/home.nix;
-            home-manager.extraSpecialArgs = { inherit inputs pkgs-stable hostname domains subnets fleet; };
+            home-manager.extraSpecialArgs = { inherit inputs pkgs-stable hostname; };
           }
         ] ++ extraModules;
       };
