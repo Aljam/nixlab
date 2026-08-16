@@ -9,13 +9,17 @@ let
 in
 {
   options.networking = {
-    fleet = {
-      navi = { };
-      oryx = { };
-      r820 = { ip = "${subnets.lan}.4"; };
-      r730 = { ip = "${subnets.lan}.3"; zpool = "r730pool"; };
-      r730xd = { ip = "${subnets.lan}.2"; zpool = "mediapool"; };
-      proxy = { ip = "${subnets.lan}.1"; };
+    fleet = lib.mkOption {
+      type = lib.types.attrsOf lib.types.attrs;
+      default = {
+        navi = { };
+        oryx = { };
+        r820 = { ip = "${subnets.lan}.4"; };
+        r730 = { ip = "${subnets.lan}.3"; zpool = "r730pool"; };
+        r730xd = { ip = "${subnets.lan}.2"; zpool = "mediapool"; };
+        proxy = { ip = "${subnets.lan}.1"; };
+      };
+      description = "Fleet host definitions";
     };
 
     subnets = lib.mkOption {
