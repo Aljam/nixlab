@@ -11,10 +11,10 @@
   ];
   
   # Set servicesHostIP from fleet for HAProxy backend access
-  servicesHostIP = fleet.r820.ip;
+  servicesHostIP = config.networking.fleet.r820.ip;
   
   networking.interfaces.eno1.ipv4.addresses = [{
-    address = fleet.r820.ip;
+    address = config.networking.fleet.r820.ip;
     prefixLength = 24;
   }];
 
