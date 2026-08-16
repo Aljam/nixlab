@@ -13,11 +13,23 @@ in
   services.postgresql = {
     enable = true;
     # Security: Listen only on localhost by default
-    # For production, consider connection settings for specific applications
     settings = {
       listen_addresses = "localhost";
       port = 5432;
     };
+    
+    # Restore webscraper database and users
+    ensureDatabases = [ "webscraper" ];
+    ensureUsers = [
+      {
+        name = "webscraper";
+        ensureDBOwnership = true;
+      }
+      {
+        name = "aljam";
+        ensureDBOwnership = true;
+      }
+    ];
   };
 
   # pgAdmin: Bind to localhost only (not 0.0.0.0)
