@@ -38,8 +38,6 @@ in
   # pgAdmin: Bind to host IP for HAProxy access (or localhost if no host IP)
   services.pgadmin = {
     enable = true;
-    # Security: Bind to host IP (or localhost)
-    bindAddress = bindAddr;
     port = 5050;
     # Use sops for initial password
     initialEmail = "admin@localhost";
