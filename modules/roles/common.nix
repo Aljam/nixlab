@@ -17,6 +17,7 @@
 
   # Configuration
   config = {
+    system.stateVersion = lib.mkDefault "26.05";  
     # Fleet wiring
     networking.fleet = fleet;
     networking.subnets = subnets;
