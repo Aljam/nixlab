@@ -1,6 +1,12 @@
 # modules/roles/networking-options.nix
 # Custom networking options for fleet management
 { lib, ... }:
+let
+  subnets = {
+    lan = "192.168.1";
+    management = "127.0.0.0/8";
+  };
+in
 {
   options.networking = {
     fleet = {
@@ -14,10 +20,7 @@
 
     subnets = lib.mkOption {
       type = lib.types.attrs;
-      default = {
-        lan = "192.168.1";
-        management = "127.0.0.0/8";
-      };
+      default = subnets;
       description = "Subnet definitions for the fleet";
     };
 
