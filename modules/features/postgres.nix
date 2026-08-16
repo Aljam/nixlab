@@ -18,11 +18,15 @@ in
       port = 5432;
     };
     
-    # Restore webscraper database and users
-    ensureDatabases = [ "webscraper" ];
+    # Restore webscraper and grafana databases and users
+    ensureDatabases = [ "webscraper" "grafana" ];
     ensureUsers = [
       {
         name = "webscraper";
+        ensureDBOwnership = true;
+      }
+      {
+        name = "grafana";
         ensureDBOwnership = true;
       }
       {
@@ -39,7 +43,7 @@ in
     bindAddress = "127.0.0.1";
     port = 5050;
     # Use sops for initial password
-    initialEmail = config.users.users.${config.networking.hostName}.email or "admin@localhost";
+    initialEmail = "admin@localhost";
     initialPasswordFile = config.sops.secrets."pgadmin-password".path;
   };
 
