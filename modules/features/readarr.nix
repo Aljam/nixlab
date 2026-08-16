@@ -8,7 +8,7 @@ in
   services.readarr = {
     enable = true;
     settings = {
-      BindAddress = bindAddr;
+      listen = "${bindAddr}:8787";
     };
   };
 }
