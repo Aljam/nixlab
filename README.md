@@ -1,6 +1,6 @@
 # nixlab
 
-[![Flake checks](https://github.com/Aljam/nixlab/actions/workflows/flake-check.yml/badge.svg)](https://github.com/Aljam/nixlab/actions/workflows/flake-check.yml) [![License](https://img.shields.io/github/license/Aljam/nixlab)](LICENSE.md)
+[![CI](https://github.com/Aljam/nixlab/actions/workflows/ci.yml/badge.svg)](https://github.com/Aljam/nixlab/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/Aljam/nixlab?label=license)](LICENSE.md)
 
 Declarative NixOS infrastructure for a homelab.
 
