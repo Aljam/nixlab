@@ -70,9 +70,9 @@
     # Fail2ban for SSH
     services.fail2ban = {
       enable = true;
-      maxRetry = 3;
-      findTime = 600;
-      banTime = 3600;
+      maxretry = 3;
+      findtime = 600;
+      bantime = 3600;
       extraConfig = ''
         [sshd]
         enabled = true
