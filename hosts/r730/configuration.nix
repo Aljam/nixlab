@@ -13,6 +13,9 @@
 
   networking.hostId = "acccc16e"; # Required for ZFS
 
+  # Set servicesHostIP from fleet for HAProxy backend access
+  servicesHostIP = fleet.r730.ip;
+
   networking.interfaces.eno1.ipv4.addresses = [
     {
       address = fleet.r730.ip;
