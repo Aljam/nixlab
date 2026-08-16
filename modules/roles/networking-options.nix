@@ -17,6 +17,7 @@ let
     r730 = { ip = "${subnets.lan}.3"; zpool = "r730pool"; };
     r730xd = { ip = "${subnets.lan}.2"; zpool = "mediapool"; };
     proxy = { ip = "${subnets.lan}.1"; };
+    nas = { ip = "192.168.2.10"; };
   };
 in
 {
