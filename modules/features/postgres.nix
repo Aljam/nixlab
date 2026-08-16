@@ -3,8 +3,6 @@
 
 let
   bindAddr = config.servicesHostIP or "127.0.0.1";
-  pgadminPkg = pkgs.pgadmin4;
-  python3 = pkgs.python3;
 in
 {
   sops.secrets."pgadmin_password" = {};
@@ -24,28 +22,22 @@ in
     ];
   };
 
-  # Disable built-in pgadmin and use custom service
-  services.pgadmin.enable = false;
-  
-  systemd.services.pgadmin = {
-    description = "pgAdmin4";
-    after = [ "network.target" "postgresql.service" ];
-    wants = [ "network.target" "postgresql.service" ];
-    wantedBy = [ "multi-user.target" ];
-    
-    serviceConfig = {
-      Type = "simple";
-      User = "postgres";
-      Group = "postgres";
-      WorkingDirectory = "/var/lib/pgadmin";
-      Environment = "SERVER_ADDRESS=${bindAddr}";
-      ExecStart = "${python3}/bin/python3 ${pgadminPkg}/lib/python3.11/site-packages/pgadmin4/pgAdmin4.py";
-      Restart = "always";
-    };
-    
-    preStart = ''
-      mkdir -p /var/lib/pgadmin
-      chown postgres:postgres /var/lib/pgadmin
-    '';
+  services.pgadmin = {
+    enable = true;
+    port = 5050;
+    initialEmail = "admin@derezzed.info";
+    initialPasswordFile = config.sops.secrets."pgadmin_password".path;
   };
+
+  # Create config file that pgadmin4 reads
+  # pgadmin4 reads config_local.py from the same directory as config_system.py
+  environment.etc."pgadmin/config_local.py".text = ''
+    SERVER_ADDRESS = '${bindAddr}'
+  '';
+
+  # Make sure the service reloads the config
+  systemd.services.pgadmin.serviceConfig.ExecStart = lib.mkForce [
+    ""
+    "${pkgs.python3}/bin/python3 -c \"import os; os.environ['SERVER_ADDRESS']='${bindAddr}'; import pgadmin4; pgadmin4.run()\""
+  ];
 }
