@@ -35,11 +35,12 @@ in
     serviceConfig = {
       ExecStartPre = [
         # Fix directory permissions
-        "${pkgs.coreutils}/bin/chown -R readarr:media /var/lib/readarr",
-        "${pkgs.coreutils}/bin/chmod 775 /var/lib/readarr",
-        # Copy config
-        "${pkgs.coreutils}/bin/cp -f /etc/readarr/config.xml /var/lib/readarr/config.xml",
-        "${pkgs.coreutils}/bin/chown readarr:media /var/lib/readarr/config.xml",
+        "${pkgs.writeShellScript "readarr-perms" ''
+          chown -R readarr:media /var/lib/readarr
+          chmod 775 /var/lib/readarr
+          cp -f /etc/readarr/config.xml /var/lib/readarr/config.xml
+          chown readarr:media /var/lib/readarr/config.xml
+        ''}"
       ];
     };
   };
