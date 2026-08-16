@@ -75,6 +75,9 @@
     ];
   };
 
+  # Enable flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # System packages
   environment.systemPackages = [
     pkgs.git
