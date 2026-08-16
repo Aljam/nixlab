@@ -8,17 +8,28 @@ let
   bindAddr = config.servicesHostIP or "127.0.0.1";
 in
 {
-  # Torrent service configuration (qbittorrent/transmission/etc.)
-  # Security: Bind to host IP for HAProxy access (or localhost if no host IP)
-  # Configure your torrent service to use bindAddr
-  # Example for qbittorrent:
-  # services.qbittorrent = {
-  #   enable = true;
-  #   openFirewall = false;
-  #   port = 8080;
-  #   webui.address = bindAddr;
-  #   webui.port = 8080;
-  # };
+  # qBittorrent service
+  services.qbittorrent = {
+    enable = true;
+    openFirewall = false;
+    port = 8080;
+    webui = {
+      address = bindAddr;
+      port = 8080;
+    };
+  };
+
+  # qBittorrent Web UI (qbweb) - alternative web interface
+  services.qbittorrent-webui = {
+    enable = true;
+    openFirewall = false;
+    port = 8081;
+    address = bindAddr;
+  };
+
+  # BitTorrent port for clients
+  networking.firewall.allowedTCPPorts = [ 6881 ];
+  networking.firewall.allowedUDPPorts = [ 6881 ];
 
   # Firewall: Allow HAProxy gateway only
   # Managed centrally in reverse-proxy-backends.nix
