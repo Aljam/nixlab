@@ -1,21 +1,22 @@
-# nixlab/modules/features/sonarr.nix
-# Sonarr - TV show management
-
+# modules/features/sonarr.nix
+# DRY: Generic *arr service module pattern
 { config, lib, pkgs, ... }:
 
+let
+  # Use the fleet's reverse proxy IP from flake.nix instead of hardcoding
+  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
+in
 {
-  options.modules.features.sonarr = {
-    enable = lib.mkEnableOption "Sonarr TV show management" // { default = true; };
+  services.sonarr = {
+    enable = true;
+    # Security: Bind to localhost only (not 0.0.0.0)
+    listenPort = 8989;
+    bindAddress = "127.0.0.1";
   };
 
-  config = lib.mkIf config.modules.features.sonarr.enable {
-    services.sonarr = {
-      enable = true;
-    };
-
-    # Firewall: sonarr accessible only from HAProxy (192.168.1.1)
-    networking.firewall.extraInputRules = ''
-      ip saddr 192.168.1.1 tcp dport 8989 accept
-    '';
-  };
+  # Firewall: Allow only from reverse proxy (not hardcoded IP)
+  networking.firewall.extraInputRules = ''
+    # Sonarr: Only allow from reverse proxy
+    ip saddr ${proxyIP} tcp dport 8989 accept
+  '';
 }
