@@ -65,7 +65,7 @@
 
       mkHost = { hostname, extraModules ? [] }: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit inputs pkgs-stable hostname domains subnets fleet; };
+        specialArgs = { inherit inputs pkgs-stable hostname; };
 
         modules = [
           ./hosts/${hostname}/configuration.nix
