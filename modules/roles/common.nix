@@ -22,6 +22,25 @@
     networking.domain = config.networking.myDomain;
     
     nixpkgs.config.allowUnfree = true;
+  
+    # Locale and timezone
+    time.timeZone = lib.mkDefault "America/Toronto";  # Or your timezone
+    
+    i18n.defaultLocale = lib.mkDefault "en_CA.UTF-8";
+    i18n.extraLocaleSettings = {
+      LC_ADDRESS = "en_CA.UTF-8";
+      LC_IDENTIFICATION = "en_CA.UTF-8";
+      LC_MEASUREMENT = "en_CA.UTF-8";
+      LC_MONETARY = "en_CA.UTF-8";
+      LC_NAME = "en_CA.UTF-8";
+      LC_NUMERIC = "en_CA.UTF-8";
+      LC_PAPER = "en_CA.UTF-8";
+      LC_TELEPHONE = "en_CA.UTF-8";
+      LC_TIME = "en_CA.UTF-8";
+    };
+  
+    # Generate locales
+    i18n.supportedLocales = [ "en_CA.UTF-8/UTF-8" "en_US.UTF-8/UTF-8" ];
 
     # Enable flakes
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
