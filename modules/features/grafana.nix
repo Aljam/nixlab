@@ -1,30 +1,37 @@
 # modules/features/grafana.nix
-# Security: Bind to localhost only - reverse proxy provides external access
+# Security: Grafana should NOT be exposed to LAN
+# Only accessible via HAProxy gateway (192.168.1.1)
 { config, lib, pkgs, ... }:
 
+let
+  # Use host IP if set, otherwise localhost for security
+  bindAddr = config.servicesHostIP or "127.0.0.1";
+in
 {
+  # Grafana configuration
   services.grafana = {
     enable = true;
     settings = {
       server = {
-        # Security: Bind to localhost only (not 0.0.0.0)
-        http_addr = "127.0.0.1";
+        # Security: Bind to host IP for HAProxy access (or localhost if no host IP)
+        http_addr = bindAddr;
         http_port = 3000;
         domain = "grafana.${config.networking.domain}";
-        root_url = "https://grafana.${config.networking.domain}";
+        root_url = "https://grafana.${config.networking.domain}/";
       };
       security = {
-        # Use sops secrets from secrets.yaml
-        admin_password = config.sops.secrets."grafana-admin-password".path;
-        secret_key = config.sops.secrets."grafana-secret-key".path;
-      };
-      users = {
-        allow_sign_up = false;
-        allow_org_create = false;
+        admin_user = "aljam";
+        # Use sops for initial password
+        admin_password = "$__file{${config.sops.secrets."grafana-admin-password".path}}";
+        secret_key = "$__file{${config.sops.secrets."grafana-secret-key".path}}";
       };
     };
   };
 
-  # Firewall: No direct LAN access needed - reverse proxy only
-  # networking.firewall.allowedTCPPorts removed - handled by reverse-proxy-backends
+  # Declare secrets
+  sops.secrets."grafana-admin-password" = {};
+  sops.secrets."grafana-secret-key" = {};
+
+  # Firewall: Allow HAProxy gateway only
+  # Managed centrally in reverse-proxy-backends.nix
 }
