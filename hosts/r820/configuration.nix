@@ -1,25 +1,21 @@
-# hosts/r820/configuration.nix
-# r820 - Tertiary server
-{ config, lib, pkgs, fleet, ... }:
+{ config, pkgs, lib, fleet, ... }:
+
 {
   imports = [
-    ../../modules/roles/common.nix
-    ../../modules/roles/server.nix
-    ../../modules/features/monitoring.nix
+    ./hardware-configuration.nix
+    ../../modules/hardware/dell-poweredge.nix
+    ../../modules/roles/server-core.nix 
+    ../../modules/features/libvirt.nix
+    ../../modules/features/postgres.nix
+    #../../modules/roles/mail-node.nix
   ];
+  
+  networking.interfaces.eno1.ipv4.addresses = [{
+    address = fleet.r820.ip;
+    prefixLength = 24;
+  }];
 
-  # Set servicesHostIP from fleet for HAProxy backend access
-  servicesHostIP = fleet.r820.ip;
-
-  # Host-specific configuration
-  networking.hostName = "r820";
-
-  # Timezone
-  time.timeZone = "America/New_York";
-
-  # Locale
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  # Console
-  console.keyMap = "us";
+  # Remote builder configuration
+  nix.settings.trusted-users = [ "root" "aljam" ];
+  nix.settings.allowed-users = [ "@users" ];
 }
