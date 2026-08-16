@@ -21,7 +21,7 @@
     };
 
     domain = lib.mkOption {
-      type = lib.types.null Or lib.types.str;
+      type = lib.types.str;
       default = domain.derezzed;
       description = "Primary domain for the host";
       derezzed    = "derezzed.info";
