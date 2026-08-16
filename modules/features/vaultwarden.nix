@@ -9,7 +9,6 @@ in
 {
   # Vaultwarden secrets
   sops.secrets."vaultwarden-admin-token" = {};
-  sops.secrets."vaultwarden-secret-key" = {};
 
   services.vaultwarden = {
     enable = true;
