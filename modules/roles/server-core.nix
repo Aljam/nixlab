@@ -9,15 +9,14 @@
 }:
 
 let
-  # Use subnets from flake.nix for gateway/nameservers
-  lanSubnet = config.networking.subnets.lan or "192.168.1.0/24";
-  gateway = config.networking.fleet.gateway or "192.168.1.1";
+  # Use proxy IP from fleet config as gateway
+  gateway = config.networking.fleet.proxy.ip or "192.168.1.1";
 in
 {
   # Disable NetworkManager on servers (use systemd-networkd)
   networking.networkmanager.enable = false;
 
-  # Disable IPv6 (not used in this setup)
+  # Disable IPv6
   networking.useIPv6 = false;
 
   # Use nftables for firewall
