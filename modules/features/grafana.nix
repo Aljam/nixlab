@@ -11,8 +11,8 @@ in
       server = {
         http_addr = bindAddr;
         http_port = 3000;
-        domain = "grafana.${config.networking.domain}";
-        root_url = "https://grafana.${config.networking.domain}/";
+        domain = "grafana.${config.networking.domains.primary}";
+        root_url = "https://grafana.${config.networking.domains.primary}/";
       };
       security = {
         admin_user = "aljam";
