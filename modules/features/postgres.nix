@@ -13,7 +13,7 @@ in
     enable = true;
     # Security: Listen on host IP (or localhost) only
     settings = {
-      listen_addresses = bindAddr;
+      listen_addresses = lib.mkForce bindAddr;
       port = 5432;
     };
     
