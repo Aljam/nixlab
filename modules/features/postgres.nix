@@ -22,15 +22,28 @@ in
     ];
   };
 
-  services.pgadmin = {
-    enable = true;
-    port = 5050;
-    initialEmail = "admin@derezzed.info";
-    initialPasswordFile = config.sops.secrets."pgadmin_password".path;
+  # Disable built-in pgadmin, use custom service
+  services.pgadmin.enable = false;
+  
+  systemd.services.pgadmin = {
+    description = "pgAdmin4";
+    after = [ "network.target" "postgresql.service" ];
+    wants = [ "network.target" "postgresql.service" ];
+    wantedBy = [ "multi-user.target" ];
+    
+    serviceConfig = {
+      Type = "simple";
+      User = "postgres";
+      Group = "postgres";
+      WorkingDirectory = "/var/lib/pgadmin";
+      Environment = "SERVER_ADDRESS=${bindAddr}";
+      ExecStart = "${pkgs.python3}/bin/python3 ${pkgs.pgadmin4}/lib/python3.11/site-packages/pgadmin4/pgAdmin4.py";
+      Restart = "always";
+    };
+    
+    preStart = ''
+      mkdir -p /var/lib/pgadmin
+      chown postgres:postgres /var/lib/pgadmin
+    '';
   };
-
-  # Override service to set SERVER_ADDRESS env var
-  systemd.services.pgadmin.serviceConfig.Environment = [
-    "SERVER_ADDRESS=${bindAddr}"
-  ];
 }
