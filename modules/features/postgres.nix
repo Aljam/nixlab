@@ -1,12 +1,8 @@
 { config, pkgs, lib, ... }:
 
-let
-  hostname = config.networking.hostName;
-  bindAddr = config.networking.fleet.${hostname}.ip;
-in
 {
   sops.secrets.pgadmin_password = {
-    owner = "postgres";
+    owner = "pgadmin";
   };
 
   services.postgresql = {
@@ -31,7 +27,6 @@ in
     ];
   };
 
-  # Use the NixOS module but override the service completely
   services.pgadmin = {
     enable = true;
     initialEmail = "admin@derezzed.info";
@@ -39,13 +34,6 @@ in
     port = 5050;
   };
 
-  # Override to bind to network - use the module's own wrapper but with env
-  systemd.services.pgadmin.serviceConfig = {
-    Environment = [
-      "SERVER_ADDRESS=${bindAddr}"
-    ];
-  };
-
-  # Allow direct access
+  # Allow haproxy (on pfSense) to reach pgadmin
   networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 5050 ];
 }
