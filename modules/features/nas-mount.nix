@@ -4,7 +4,7 @@
 {
   # File systems
   fileSystems = {
-    "/mnt/nas" = {
+    "/mnt/share" = {
       device = "//${config.networking.fleet.nas.ip}/mnt/user";
       fsType = "cifs";
       options = [
