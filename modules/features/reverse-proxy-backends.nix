@@ -13,29 +13,10 @@ in
     # Allow SSH from LAN (for initial setup)
     allowedTCPPorts = [ 22 ];
 
-    # Allow proxy IP to reach backend services
-    # Format: { port = <port>; addr = "<proxyIP>"; }
-    allowProxyTo = [
-      # Grafana
-      { port = 3000; addr = proxyIP; }
-      # Prometheus
-      { port = 9090; addr = proxyIP; }
-      # Alertmanager
-      { port = 9093; addr = proxyIP; }
-      # Vaultwarden (updated to 8222)
-      { port = 8222; addr = proxyIP; }
-      # Sonarr
-      { port = 8989; addr = proxyIP; }
-      # Radarr
-      { port = 7878; addr = proxyIP; }
-      # Prowlarr
-      { port = 9696; addr = proxyIP; }
-      # qBittorrent WebUI
-      { port = 8080; addr = proxyIP; }
-      # qBittorrent WebUI (qbweb)
-      { port = 8081; addr = proxyIP; }
-      # Syncthing
-      { port = 8384; addr = proxyIP; }
-    ];
+    # nftables rules to allow proxy IP to reach backend services
+    extraInputRules = ''
+      # Allow proxy IP to reach backend services
+      ip saddr ${proxyIP} tcp dport { 3000, 9090, 9093, 8222, 8989, 7878, 9696, 8080, 8081, 8384 } accept comment "HAProxy backend access"
+    '';
   };
 }
