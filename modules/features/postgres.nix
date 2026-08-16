@@ -18,6 +18,8 @@ in
     };
   };
 
+  config.sops.secrets."pgadmin_password" = {};
+
   services.pgadmin = {
     enable = true;
     port = 5050;
