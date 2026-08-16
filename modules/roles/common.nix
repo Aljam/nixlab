@@ -11,6 +11,7 @@
 
   imports = [
     # Hardware-specific imports handled by host configurations
+    ../features/boot.nix
   ];
 
   # Fleet wiring
