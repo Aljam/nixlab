@@ -2,11 +2,16 @@
 # Common configuration for all machines
 { config, lib, pkgs, hostname, fleet, domains, subnets, ... }:
 {
-  # Global options
+{
   options.servicesHostIP = lib.mkOption {
     type = lib.types.str;
-    default = "127.0.0.1";
-    description = "IP address that backend services bind to for HAProxy access";
+    # Prefer the host’s fleet IP; fall back to localhost for desktop machines
+    default = fleet.${hostname}.ip or "127.0.0.1";
+    description = ''
+      IP address that backend services (pgAdmin, Grafana, Arr apps, …)
+      bind to so HAProxy can reach them.  Derived automatically from
+      fleet.<hostname>.ip when present.
+    '';
   };
 
   imports = [
