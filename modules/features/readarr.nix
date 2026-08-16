@@ -9,11 +9,11 @@ in
     enable = true;
   };
 
-  # Manually set config via systemd ExecStartPre
+  # Inject BindAddress into config.xml on start
   systemd.services.readarr = {
     serviceConfig = {
       ExecStartPre = [
-        "${pkgs.coreutils}/bin/sed -i 's|<InstanceName>Readarr</InstanceName>|<InstanceName>Readarr</InstanceName>\\n  <BindAddress>${bindAddr}</BindAddress>|' /var/lib/readarr/config.xml || true"
+        "${pkgs.gnused}/bin/sed -i 's|</Config>|  <BindAddress>${bindAddr}</BindAddress>\\n</Config>|' /var/lib/readarr/config.xml || true"
       ];
     };
   };
