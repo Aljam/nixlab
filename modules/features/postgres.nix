@@ -38,21 +38,7 @@ in
     port = 5050;
   };
 
-  # Override pgadmin service to bind to network interface
-  systemd.services.pgadmin = {
-    serviceConfig = {
-      ExecStart = lib.mkForce [
-        ""
-        "${pkgs.python3}/bin/python3 -c \"import os; os.environ['SERVER_ADDRESS']='${bindAddr}'; exec(open('${pkgs.pgadmin4}/lib/python3.11/site-packages/pgadmin4/pgAdmin4.py').read())\""
-      ];
-      Environment = [
-        "SERVER_ADDRESS=${bindAddr}"
-        "PYTHONPATH=${pkgs.pgadmin4}/lib/python3.11/site-packages"
-      ];
-    };
-  };
-
-  # Allow direct access to pgadmin
+  # Allow direct access to pgadmin on the network interface
   networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 5050 ];
   networking.firewall.extraInputRules = ''
     ip saddr ${config.networking.fleet.proxy.ip} tcp dport 5050 accept
