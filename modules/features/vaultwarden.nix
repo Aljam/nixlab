@@ -11,6 +11,7 @@ in
   # Vaultwarden secrets
   sops.secrets."vaultwarden-admin-token" = {};
   sops.secrets."vaultwarden-secret-key" = {};
+  sops.secrets."vaultwarden-env" = {};
 
   services.vaultwarden = {
     enable = true;
@@ -18,14 +19,14 @@ in
     config = {
       rocketAddress = bindAddr;
       rocketPort = 8222;
-      domain = "https://vault.192.168.1.1";
+      domain = "https://vault.${config.networking.domain}";
       signupsAllowed = false;
       adminTokenFile = config.sops.secrets."vaultwarden-admin-token".path;
       adminRateLimitSeconds = 300;
       adminRateLimitMaxBurst = 10;
     };
-    # Use SOPS secret for ADMIN_TOKEN
-    environmentFile = config.sops.secrets."vaultwarden-admin-token".path;
+    # Use SOPS secret for environment variables (ADMIN_TOKEN, etc.)
+    environmentFile = config.sops.secrets."vaultwarden-env".path;
   };
 
   # Firewall: Allow HAProxy gateway only
