@@ -36,10 +36,9 @@ in
     initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets.pgadmin_password.path;
     port = 5050;
-    # This sets DEFAULT_SERVER in config_system.py
-    extraConfig = ''
-      DEFAULT_SERVER = '${bindAddr}'
-    '';
+    settings = {
+      DEFAULT_SERVER = bindAddr;
+    };
   };
 
   networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 5050 ];
