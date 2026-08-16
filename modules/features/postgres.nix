@@ -3,7 +3,6 @@
 let
   hostname = config.networking.hostName;
   bindAddr = config.networking.fleet.${hostname}.ip;
-  pgadminPkg = pkgs.pgadmin4;
 in
 {
   sops.secrets.pgadmin_password = {
@@ -32,49 +31,19 @@ in
     ];
   };
 
-  # Disable the NixOS pgadmin module
-  services.pgadmin.enable = false;
-  
-  # Create wrapper script
-  environment.etc."pgadmin4-wrapper.py".text = ''
-    #!/usr/bin/env python3
-    import os
-    import sys
-    
-    # Set SERVER_ADDRESS before importing
-    os.environ['SERVER_ADDRESS'] = '${bindAddr}'
-    
-    # Find and add pgadmin4 to path
-    import glob
-    for path in glob.glob('/nix/store/*pgadmin*/lib/python*/site-packages'):
-        if path not in sys.path:
-            sys.path.insert(0, path)
-    
-    # Import pgadmin4's app and run it
-    from pgadmin4 import create_app
-    app = create_app()
-    app.run(host='${bindAddr}', port=5050)
-  '';
-  
-  systemd.services.pgadmin = {
-    description = "pgAdmin4";
-    after = [ "network.target" "postgresql.service" ];
-    wants = [ "network.target" "postgresql.service" ];
-    wantedBy = [ "multi-user.target" ];
-    
-    serviceConfig = {
-      Type = "simple";
-      User = "postgres";
-      Group = "postgres";
-      WorkingDirectory = "/var/lib/pgadmin";
-      ExecStart = "${pkgs.python3}/bin/python3 /etc/pgadmin4-wrapper.py";
-      Restart = "always";
-    };
-    
-    preStart = ''
-      mkdir -p /var/lib/pgadmin
-      chown postgres:postgres /var/lib/pgadmin
-    '';
+  # Use the NixOS module but override the service completely
+  services.pgadmin = {
+    enable = true;
+    initialEmail = "admin@derezzed.info";
+    initialPasswordFile = config.sops.secrets.pgadmin_password.path;
+    port = 5050;
+  };
+
+  # Override to bind to network - use the module's own wrapper but with env
+  systemd.services.pgadmin.serviceConfig = {
+    Environment = [
+      "SERVER_ADDRESS=${bindAddr}"
+    ];
   };
 
   # Allow direct access
