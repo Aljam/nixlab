@@ -8,7 +8,7 @@ let
   bindAddr = config.servicesHostIP or "127.0.0.1";
 in
 {
-  sops.secrets."pgadmin-password" = {};
+  sops.secrets."pgadmin_password" = {};
   
   # PostgreSQL: Bind to host IP for HAProxy access (or localhost if no host IP)
   services.postgresql = {
@@ -43,7 +43,7 @@ in
     port = 5050;
     # Use sops for initial password
     initialEmail = "admin@derezzed.info";
-    initialPasswordFile = config.sops.secrets."pgadmin-password".path;
+    initialPasswordFile = config.sops.secrets."pgadmin_password".path;
   };
 
   # Firewall rules managed centrally in reverse-proxy-backends.nix
