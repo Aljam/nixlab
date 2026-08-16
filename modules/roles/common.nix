@@ -17,10 +17,10 @@
   networking.hostName = hostname;
 
   # Set your time zone
-  time.timeZone = "America/New_York";
+  time.timeZone = "America/Toronto";
 
   # Select internationalisation properties
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_CA.UTF-8";
 
   # Configure console keymap
   console.keyMap = "us";
@@ -37,6 +37,9 @@
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
+    # Cachix substituters
+    extraSubstituters = [ "https://aljam.cachix.org" ];
+    extraTrustedPublicKeys = [ "aljam.cachix.org-1:your-key-here" ];
   };
 
   # Allow unfree packages
@@ -50,7 +53,7 @@
   };
 
   # Disable sudo timeout
-  security.sudo.wheelNeedsPassword = false;
+  security.sudo.wheelNeedsPassword = true;
 
   # Define a user account
   users.users.aljam = {
@@ -58,7 +61,11 @@
     description = "Aljam";
     extraGroups = [ "wheel" "networkmanager" ];
     shell = pkgs.zsh;
+    # Password handled by users/aljam/nixos.nix
   };
+
+  # Users should not be mutable
+  users.mutableUsers = false;
 
   # List packages installed in system profile
   environment.systemPackages = with pkgs; [
@@ -125,14 +132,14 @@
   sops = {
     defaultSopsFile = ../../secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
-    age.keyFile = "/etc/sops-nix/key.txt";
+    # Use host SSH key for decryption
     secrets = {
       "ssh-host-key".owner = "root";
       "ssh-user-key".owner = "aljam";
     };
   };
 
-  # SSH configuration
+  # SSH configuration - hardened
   services.openssh = {
     enable = true;
     settings = {
