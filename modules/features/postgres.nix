@@ -22,6 +22,7 @@ in
     ];
   };
 
+  # Use the NixOS module for setup but override the service completely
   services.pgadmin = {
     enable = true;
     port = 5050;
@@ -29,18 +30,20 @@ in
     initialPasswordFile = config.sops.secrets."pgadmin_password".path;
   };
 
-  # Create config file
+  # Create a wrapper script that sets SERVER_ADDRESS properly
   environment.etc."pgadmin/config_local.py".text = ''
     SERVER_ADDRESS = '${bindAddr}'
   '';
 
-  # Override the service to use the wrapper from the pgadmin package
+  # The pgadmin4 module uses a wrapper that imports pgadmin4 and runs it
+  # We need to patch the ExecStart to set SERVER_ADDRESS before import
   systemd.services.pgadmin.serviceConfig.ExecStart = lib.mkForce [
     ""
-    "${pkgs.pgadmin4}/bin/pgadmin4"
+    "${pkgs.python3}/bin/python3 -c \"import os; os.environ['SERVER_ADDRESS']='${bindAddr}'; from pgadmin4 import pgAdmin4; pgAdmin4.run()\""
   ];
   
+  # Set PYTHONPATH to include pgadmin4
   systemd.services.pgadmin.serviceConfig.Environment = [
-    "SERVER_ADDRESS=${bindAddr}"
+    "PYTHONPATH=${pkgs.pgadmin4}/lib/python3.11/site-packages"
   ];
 }
