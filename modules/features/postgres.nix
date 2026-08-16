@@ -27,9 +27,10 @@ in
     port = 5050;
     initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets."pgadmin_password".path;
-    # Use configText for pgadmin4 config
-    configText = ''
-      SERVER_ADDRESS = '${bindAddr}'
-    '';
   };
+
+  # Generate pgadmin config file
+  environment.etc."pgadmin4/config_local.py".text = ''
+    SERVER_ADDRESS = '${bindAddr}'
+  '';
 }
