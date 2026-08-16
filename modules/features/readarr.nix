@@ -7,12 +7,13 @@ in
 {
   services.readarr = {
     enable = true;
-    # Bind to host IP for HAProxy
-    settings = {
-      Server = {
-        BindAddress = bindAddr;
-        Port = 8787;
-      };
+    port = 8787;
+  };
+
+  # Set bind address via systemd environment
+  systemd.services.readarr = {
+    serviceConfig = {
+      Environment = "BIND_ADDRESS=${bindAddr}";
     };
   };
 }
