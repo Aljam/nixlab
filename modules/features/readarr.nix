@@ -13,7 +13,8 @@ in
   environment.etc."readarr/config.xml".text = ''
     <Config>
       <BindAddress>${bindAddr}</BindAddress>
-      <SslPort>8787</SslPort>
+      <Port>8787</Port>
+      <SslPort>6868</SslPort>
       <EnableSsl>False</EnableSsl>
       <LaunchBrowser>True</LaunchBrowser>
       <ApiKey>71a5fa0bb47d49c88c263cc4954f3b88</ApiKey>
