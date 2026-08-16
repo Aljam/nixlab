@@ -6,6 +6,8 @@ let
   bindIP  = config.servicesHostIP or "0.0.0.0";
 in
 {
+  sops.secrets."pgadmin_password" = {};
+  
   services.postgresql = {
     enable = true;
     settings = {
@@ -19,7 +21,7 @@ in
     port = 5050;
     openFirewall = false;               # do NOT open to the world
     initialEmail = "admin@derezzed.info";
-    initialPasswordFile = config.sops.secrets."pgadmin-password".path;
+    initialPasswordFile = config.sops.secrets."pgadmin_password".path;
 
     settings = {
       DEFAULT_SERVER = bindIP;          # ← this is the real bind address
