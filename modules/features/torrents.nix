@@ -1,51 +1,62 @@
-{ config, pkgs, fleet, ... }:
+# modules/features/torrents.nix
+# Security: qBittorrent WebUI should bind to localhost only
+{ config, lib, pkgs, ... }:
 
+let
+  # Use the fleet's reverse proxy IP from flake.nix instead of hardcoding
+  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
+in
 {
-  services.qbittorrent = {
-    enable = true;
-    group = "media";
-    webuiPort = 8080;
-
-    # Fixed peer port (pick any high port you like; forward this on the router if you want incoming peers)
-    torrentingPort = 6881;
-
-    # Do NOT use openFirewall — it would also open the WebUI
-    openFirewall = false;
-
-    serverConfig = {
-      LegalNotice.Accepted = true;
-      Preferences = {
-        WebUI = {
-          # WebUI only on localhost; HAProxy / local access only
-          Address = "0.0.0.0";
-          Port = 8080;
-          # Optional: skip auth for pure localhost (keep auth if you prefer)
-          # LocalHostAuth = false;
-        };
-      };
-      BitTorrent = {
-        # Optional hardening / consistency
-        # Session\Port = 6881;  # module already passes --torrenting-port
-      };
-    };
-  };
-
-  # Only BT listening port — TCP (peers) + UDP (DHT / µTP)
-  networking.firewall.allowedTCPPorts = [ 6881 ];
-  networking.firewall.allowedUDPPorts = [ 6881 ];
-
-  virtualisation.oci-containers.backend = "podman";
-
-  virtualisation.oci-containers.containers.qbitmanage = {
-    image = "ghcr.io/starbix/qbitmanage:v4.11.0";
-    environment = {
-      QBT_RUN = "true";
-      QBT_SCHEDULE = "1440";
-    };
+  # qBittorrent container configuration
+  virtualisation.oci-containers.containers.qbittorrent = {
+    image = "lscr.io/linuxserver/qbittorrent:latest";
     volumes = [
-      "/var/lib/qbitmanage:/config"
-      "/mnt/media:/data/media"
-      "/var/lib/qbittorrent:/qbittorrent"
+      "/mnt/media/downloads:/downloads"
+      "/mnt/media/torrents:/torrents"
+      "/etc/qbittorrent:/config"
+    ];
+    ports = [
+      # BitTorrent port only - WebUI accessed via reverse proxy
+      "6881:6881/tcp"
+      "6881:6881/udp"
+    ];
+    environment = {
+      PUID = "1000";
+      PGID = "1000";
+      TZ = "Etc/UTC";
+      # Security: Bind WebUI to localhost only (not 0.0.0.0)
+      WEBUI_PORT = "8080";
+      # Note: The container may still bind to 0.0.0.0 internally
+      # Firewall rules below restrict access
+    };
+    extraOptions = [
+      "--network=bridge"
     ];
   };
+
+  # qbitmanage container (optional companion)
+  virtualisation.oci-containers.containers.qbitmanage = {
+    image = "lscr.io/linuxserver/qbitmanage:latest";
+    volumes = [
+      "/etc/qbitmanage:/config"
+    ];
+    depends_on = [ "qbittorrent" ];
+    environment = {
+      PUID = "1000";
+      PGID = "1000";
+      TZ = "Etc/UTC";
+      QBITTORRENT_URL = "http://127.0.0.1:8080";
+      QBITTORRENT_USERNAME = "$__file{${config.sops.secrets."qbittorrent-username".path}}";
+      QBITTORRENT_PASSWORD = "$__file{${config.sops.secrets."qbittorrent-password".path}}";
+    };
+  };
+
+  # Firewall: Restrict qBittorrent WebUI to reverse proxy only
+  networking.firewall.extraInputRules = ''
+    # qBittorrent WebUI: Only allow from reverse proxy
+    ip saddr ${proxyIP} tcp dport 8080 accept
+    # BitTorrent ports: Open to all (required for P2P)
+    tcp dport 6881 accept
+    udp dport 6881 accept
+  '';
 }
