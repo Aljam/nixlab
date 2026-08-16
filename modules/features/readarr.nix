@@ -7,13 +7,15 @@ in
 {
   services.readarr = {
     enable = true;
-    port = 8787;
   };
 
-  # Set bind address via systemd environment
+  # Override systemd service to set bind address and port
   systemd.services.readarr = {
     serviceConfig = {
-      Environment = "BIND_ADDRESS=${bindAddr}";
+      Environment = [
+        "BIND_ADDRESS=${bindAddr}"
+        "PORT=6868"
+      ];
     };
   };
 }
