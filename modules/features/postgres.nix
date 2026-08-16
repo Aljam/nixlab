@@ -40,6 +40,4 @@ in
       DEFAULT_SERVER = bindAddr;
     };
   };
-
-  networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 5050 ];
 }
