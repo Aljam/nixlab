@@ -3,6 +3,7 @@
 
 let
   bindAddr = config.servicesHostIP or "127.0.0.1";
+  pgadminPkg = pkgs.pgadmin4;
 in
 {
   sops.secrets."pgadmin_password" = {};
@@ -22,7 +23,7 @@ in
     ];
   };
 
-  # Disable built-in pgadmin, use custom service
+  # Disable built-in pgadmin
   services.pgadmin.enable = false;
   
   systemd.services.pgadmin = {
@@ -37,7 +38,7 @@ in
       Group = "postgres";
       WorkingDirectory = "/var/lib/pgadmin";
       Environment = "SERVER_ADDRESS=${bindAddr}";
-      ExecStart = "${pkgs.python3}/bin/python3 ${pkgs.pgadmin4}/lib/python3.11/site-packages/pgadmin4/pgAdmin4.py";
+      ExecStart = "${pgadminPkg}/bin/pgadmin4";
       Restart = "always";
     };
     
