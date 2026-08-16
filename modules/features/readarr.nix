@@ -9,7 +9,7 @@ in
     enable = true;
   };
 
-  # Generate config.xml declaratively
+  # Generate config.xml declaratively with correct port
   environment.etc."readarr/config.xml".text = ''
     <Config>
       <BindAddress>${bindAddr}</BindAddress>
@@ -29,12 +29,41 @@ in
     </Config>
   '';
 
-  # Copy generated config to data dir on activation
+  # Copy config on activation
   systemd.services.readarr = {
     serviceConfig = {
       ExecStartPre = [
         "${pkgs.coreutils}/bin/cp -f /etc/readarr/config.xml /var/lib/readarr/config.xml"
       ];
     };
+  };
+
+  # Oneshot to fix corrupt database (run manually if needed)
+  systemd.services.readarr-fix-db = {
+    description = "Fix Readarr corrupt database";
+    serviceConfig = {
+      Type = "oneshot";
+      User = "root";
+    };
+    script = ''
+      DB_DIR="/var/lib/readarr"
+      if [ -f "$DB_DIR/readarr.db" ]; then
+        # Check if db is corrupt by trying to open it
+        if ! ${pkgs.sqlite}/bin/sqlite3 "$DB_DIR/readarr.db" "SELECT 1;" 2>/dev/null; then
+          echo "Database corrupt, backing up..."
+          mv "$DB_DIR/readarr.db" "$DB_DIR/readarr.db.corrupt"
+          mv "$DB_DIR/readarr.db-shm" "$DB_DIR/readarr.db-shm.corrupt" 2>/dev/null || true
+          mv "$DB_DIR/readarr.db-wal" "$DB_DIR/readarr.db-wal.corrupt" 2>/dev/null || true
+          # Restore from backup if exists
+          if [ -f "$DB_DIR/Backups/readarr_backup_*.db" ]; then
+            cp "$DB_DIR/Backups/readarr_backup_"*.db "$DB_DIR/readarr.db"
+            echo "Restored from backup"
+          else
+            echo "No backup, will create fresh db on next start"
+          fi
+          chown readarr:readarr "$DB_DIR"/*.db* 2>/dev/null || true
+        fi
+      fi
+    '';
   };
 }
