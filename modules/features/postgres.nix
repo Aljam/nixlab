@@ -1,20 +1,19 @@
 # modules/features/postgres.nix
 # Security: PostgreSQL and pgAdmin should NOT be exposed to LAN
-# Only accessible via localhost or management subnet
+# Only accessible via HAProxy gateway (192.168.1.1)
 { config, lib, pkgs, ... }:
 
 let
-  # Use the fleet's reverse proxy IP from flake.nix instead of hardcoding
-  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
-  managementSubnet = config.networking.subnets.management or [ "127.0.0.0/8" ];
+  # Use host IP if set, otherwise localhost for security
+  bindAddr = config.servicesHostIP or "127.0.0.1";
 in
 {
-  # PostgreSQL: Bind to localhost only
+  # PostgreSQL: Bind to host IP for HAProxy access (or localhost if no host IP)
   services.postgresql = {
     enable = true;
-    # Security: Listen only on localhost by default
+    # Security: Listen on host IP (or localhost) only
     settings = {
-      listen_addresses = "localhost";
+      listen_addresses = bindAddr;
       port = 5432;
     };
     
@@ -36,11 +35,11 @@ in
     ];
   };
 
-  # pgAdmin: Bind to localhost only (not 0.0.0.0)
+  # pgAdmin: Bind to host IP for HAProxy access (or localhost if no host IP)
   services.pgadmin = {
     enable = true;
-    # Security: Bind to localhost only
-    bindAddress = "127.0.0.1";
+    # Security: Bind to host IP (or localhost)
+    bindAddress = bindAddr;
     port = 5050;
     # Use sops for initial password
     initialEmail = "admin@localhost";
