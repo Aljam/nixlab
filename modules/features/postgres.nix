@@ -27,15 +27,9 @@ in
     port = 5050;
     initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets."pgadmin_password".path;
-  };
-
-  # Override the service to bind to host IP
-  systemd.services.pgadmin = {
-    serviceConfig = {
-      ExecStart = lib.mkForce [
-        ""
-        "${pkgs.python3}/bin/python3 -c \"import os; os.environ['SERVER_ADDRESS']='${bindAddr}'; exec(open('${pkgs.pgadmin4}/lib/python3.11/site-packages/pgadmin4/pgAdmin4.py').read())\""
-      ];
-    };
+    # Use configText for pgadmin4 config
+    configText = ''
+      SERVER_ADDRESS = '${bindAddr}'
+    '';
   };
 }
