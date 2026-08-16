@@ -15,9 +15,9 @@
   ];
 
   # Fleet wiring
-  networking.fleet = fleet.${hostname};
+  networking.fleet = fleet;
   networking.subnets = subnets;
-  networking.domain = domains.${hostname};
+  networking.domain = domains.primary;
   networking.hostName = hostname;
 
   # Enable flakes
@@ -54,7 +54,7 @@
       PermitRootLogin = "no";
       KbdInteractiveAuthentication = false;
       UsePAM = false;
-      AllowUsers = null;  # Managed by fail2ban
+      AllowUsers = [ "aljam" ];
       AllowGroups = [ "wheel" ];
     };
     # Only allow key-based auth for wheel
