@@ -1,16 +1,22 @@
-# nixlab/modules/features/readarr.nix
-# Readarr - Book management
-
+# modules/features/readarr.nix
+# DRY: Generic *arr service module pattern
 { config, lib, pkgs, ... }:
 
+let
+  # Use the fleet's reverse proxy IP from flake.nix instead of hardcoding
+  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
+in
 {
   services.readarr = {
     enable = true;
-    settings.server.bindAddress = "0.0.0.0";
+    # Security: Bind to localhost only (not 0.0.0.0)
+    listenPort = 8787;
+    bindAddress = "127.0.0.1";
   };
 
-  # Firewall: readarr accessible only from HAProxy (192.168.1.1)
+  # Firewall: Allow only from reverse proxy (not hardcoded IP)
   networking.firewall.extraInputRules = ''
-    ip saddr 192.168.1.1 tcp dport 8787 accept
+    # Readarr: Only allow from reverse proxy
+    ip saddr ${proxyIP} tcp dport 8787 accept
   '';
 }
