@@ -13,7 +13,6 @@
   system.stateVersion = "26.05";
 
   # Enable networking
-  networking.networkmanager.enable = true;
   networking.hostName = hostname;
 
   # Set your time zone
@@ -37,9 +36,6 @@
       dates = "weekly";
       options = "--delete-older-than 7d";
     };
-    # Cachix substituters
-    extraSubstituters = [ "https://aljam.cachix.org" ];
-    extraTrustedPublicKeys = [ "aljam.cachix.org-1:your-key-here" ];
   };
 
   # Allow unfree packages
@@ -54,15 +50,6 @@
 
   # Disable sudo timeout
   security.sudo.wheelNeedsPassword = true;
-
-  # Define a user account
-  users.users.aljam = {
-    isNormalUser = true;
-    description = "Aljam";
-    extraGroups = [ "wheel" "networkmanager" ];
-    shell = pkgs.zsh;
-    # Password handled by users/aljam/nixos.nix
-  };
 
   # Users should not be mutable
   users.mutableUsers = false;
@@ -109,14 +96,6 @@
     };
   };
 
-  # Auto upgrade
-  system.autoUpgrade = {
-    enable = true;
-    allowReboot = false;
-    dates = "04:00";
-    flake = "github:Aljam/nixlab";
-  };
-
   # Boot settings
   boot.loader.timeout = 5;
 
@@ -132,11 +111,7 @@
   sops = {
     defaultSopsFile = ../../secrets/secrets.yaml;
     defaultSopsFormat = "yaml";
-    # Use host SSH key for decryption
-    secrets = {
-      "ssh-host-key".owner = "root";
-      "ssh-user-key".owner = "aljam";
-    };
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
   };
 
   # SSH configuration - hardened
@@ -162,10 +137,5 @@
     enable = true;
     autosuggestions.enable = true;
     syntaxHighlighting.enable = true;
-  };
-
-  # Home Manager
-  home-manager = {
-    enable = true;
   };
 }
