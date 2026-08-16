@@ -8,7 +8,7 @@
     settings.builders-use-substitutes = true;
 
     buildMachines = [{
-      hostName = "${subnets.lan}.4";
+      hostName = "${config.networking.subnets.lan}.4";
       system = "x86_64-linux";
       protocol = "ssh-ng"; # The modern, faster Nix SSH protocol
       

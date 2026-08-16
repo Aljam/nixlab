@@ -4,7 +4,7 @@
 { config, lib, pkgs, ... }:
 
 let
-  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
+  proxyIP = config.networking.config.networking.fleet.proxy.ip or "192.168.1.1";
 in
 {
   # Backend services firewall rules

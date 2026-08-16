@@ -5,6 +5,6 @@
     openFirewall = false;
   };
   networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 5055 accept
+    ip saddr ${config.networking.subnets.lan}.1 tcp dport 5055 accept
   '';
 }

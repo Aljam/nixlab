@@ -1,0 +1,19 @@
+#! /bin/bash
+
+# Find all files that use fleet, domains, or subnets as module args
+grep -l "fleet, domains, subnets\|{.*subnets.*}\|{.*domains.*}\|{.*fleet.*}" modules/features/*.nix
+
+# Fix them all
+for f in modules/features/*.nix; do
+  sed -i 's/{ config, lib, pkgs, subnets, ... }/{ config, lib, pkgs, ... }/' "$f"
+  sed -i 's/{ config, lib, pkgs, domains, ... }/{ config, lib, pkgs, ... }/' "$f"
+  sed -i 's/{ config, lib, pkgs, fleet, ... }/{ config, lib, pkgs, ... }/' "$f"
+  sed -i 's/{ config, lib, pkgs, fleet, domains, subnets, ... }/{ config, lib, pkgs, ... }/' "$f"
+  sed -i 's/subnets\./config.networking.subnets./g' "$f"
+  sed -i 's/domains\./config.networking.domains./g' "$f"
+  sed -i 's/fleet\./config.networking.fleet./g' "$f"
+done
+
+git add modules/features/*.nix
+git commit -m "fix: replace fleet/domains/subnets module args with config.networking.*"
+git push

@@ -18,6 +18,6 @@
     settings.host = "0.0.0.0";
   };
   networking.firewall.extraInputRules = ''
-    ip saddr ${subnets.lan}.1 tcp dport 7474 accept
+    ip saddr ${config.networking.subnets.lan}.1 tcp dport 7474 accept
   '';
 }

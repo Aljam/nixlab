@@ -5,7 +5,7 @@
   # File systems
   fileSystems = {
     "/mnt/nas" = {
-      device = "//${config.networking.fleet.nas.ip}/mnt/user";
+      device = "//${config.networking.config.networking.fleet.nas.ip}/mnt/user";
       fsType = "cifs";
       options = [
         "credentials=${config.sops.secrets.nas-credentials.path}"
