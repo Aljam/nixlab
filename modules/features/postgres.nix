@@ -29,10 +29,13 @@ in
     initialPasswordFile = config.sops.secrets."pgadmin_password".path;
   };
 
-  # Bind pgadmin to host IP via systemd
+  # Override the service to bind to host IP
   systemd.services.pgadmin = {
     serviceConfig = {
-      Environment = "SERVER_ADDRESS=${bindAddr}";
+      ExecStart = lib.mkForce [
+        ""
+        "${pkgs.python3}/bin/python3 -c \"import os; os.environ['SERVER_ADDRESS']='${bindAddr}'; exec(open('${pkgs.pgadmin4}/lib/python3.11/site-packages/pgadmin4/pgAdmin4.py').read())\""
+      ];
     };
   };
 }
