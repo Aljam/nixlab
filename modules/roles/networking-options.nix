@@ -1,5 +1,4 @@
 { lib, ... }:
-
 let
   subnets = { lan = "192.168.1"; management = "127.0.0.0/8"; };
   domains = {
@@ -24,13 +23,14 @@ in
   options.networking = {
     fleet = lib.mkOption { type = lib.types.attrs; };
     subnets = lib.mkOption { type = lib.types.attrs; };
-    domain = lib.mkOption { type = lib.types.str; };
+    # Rename to avoid conflict with NixOS's networking.domain
+    myDomain = lib.mkOption { type = lib.types.str; };
     domains = lib.mkOption { type = lib.types.attrsOf lib.types.str; };
   };
   config.networking = {
     fleet = fleet;
     subnets = subnets;
-    domain = domains.primary;
+    myDomain = domains.primary;
     domains = domains;
   };
 }
