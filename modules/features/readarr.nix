@@ -8,7 +8,7 @@ in
   services.readarr = {
     enable = true;
     # Bind to host IP for HAProxy
-    configFile = {
+    settings = {
       Server = {
         BindAddress = bindAddr;
         Port = 8787;
