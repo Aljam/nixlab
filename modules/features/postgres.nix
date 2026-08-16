@@ -24,7 +24,7 @@ in
     openFirewall = false;               # we manage the firewall ourselves
 
     initialEmail = "admin@derezzed.info";
-    initialPasswordFile = config.sops.secrets."pgadmin-password".path;
+    initialPasswordFile = config.sops.secrets."pgadmin_password".path;
 
     settings = {
       # This is the real bind address (the old bindAddress attribute was invalid)
