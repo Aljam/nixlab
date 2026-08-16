@@ -1,28 +1,27 @@
-{ config, pkgs, lib, fleet, ... }:
-
+# hosts/r730xd/configuration.nix
+# r730xd - Main server
+{ config, lib, pkgs, fleet, ... }:
 {
   imports = [
-    ./hardware-configuration.nix
-    ./disko-config.nix
-    ../../modules/hardware/dell-poweredge.nix
-    ../../modules/roles/server-core.nix
-    ../../modules/features/nvidia-headless.nix
-    ../../modules/roles/media-node.nix
-    ../../modules/roles/storage-node.nix
-    ../../modules/features/prometheus-server.nix
-    ../../modules/features/grafana.nix
+    ../../modules/roles/common.nix
+    ../../modules/roles/server.nix
+    ../../modules/features/monitoring.nix
+    ../../modules/features/haproxy.nix
+    ../../modules/features/reverse-proxy-backends.nix
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_6_1;  
-  boot.zfs.forceImportRoot = false;
-  boot.kernelParams = [ "zfs.zfs_arc_max=68719476736" ];
+  # Set servicesHostIP from fleet for HAProxy backend access
+  servicesHostIP = fleet.r730xd.ip;
 
-  networking.hostId = "d2083fdc"; # Required for ZFS
+  # Host-specific configuration
+  networking.hostName = "r730xd";
 
-  networking.interfaces.eno1.ipv4.addresses = [
-    {
-      address = fleet.r730xd.ip;
-      prefixLength = 24;
-    }
-  ];
+  # Timezone
+  time.timeZone = "America/New_York";
+
+  # Locale
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  # Console
+  console.keyMap = "us";
 }
