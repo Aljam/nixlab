@@ -1,83 +1,164 @@
-{ hostname, config, pkgs, lib, ... }:
+# modules/roles/common.nix
+# Common configuration for all hosts
+{ config, lib, pkgs, hostname, domains, subnets, fleet, ... }:
 
 {
-  imports = [
-    ../features/boot.nix
-  ];
-  
-  nixpkgs.config.allowUnfree = true;
-  hardware.enableRedistributableFirmware = true;
+  # Wire fleet/subnets from specialArgs into config.networking.*
+  # so service modules can use config.networking.fleet.proxy.ip etc.
+  networking.fleet = fleet;
+  networking.subnets = subnets;
+  networking.domain = domains.primary;
 
+  # Basic system settings
+  system.stateVersion = "26.05";
+
+  # Enable networking
+  networking.networkmanager.enable = true;
   networking.hostName = hostname;
-  system.stateVersion = lib.mkDefault "26.05";
 
-  time.timeZone = "America/Toronto";
-  i18n.defaultLocale = "en_CA.UTF-8";
+  # Set your time zone
+  time.timeZone = "America/New_York";
 
-  nix.settings = {
-    substituters = [
-      "https://cache.nixos.org"
-      "https://aljam.cachix.org"
-      "https://hyprland.cachix.org"
-      "https://nix-community.cachix.org"
-      "https://cuda-maintainers.cachix.org"
-    ];
-    trusted-public-keys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "aljam.cachix.org-1:E3E80fk8YEaTw0Y9V+0IHmhrvLQ/xACZ1VMXDZZ80oo="
-      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cuda-maintainers.cachix.org-1:0dq3bujKpuEPMCX6U4WylrUDZ9JyUG0VpVZa7CNfq5E="
-    ];
-    experimental-features = [ "nix-command" "flakes" ];
+  # Select internationalisation properties
+  i18n.defaultLocale = "en_US.UTF-8";
+
+  # Configure console keymap
+  console.keyMap = "us";
+
+  # Nix settings
+  nix = {
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = [ "nix-command" "flakes" ];
+      trusted-users = [ "root" "@wheel" ];
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+    };
   };
 
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
 
-  security.sudo.enable = true;
-  users.mutableUsers = false;
-  services.fail2ban.enable = true;
-  security.sudo.execWheelOnly = true;
-  boot.tmp.cleanOnBoot = true;
-  
+  # Open ports in the firewall
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ ];
+    allowedUDPPorts = [ ];
+  };
 
+  # Disable sudo timeout
+  security.sudo.wheelNeedsPassword = false;
+
+  # Define a user account
+  users.users.aljam = {
+    isNormalUser = true;
+    description = "Aljam";
+    extraGroups = [ "wheel" "networkmanager" ];
+    shell = pkgs.zsh;
+  };
+
+  # List packages installed in system profile
   environment.systemPackages = with pkgs; [
-    home-manager
-    git
-    htop
-    wget
-    curl
-    yt-dlp
-    ffmpeg
     vim
-    cifs-utils
-    kitty.terminfo # Fixes missing terminfo when connecting via SSH from Kitty
-    lm_sensors
-    iotop
-    nvd
-    nix-tree
-    duf
-    sysstat
-    sops
+    wget
+    git
+    curl
+    htop
+    tree
+    eza
+    btop
+    fastfetch
+    zip
+    unzip
+    p7zip
+    lsof
+    socat
+    jq
+    yq
+    fd
+    ripgrep
+    fzf
+    tealdeer
+    bat
+    zoxide
+    direnv
+    nix-index
+    nix-output-monitor
+    nixfmt-classic
+    nil
   ];
 
-  services.openssh = {
-    enable = true;
-    settings.AllowUsers = [ "aljam" ];
-    settings.PasswordAuthentication = false;
-    settings.KbdInteractiveAuthentication = false;
-    settings.PermitRootLogin = "no";
+  # Some programs need SUID wrappers
+  security.wrappers = {
+    bwrap = {
+      source = "${pkgs.bubblewrap}/bin/bwrap";
+      owner = "root";
+      group = "root";
+      permissions = "u+rwx,g=rx,o=rx";
+      setuid = true;
+    };
   };
 
+  # Auto upgrade
+  system.autoUpgrade = {
+    enable = true;
+    allowReboot = false;
+    dates = "04:00";
+    flake = "github:Aljam/nixlab";
+  };
+
+  # Boot settings
+  boot.loader.timeout = 5;
+
+  # Documentation
+  documentation = {
+    enable = true;
+    doc.enable = false;
+    info.enable = false;
+    man.enable = true;
+  };
+
+  # SOPS for secrets
   sops = {
     defaultSopsFile = ../../secrets/secrets.yaml;
-    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+    defaultSopsFormat = "yaml";
+    age.keyFile = "/etc/sops-nix/key.txt";
+    secrets = {
+      "ssh-host-key".owner = "root";
+      "ssh-user-key".owner = "aljam";
+    };
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 14d";
+  # SSH configuration
+  services.openssh = {
+    enable = true;
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+      AllowUsers = [ "aljam" ];
+    };
   };
 
-  nix.optimise.automatic = true;
+  # Fail2ban
+  services.fail2ban = {
+    enable = true;
+    maxRetry = 5;
+    findTime = "10min";
+    banTime = "1h";
+  };
+
+  # ZSH
+  programs.zsh = {
+    enable = true;
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+  };
+
+  # Home Manager
+  home-manager = {
+    enable = true;
+  };
 }
