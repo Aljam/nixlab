@@ -1,15 +1,20 @@
 # modules/features/radarr.nix
-# DRY: Generic *arr service module pattern
+# Security: Radarr should NOT be exposed to LAN
+# Only accessible via HAProxy gateway (192.168.1.1)
 { config, lib, pkgs, ... }:
 
+let
+  # Use host IP if set, otherwise localhost for security
+  bindAddr = config.servicesHostIP or "127.0.0.1";
+in
 {
   services.radarr = {
     enable = true;
-    # Security: Bind to localhost only (not 0.0.0.0)
-    listenPort = 7878;
-    bindAddress = "127.0.0.1";
+    # Security: Bind to host IP for HAProxy access (or localhost if no host IP)
+    listenAddress = bindAddr;
+    port = 7878;
   };
 
-  # Firewall: Handled centrally by reverse-proxy-backends.nix
-  # No need for per-module extraInputRules
+  # Firewall: Allow HAProxy gateway only
+  # Managed centrally in reverse-proxy-backends.nix
 }
