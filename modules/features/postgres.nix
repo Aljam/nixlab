@@ -29,8 +29,14 @@ in
     initialPasswordFile = config.sops.secrets."pgadmin_password".path;
   };
 
-  # Set SERVER_ADDRESS via config file
-  environment.etc."pgadmin/config_local.py".text = ''
-    SERVER_ADDRESS = '${bindAddr}'
-  '';
+  # Expose pgadmin on network via nginx reverse proxy
+  services.nginx = {
+    enable = true;
+    virtualHosts."${bindAddr}" = {
+      listen = [
+        { addr = bindAddr; port = 5051; }
+      ];
+      locations."/".proxyPass = "http://127.0.0.1:5050";
+    };
+  };
 }
