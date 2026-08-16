@@ -30,10 +30,16 @@ in
     </Config>
   '';
 
+  # Ensure correct permissions and copy config on every start
   systemd.services.readarr = {
     serviceConfig = {
       ExecStartPre = [
-        "${pkgs.coreutils}/bin/cp -f /etc/readarr/config.xml /var/lib/readarr/config.xml"
+        # Fix directory permissions
+        "${pkgs.coreutils}/bin/chown -R readarr:media /var/lib/readarr",
+        "${pkgs.coreutils}/bin/chmod 775 /var/lib/readarr",
+        # Copy config
+        "${pkgs.coreutils}/bin/cp -f /etc/readarr/config.xml /var/lib/readarr/config.xml",
+        "${pkgs.coreutils}/bin/chown readarr:media /var/lib/readarr/config.xml",
       ];
     };
   };
