@@ -1,39 +1,25 @@
-{ config, pkgs, lib, fleet, ... }:
-
+# hosts/r730/configuration.nix
+# r730 - Server
+{ config, lib, pkgs, fleet, ... }:
 {
   imports = [
-    ./hardware-configuration.nix
-    ./disko-config.nix
-    ../../modules/hardware/dell-poweredge.nix
-    ../../modules/roles/server-core.nix
-    ../../modules/roles/storage-node.nix
-    # ../../modules/roles/ai-node.nix
-    # ../../modules/features/nvidia-headless.nix
+    ../../modules/roles/common.nix
+    ../../modules/roles/server.nix
+    ../../modules/features/monitoring.nix
   ];
 
-  networking.hostId = "acccc16e"; # Required for ZFS
+  # Set servicesHostIP from fleet for HAProxy backend access
+  servicesHostIP = fleet.r730.ip;
 
-  networking.interfaces.eno1.ipv4.addresses = [
-    {
-      address = fleet.r730.ip;
-      prefixLength = 24;
-    }
-  ];
+  # Host-specific configuration
+  networking.hostName = "r730";
 
-  boot.kernelPackages = pkgs.linuxPackages_6_1;  
+  # Timezone
+  time.timeZone = "America/New_York";
 
-  # hardware.nvidia-container-toolkit.enable = true; # Passes the P40s into Docker
+  # Locale
+  i18n.defaultLocale = "en_US.UTF-8";
 
-  # hardware.nvidia = {
-  #   modesetting.enable = true; # Overrides the headless module default
-  #   nvidiaPersistenced = true; # Prevents power-state latency drops during AI training
-  # };
-
-  #nixpkgs.config.cudaSupport = true;
-
-  environment.systemPackages = with pkgs; [
-    cudatoolkit
-    linuxPackages.nvidia_x11
-  ];
-
+  # Console
+  console.keyMap = "us";
 }
