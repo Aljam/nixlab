@@ -17,7 +17,11 @@
 
   # Configuration
   config = {
-    system.stateVersion = lib.mkDefault "26.05";  
+    system.stateVersion = lib.mkDefault "26.05";
+    networking.hostName = hostname;
+    networking.domain = config.networking.myDomain;
+    
+    nixpkgs.config.allowUnfree = true;
 
     # Enable flakes
     nix.settings.experimental-features = [ "nix-command" "flakes" ];
