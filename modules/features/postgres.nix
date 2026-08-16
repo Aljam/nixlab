@@ -1,36 +1,36 @@
-# modules/features/postgres.nix
 { config, lib, pkgs, ... }:
 
 let
-  bindAddr = config.servicesHostIP or "127.0.0.1";
+  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
+  # Prefer the host-specific IP if you set servicesHostIP, otherwise fall back
+  bindIP  = config.servicesHostIP or "0.0.0.0";
 in
 {
-  sops.secrets."pgadmin_password" = {};
-  
   services.postgresql = {
     enable = true;
     settings = {
-      listen_addresses = lib.mkForce bindAddr;
+      listen_addresses = "localhost";   # keep Postgres local
       port = 5432;
     };
-    
-    ensureDatabases = [ "webscraper" "grafana" "aljam" ];
-    ensureUsers = [
-      { name = "webscraper"; ensureDBOwnership = true; }
-      { name = "grafana"; ensureDBOwnership = true; }
-      { name = "aljam"; ensureDBOwnership = true; }
-    ];
   };
 
   services.pgadmin = {
     enable = true;
     port = 5050;
-    initialEmail = "admin@derezzed.info";
-    initialPasswordFile = config.sops.secrets."pgadmin_password".path;
+    openFirewall = false;               # do NOT open to the world
+    initialEmail = ...;
+    initialPasswordFile = config.sops.secrets."pgadmin-password".path;
+
+    settings = {
+      DEFAULT_SERVER = bindIP;          # ← this is the real bind address
+      # optional but useful behind a reverse proxy
+      # PROXY_X_FOR_COUNT = 1;
+      # PROXY_X_PROTO_COUNT = 1;
+    };
   };
 
-  # Create config file - this should be read by pgadmin4 at startup
-  environment.etc."pgadmin/config_local.py".text = ''
-    SERVER_ADDRESS = '${bindAddr}'
+  # Firewall: only the HAProxy box may reach pgAdmin
+  networking.firewall.extraInputRules = ''
+    ip saddr ${proxyIP} tcp dport 5050 accept comment "HAProxy → pgAdmin"
   '';
 }
