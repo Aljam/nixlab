@@ -47,21 +47,6 @@ in
     initialPasswordFile = config.sops.secrets."pgadmin-password".path;
   };
 
-  # Firewall: Restrict PostgreSQL and pgAdmin to localhost only
-  # DO NOT open ports 5432 and 5050 to the LAN
-  # If management access is needed, use a specific management subnet
-  networking.firewall = {
-    # Only allow from localhost (implicit) and optionally management subnet
-    extraInputRules = ''
-      # PostgreSQL: localhost only (or management subnet if needed)
-      ${lib.concatMapStringsSep "\n" (subnet: 
-        "ip saddr ${subnet} tcp dport 5432 accept"
-      ) managementSubnet}
-      
-      # pgAdmin: localhost only (or management subnet if needed)
-      ${lib.concatMapStringsSep "\n" (subnet: 
-        "ip saddr ${subnet} tcp dport 5050 accept"
-      ) managementSubnet}
-    '';
-  };
+  # Firewall rules managed centrally in reverse-proxy-backends.nix
+  # No duplicate rules here - DRY principle
 }
