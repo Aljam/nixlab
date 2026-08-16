@@ -9,14 +9,16 @@ in
     enable = true;
   };
 
-  # Override the service to write config before start
+  # Override the service to write config before start (as root)
   systemd.services.readarr = {
     serviceConfig = {
+      User = "root";
       ExecStartPre = [
         "${pkgs.writeShellScript "readarr-fix-config" ''
           CONFIG="/var/lib/readarr/config.xml"
           if [ -f "$CONFIG" ] && ! grep -q "<BindAddress>" "$CONFIG"; then
             ${pkgs.gnused}/bin/sed -i "/<InstanceName>/a\\  <BindAddress>${bindAddr}</BindAddress>" "$CONFIG"
+            chown readarr:readarr "$CONFIG"
           fi
         ''}"
       ];
