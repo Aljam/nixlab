@@ -1,6 +1,6 @@
 # modules/roles/networking-options.nix
 # Custom networking options for fleet management
-{ lib, ... }:
+{ lib, domains, ... }:
 {
   options.networking = {
     fleet = lib.mkOption {
@@ -17,7 +17,7 @@
 
     domain = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
-      default = null;
+      default = domains.primary;
       description = "Primary domain for the host";
     };
   };
