@@ -29,15 +29,18 @@ in
     initialPasswordFile = config.sops.secrets."pgadmin_password".path;
   };
 
-  # Create config file that pgadmin4 reads
-  # pgadmin4 reads config_local.py from the same directory as config_system.py
+  # Create config file
   environment.etc."pgadmin/config_local.py".text = ''
     SERVER_ADDRESS = '${bindAddr}'
   '';
 
-  # Make sure the service reloads the config
+  # Override the service to use the wrapper from the pgadmin package
   systemd.services.pgadmin.serviceConfig.ExecStart = lib.mkForce [
     ""
-    "${pkgs.python3}/bin/python3 -c \"import os; os.environ['SERVER_ADDRESS']='${bindAddr}'; import pgadmin4; pgadmin4.run()\""
+    "${pkgs.pgadmin4}/bin/pgadmin4"
+  ];
+  
+  systemd.services.pgadmin.serviceConfig.Environment = [
+    "SERVER_ADDRESS=${bindAddr}"
   ];
 }
