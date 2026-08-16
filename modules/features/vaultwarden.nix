@@ -14,7 +14,7 @@
       webVaultEnabled = true;
       notificationsEnabled = true;
       # Admin interface (also localhost only)
-      adminToken = "$__file{${config.sops.secrets."vaultwarden-admin-token".path}}";
+      adminToken = config.sops.secrets."vaultwarden-admin-token".path;
       adminUrl = "/admin";
     };
   };
