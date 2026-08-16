@@ -22,6 +22,5 @@ in
       adminRateLimitSeconds = 300;
       adminRateLimitMaxBurst = 10;
     };
-    environmentFile = null;  # No separate env file needed
   };
 }
