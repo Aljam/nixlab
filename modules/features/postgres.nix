@@ -1,5 +1,9 @@
-{ config, pkgs, lib, ... }: {
-  
+{ config, pkgs, lib, ... }:
+
+let
+  bindAddr = config.networking.fleet.${hostname}.ip;
+in
+{
   sops.secrets.pgadmin_password = {
     owner = "pgadmin";
   };
@@ -33,10 +37,22 @@
     port = 5050;
   };
 
-  # pgadmin4 doesn't support SERVER_ADDRESS via NixOS module
-  # Just use haproxy to proxy to localhost:5050
+  # Override pgadmin service to bind to network interface
+  systemd.services.pgadmin = {
+    serviceConfig = {
+      ExecStart = lib.mkForce [
+        ""
+        "${pkgs.python3}/bin/python3 -c \"import os; os.environ['SERVER_ADDRESS']='${bindAddr}'; exec(open('${pkgs.pgadmin4}/lib/python3.11/site-packages/pgadmin4/pgAdmin4.py').read())\""
+      ];
+      Environment = [
+        "SERVER_ADDRESS=${bindAddr}"
+        "PYTHONPATH=${pkgs.pgadmin4}/lib/python3.11/site-packages"
+      ];
+    };
+  };
 
-  networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 ];
+  # Allow direct access to pgadmin
+  networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 5050 ];
   networking.firewall.extraInputRules = ''
     ip saddr ${config.networking.fleet.proxy.ip} tcp dport 5050 accept
   '';
