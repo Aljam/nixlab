@@ -72,7 +72,7 @@
     services.fail2ban = {
       enable = true;
       jails.sshd = {
-        enable = true;
+        enabled = true;
         filter = "sshd";
         port = "ssh";
         logpath = "%(sshd_log)s";
