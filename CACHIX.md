@@ -1,24 +1,44 @@
 # Cachix
 
-This repository uses Cachix as an optional binary cache for the selected NixOS system closure.
+This repository uses Cachix as a focused binary cache for complete NixOS system closures. General-purpose packages are supplied by the configured upstream and project caches; this cache is not intended to duplicate them.
 
 ## Cache policy
 
-The GitHub Actions Cachix workflow intentionally builds and pushes only:
+The GitHub Actions workflow pushes only the selected host's system closure:
 
 ```text
-.#nixosConfigurations.navi.config.system.build.toplevel
+.#nixosConfigurations.<host>.config.system.build.toplevel
 ```
 
-It does not use a broad `watch-exec` around the build and does not upload unrelated CI outputs. The workflow first evaluates the selected system closure, records its store path, and then pushes that path explicitly.
+It does not upload:
 
-To cache a different host, change the host output in `.github/workflows/cachix.yml`. To cache an additional output, add a separate explicit build and push step for that output rather than widening the existing workflow.
+- `nix flake check` results.
+- Development shells.
+- Arbitrary package attributes.
+- Broad package sets or unrelated build outputs.
+- Every host on every run.
+
+The system closure may reference package paths needed by that system. Cachix stores closure dependencies as needed for substitution, but the workflow does not intentionally build and push a separate general-purpose package cache. Other configured caches remain responsible for commonly shared packages.
+
+## Building any host
+
+The workflow supports the configured hosts:
+
+- `navi`
+- `oryx`
+- `r730`
+- `r730xd`
+- `r820`
+
+Pushes to `main` build the default host, `navi`. To build another host, start the workflow manually from GitHub Actions and choose the `host` input.
+
+The host input is evaluated as a Nix flake attribute. Keep it restricted to known `nixosConfigurations` outputs; do not pass arbitrary shell text into the workflow.
 
 ## GitHub Actions setup
 
 The workflow requires a repository secret named `CACHIX_AUTH_TOKEN` with permission to push to the `nixlab` cache.
 
-The workflow runs on pushes to `main` and can also be started manually. It currently caches the `navi` system closure; update the workflow if another host should be the release target.
+The workflow intentionally has no broad `watch-exec` wrapper. It first produces one explicit system-closure path and then pushes that path with `cachix push`.
 
 ## Local setup
 
@@ -39,14 +59,17 @@ nix build \
 
 ## Explicit local push
 
-Build a specific output and push only its resulting closure:
+Build and push only one host's system closure:
 
 ```bash
-nix build .#nixosConfigurations.navi.config.system.build.toplevel --no-link --print-out-paths > result
+host=navi
+nix build ".#nixosConfigurations.${host}.config.system.build.toplevel" \
+  --no-link \
+  --print-out-paths > result
 cachix push nixlab < result
 ```
 
-Avoid piping broad build commands or entire development environments into `cachix push` unless those outputs are intentionally part of the cache policy.
+Replace `navi` with another configured host when needed. Avoid pushing development shells, package collections, or arbitrary build results unless the cache policy is intentionally expanded.
 
 ## Troubleshooting
 
@@ -54,10 +77,10 @@ Avoid piping broad build commands or entire development environments into `cachi
 
 Confirm that `CACHIX_AUTH_TOKEN` exists, is valid, and has push permission for the `nixlab` cache.
 
-### A build is not served from Cachix
+### A host build fails
 
-Check that the exact output was explicitly pushed, that the cache is listed as a substituter, and that the local Nix configuration trusts the cache key.
+Confirm the host is a configured `nixosConfigurations` output and run the same build locally with the selected host name. Check host-specific secrets, hardware assumptions, and evaluation errors.
 
 ### The cache is still growing unexpectedly
 
-Inspect workflow logs for additional `nix build`, `cachix push`, or `watch-exec` steps. Keep uploads limited to named system closures and remove accidental pushes of development shells or intermediate outputs.
+Inspect workflow logs for additional `nix build`, `cachix push`, or `watch-exec` steps. The intended upload is one explicit system-closure path per run; general packages should come from the other configured caches.

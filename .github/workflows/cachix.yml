@@ -5,6 +5,21 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      host:
+        description: NixOS host to build and cache
+        required: true
+        type: choice
+        default: navi
+        options:
+          - navi
+          - oryx
+          - r730
+          - r730xd
+          - r820
+
+env:
+  HOST: ${{ github.event.inputs.host || 'navi' }}
 
 jobs:
   cachix:
@@ -25,7 +40,11 @@ jobs:
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
 
       - name: Build selected system closure
-        run: nix build .#nixosConfigurations.navi.config.system.build.toplevel --no-link --print-out-paths > result
+        run: >-
+          nix build
+          .#nixosConfigurations.${HOST}.config.system.build.toplevel
+          --no-link
+          --print-out-paths > result
 
       - name: Push selected system closure
         run: cachix push nixlab < result
