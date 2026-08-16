@@ -1,11 +1,14 @@
 # modules/features/readarr.nix
-# DRY: Generic *arr service module pattern
 { config, lib, pkgs, ... }:
 
+let
+  bindAddr = config.servicesHostIP or "127.0.0.1";
+in
 {
   services.readarr = {
     enable = true;
+    settings = {
+      BindAddress = bindAddr;
+    };
   };
-
-  # Firewall: Handled centrally by reverse-proxy-backends.nix
 }
