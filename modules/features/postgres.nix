@@ -23,8 +23,7 @@ in
     port = 5050;
     openFirewall = false;               # we manage the firewall ourselves
 
-    initialEmail = config.users.users.${config.networking.hostName}.email
-                   or "admin@localhost" or "admin@derezzed.info";
+    initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets."pgadmin-password".path;
 
     settings = {
