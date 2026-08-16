@@ -1,11 +1,7 @@
 # modules/features/prometheus-server.nix
-# DRY: Use shared proxy IP from flake.nix instead of hardcoding 192.168.1.1
+# DRY: Use shared proxy IP from flake.nix
 { config, lib, pkgs, ... }:
 
-let
-  # Use the fleet's reverse proxy IP from flake.nix
-  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
-in
 {
   services.prometheus = {
     enable = true;
@@ -28,9 +24,5 @@ in
     ];
   };
 
-  # Firewall: Allow only from reverse proxy (not hardcoded IP)
-  networking.firewall.extraInputRules = ''
-    # Prometheus: Only allow from reverse proxy
-    ip saddr ${proxyIP} tcp dport 9090 accept
-  '';
+  # Firewall: Handled centrally by reverse-proxy-backends.nix
 }
