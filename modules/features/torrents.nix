@@ -11,20 +11,7 @@ in
   # qBittorrent service
   services.qbittorrent = {
     enable = true;
-    openFirewall = false;
-    port = 8080;
-    webui = {
-      address = bindAddr;
-      port = 8080;
-    };
-  };
-
-  # qBittorrent Web UI (qbweb) - alternative web interface
-  services.qbittorrent-webui = {
-    enable = true;
-    openFirewall = false;
-    port = 8081;
-    address = bindAddr;
+    webuiPort = 8080;
   };
 
   # BitTorrent port for clients
