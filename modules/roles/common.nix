@@ -5,13 +5,23 @@
   config,
   lib,
   pkgs,
-  ...  # fleet, subnets, domains wired via specialArgs
+  hostname,
+  domains,
+  subnets,
+  fleet,
+  ...  # specialArgs wired from flake.nix
 }:
 
 {
   imports = [
     ../features/boot.nix
   ];
+
+  # Fleet wiring - required by server-core, grafana, vaultwarden, reverse-proxy-backends
+  networking.fleet = fleet;
+  networking.subnets = subnets;
+  networking.domain = domains.primary;
+  networking.hostName = hostname;
 
   # Timezone and locale
   time.timeZone = lib.mkDefault "America/Toronto";
@@ -27,7 +37,10 @@
   };
 
   # sops configuration
-  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  sops = {
+    defaultSopsFile = ../../secrets/secrets.yaml;
+    age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+  };
 
   # SSH hardening
   services.openssh = {
@@ -36,6 +49,7 @@
       PasswordAuthentication = false;
       PermitRootLogin = "no";
       KbdInteractiveAuthentication = false;
+      AllowUsers = [ "aljam" ];
     };
   };
 
