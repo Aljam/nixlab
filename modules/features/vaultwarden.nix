@@ -8,21 +8,25 @@ let
   bindAddr = config.servicesHostIP or "127.0.0.1";
 in
 {
-  # Vaultwarden configuration
+  # Vaultwarden secrets
+  sops.secrets."vaultwarden-admin-token" = {};
+  sops.secrets."vaultwarden-secret-key" = {};
+
   services.vaultwarden = {
     enable = true;
+    # Security: Bind to host IP for HAProxy access (or localhost if no host IP)
     config = {
-      # Security: Bind to host IP for HAProxy access (or localhost if no host IP)
-      address = bindAddr;
-      port = 8000;
-      domain = "https://vault.${config.networking.domain}";
-      # Use sops for admin token
-      admin_token = "$__file{${config.sops.secrets."vaultwarden-admin-token".path}}";
+      rocketAddress = bindAddr;
+      rocketPort = 8000;
+      domain = "https://vault.192.168.1.1";
+      signupsAllowed = false;
+      adminTokenFile = config.sops.secrets."vaultwarden-admin-token".path;
+      adminRateLimitSeconds = 300;
+      adminRateLimitMaxBurst = 10;
     };
+    # Use SOPS secret for ADMIN_TOKEN
+    environmentFile = config.sops.secrets."vaultwarden-admin-token".path;
   };
-
-  # Declare secret
-  sops.secrets."vaultwarden-admin-token" = {};
 
   # Firewall: Allow HAProxy gateway only
   # Managed centrally in reverse-proxy-backends.nix
