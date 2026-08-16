@@ -24,9 +24,9 @@
     "https://hyprland.cachix.org"
   ];
   nix.settings.trusted-public-keys = [
-    "nix-community.cachix.org-1:zwP87Cg278Hv3zqJl7mV3KqPqPqPqPqPqPqPqPqPqPq="
-    "nix-gaming.cachix.org-1:Q0m0+7k8+Gv3Z8h0+8v3Z8h0+8v3Z8h0+8v3Z8h0+8v="
-    "hyprland.cachix.org-1:Q0m0+7k8+Gv3Z8h0+8v3Z8h0+8v3Z8h0+8v3Z8h0+8v="
+    "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
+    "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
   ];
 
   # SOPS for secrets
