@@ -73,7 +73,7 @@
       maxretry = 3;
       findtime = 600;
       bantime = 3600;
-      extraConfig = ''
+      extraSettings = ''
         [sshd]
         enabled = true
         port = ssh
