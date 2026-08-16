@@ -71,14 +71,16 @@
     services.fail2ban = {
       enable = true;
       maxretry = 3;
-      findtime = 600;
       bantime = 3600;
-      extraSettings = ''
-        [sshd]
+      jails.sshd = ''
         enabled = true
+        filter = sshd
         port = ssh
         logpath = %(sshd_log)s
         backend = %(sshd_backend)s
+        maxretry = 3
+        findtime = 600
+        bantime = 3600
       '';
     };
 
