@@ -8,10 +8,11 @@ in
   services.readarr = {
     enable = true;
     # Bind to host IP for HAProxy
-    extraConfig = ''
-      [Server]
-      BindAddress = ${bindAddr}
-      Port = 8787
-    '';
+    configFile = {
+      Server = {
+        BindAddress = bindAddr;
+        Port = 8787;
+      };
+    };
   };
 }
