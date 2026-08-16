@@ -17,7 +17,7 @@ in
     # Security: Bind to host IP for HAProxy access (or localhost if no host IP)
     config = {
       rocketAddress = bindAddr;
-      rocketPort = 8000;
+      rocketPort = 8222;
       domain = "https://vault.192.168.1.1";
       signupsAllowed = false;
       adminTokenFile = config.sops.secrets."vaultwarden-admin-token".path;
