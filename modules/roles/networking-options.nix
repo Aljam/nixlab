@@ -22,7 +22,7 @@
 
     domain = lib.mkOption {
       type = lib.types.str;
-      default = domain.derezzed;
+      default = options.networking.domain.derezzed;
       description = "Primary domain for the host";
       derezzed    = "derezzed.info";
       fuwa       = "fuwa.space";
