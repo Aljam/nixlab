@@ -18,7 +18,7 @@ in
     };
     
     # Restore webscraper and grafana databases and users
-    ensureDatabases = [ "webscraper" "grafana" ];
+    ensureDatabases = [ "webscraper" "grafana" "aljam" ];
     ensureUsers = [
       {
         name = "webscraper";
