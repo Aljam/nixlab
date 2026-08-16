@@ -14,10 +14,9 @@
         root_url = "https://grafana.${config.networking.domain}";
       };
       security = {
-        # Use sops secret for grafana admin password
-        admin_password = "$__file{${config.sops.secrets."grafana-admin-password".path}}";
-        # Use sops secret for grafana secret key
-        secret_key = "$__file{${config.sops.secrets."grafana-secret-key".path}}";
+        # Use sops secrets from secrets.yaml
+        admin_password = config.sops.secrets."grafana-admin-password".path;
+        secret_key = config.sops.secrets."grafana-secret-key".path;
       };
       users = {
         allow_sign_up = false;
