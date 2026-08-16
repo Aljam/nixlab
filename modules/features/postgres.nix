@@ -1,46 +1,47 @@
-# modules/features/postgres.nix
-# PostgreSQL stays localhost-only.
-# pgAdmin binds to servicesHostIP so HAProxy can reach it;
-# firewall still restricts the source to the proxy IP only.
-
-{ config, lib, pkgs, ... }:
-
-let
-  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
-  bindIP  = config.servicesHostIP;   # already set by common.nix
-in
-{
-  services.postgresql = {
-    enable = true;
-    settings = {
-      listen_addresses = "localhost";   # never expose Postgres itself
-      port = 5432;
-    };
+{ config, pkgs, lib, ... }: {
+  
+  sops.secrets.pgadmin_password = {
+    owner = "pgadmin";
   };
 
-  sops.secrets."pgadmin_password" = {};
+  services.postgresql = {
+    enable = true;
+    enableTCPIP = true;
+    settings.password_encryption = "scram-sha-256";
+    authentication = lib.mkOverride 10 ''
+    local all all peer
+    host all all 127.0.0.1/32 scram-sha-256
+    host all all ${subnets.lan}.0/24 scram-sha-256
+    '';
+    ensureDatabases = [ "webscraper" "admin" ];
+    ensureUsers = [
+      {
+        name = "webscraper";
+        ensureDBOwnership = true;
+      }
+      {
+        name = "admin";
+        ensureDBOwnership = true;
+      }
+    ];
+  };
 
   services.pgadmin = {
     enable = true;
-    port = 5050;
-    openFirewall = false;               # we manage the firewall ourselves
-
-    initialEmail = "admin@derezzed.info";
-    initialPasswordFile = config.sops.secrets."pgadmin_password".path;
-
+    initialEmail = "admin@derezzed.info"; # Using your existing domain
+    initialPasswordFile = config.sops.secrets.pgadmin_password.path;
+    port = 5050; # Default port for the web interface
     settings = {
-      # This is the real bind address (the old bindAddress attribute was invalid)
-      DEFAULT_SERVER = bindIP;
-
-      # Optional but recommended when behind HAProxy
-      # PROXY_X_FOR_COUNT   = 1;
-      # PROXY_X_PROTO_COUNT = 1;
+      DEFAULT_SERVER = "${subnets.lan}.4";
     };
   };
 
-  # Only the HAProxy box may talk to pgAdmin.
-  # (reverse-proxy-backends.nix already has a broader rule; this is belt-and-suspenders)
-  networking.firewall.extraInputRules = lib.mkAfter ''
-    ip saddr ${proxyIP} tcp dport 5050 accept comment "HAProxy → pgAdmin"
+  systemd.services.pgadmin.environment = {
+    PGADMIN_LISTEN_ADDRESS = "${config.options.servicesHostIP}";
+  };
+
+  networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 ];
+  networking.firewall.extraInputRules = ''
+    ip saddr ${fleet.proxy.ip} tcp dport 5050 accept
   '';
 }
