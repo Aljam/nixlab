@@ -17,7 +17,7 @@ in
   networking.networkmanager.enable = false;
 
   # Disable IPv6
-  networking.useIPv6 = false;
+  networking.enableIPv6 = false;
 
   # Use nftables for firewall
   networking.nftables.enable = true;
