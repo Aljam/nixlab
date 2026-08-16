@@ -18,7 +18,7 @@ in
     };
   };
 
-  config.sops.secrets."pgadmin_password" = {};
+  sops.secrets."pgadmin_password" = {};
 
   services.pgadmin = {
     enable = true;
