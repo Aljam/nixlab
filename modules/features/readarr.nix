@@ -14,7 +14,7 @@ in
     serviceConfig = {
       Environment = [
         "BIND_ADDRESS=${bindAddr}"
-        "PORT=6868"
+        "PORT=8787"
       ];
     };
   };
