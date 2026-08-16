@@ -1,21 +1,31 @@
-# nixlab/modules/features/grafana.nix
-# Grafana monitoring dashboard with firewall isolation
-
+# modules/features/grafana.nix
+# Security: Bind to localhost only - reverse proxy provides external access
 { config, lib, pkgs, ... }:
 
 {
-  sops.secrets."grafana-secret-key" = {};
-
   services.grafana = {
     enable = true;
-    openFirewall = false;
-    dataDir = "/var/lib/grafana";
     settings = {
       server = {
-        http_addr = "0.0.0.0";
+        # Security: Bind to localhost only (not 0.0.0.0)
+        http_addr = "127.0.0.1";
         http_port = 3000;
+        domain = "grafana.${config.networking.domain}";
+        root_url = "https://grafana.${config.networking.domain}";
       };
-      security.secret_key = config.sops.secrets."grafana-secret-key".path;
+      security = {
+        # Use sops secret for grafana admin password
+        admin_password = "$__file{${config.sops.secrets."grafana-admin-password".path}}";
+        # Use sops secret for grafana secret key
+        secret_key = "$__file{${config.sops.secrets."grafana-secret-key".path}}";
+      };
+      users = {
+        allow_sign_up = false;
+        allow_org_create = false;
+      };
     };
   };
+
+  # Firewall: No direct LAN access needed - reverse proxy only
+  # networking.firewall.allowedTCPPorts removed - handled by reverse-proxy-backends
 }
