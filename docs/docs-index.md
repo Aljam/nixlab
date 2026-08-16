@@ -1,41 +1,44 @@
-# Documentation Index
+# nixlab documentation
 
-This index is the starting point for operating and extending nixlab.
+This directory contains the operational, architecture, security, and contributor documentation for nixlab.
 
 ## Start here
 
-- [README](../README.md) — Project overview, architecture, services, quick start, and operational guidance.
-- [Getting Started](GETTING-STARTED.md) — Initial setup and first deployment.
-- [Setup](SETUP.md) — Short setup reference.
+- [Getting started](GETTING-STARTED.md) — first checkout, inspection, validation, and deployment flow.
+- [Setup](SETUP.md) — environment and host preparation.
+- [Architecture](ARCHITECTURE.md) — how the flake, hosts, modules, users, and secrets fit together.
 
-## Architecture and development
+## Operate safely
 
-- [Architecture](ARCHITECTURE.md) — Flake, host, role, feature, service, port, firewall, proxy, data, and secret design.
-- [Roles](ROLES.md) — Role composition and responsibilities.
+- [Deployment checklist](DEPLOYMENT-CHECKLIST.md) — pre- and post-deployment checks.
+- [Secrets](SECRETS.md) — encrypted secret handling and rotation guidance.
+- [Backup and recovery](BACKUP-RECOVERY.md) — backup validation and recovery procedures.
+- [Alerts](ALERTS.md) — operational alerting guidance.
+- [Testing checklist](TESTING-CHECKLIST.md) — validation before rollout.
 
-## Operations
+## Understand the codebase
 
-- [Deployment Checklist](DEPLOYMENT-CHECKLIST.md) — Preflight, validation, service checks, rollout, and post-deployment verification.
-- [Alerts](ALERTS.md) — Monitoring and alerting guidance.
-- [Backup and Recovery](BACKUP-RECOVERY.md) — Backup scope and recovery procedures.
-- [Cachix](../CACHIX.md) — Binary-cache setup and troubleshooting.
+- [Roles](ROLES.md) — reusable system roles and composition patterns.
+- [Cachix](../CACHIX.md) — binary cache configuration and usage.
+- [Final status](../FINAL-STATUS.md) — project status notes.
 
-## Security
+## Repository map
 
-- [Secrets](SECRETS.md) — sops-nix layout, editing encrypted values, and safe secret handling.
+- `hosts/` contains the host-specific configurations: `navi`, `oryx`, `r730`, `r730xd`, and `r820`.
+- `modules/features/` contains optional feature modules.
+- `modules/hardware/` contains hardware-specific modules.
+- `modules/roles/` contains reusable role modules.
+- `users/` contains user configuration.
+- `secrets/` contains encrypted secret material.
+- `tests/` contains NixOS test definitions and test documentation.
 
-## Current operator notes
+## Recommended workflow
 
-The current configuration includes PostgreSQL-backed services, pgAdmin on port `5050`, and Vaultwarden on port `8222`. pgAdmin uses the NixOS service options for its initial email, password file, and port, with a systemd listen override for remote access. Shared values such as `DEFAULT_SERVER` are sourced from host settings, and service ports must stay aligned with firewall and public-backend configuration.
+1. Read [Getting started](GETTING-STARTED.md) and [Setup](SETUP.md).
+2. Select the target host and inspect its hardware and role composition.
+3. Review secret requirements without exposing plaintext values.
+4. Run `nix flake check` and the applicable tests.
+5. Follow the [Deployment checklist](DEPLOYMENT-CHECKLIST.md).
+6. Confirm backups, monitoring, and alerts after deployment.
 
-Service exposure should be reviewed as a complete path: service configuration, listening address, firewall rules, public backend ports, reverse-proxy routes, TLS, and authentication. Do not infer Internet safety from service enablement alone.
-
-## Documentation maintenance
-
-When adding or changing a feature:
-
-1. Update the relevant feature, role, or architecture documentation.
-2. Add operator-visible ports, databases, credentials, and access requirements to the deployment checklist.
-3. Update the README when the change affects repository users or deployment behavior.
-4. Review backups, monitoring, and alerting for new persistent or critical services.
-5. Run `nix flake check` and validate links and commands before committing.
+Documentation should describe tested repository behavior. When configuration changes, update the affected guide in the same change whenever practical.
