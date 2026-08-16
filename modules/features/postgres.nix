@@ -1,6 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
+  hostname = config.networking.hostName;
   bindAddr = config.networking.fleet.${hostname}.ip;
 in
 {
