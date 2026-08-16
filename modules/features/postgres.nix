@@ -8,6 +8,8 @@ let
   bindAddr = config.servicesHostIP or "127.0.0.1";
 in
 {
+  sops.secrets."pgadmin-password" = {};
+  
   # PostgreSQL: Bind to host IP for HAProxy access (or localhost if no host IP)
   services.postgresql = {
     enable = true;
@@ -40,7 +42,7 @@ in
     enable = true;
     port = 5050;
     # Use sops for initial password
-    initialEmail = "admin@localhost";
+    initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets."pgadmin-password".path;
   };
 
