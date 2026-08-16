@@ -43,4 +43,5 @@ in
   networking.firewall.interfaces.eno1.allowedTCPPorts = [ 5432 5050 ];
   networking.firewall.extraInputRules = ''
     ip saddr ${config.networking.fleet.proxy.ip} tcp dport 5050 accept
-  '
+  '';
+}
