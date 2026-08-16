@@ -3,6 +3,7 @@
 let
   hostname = config.networking.hostName;
   bindAddr = config.networking.fleet.${hostname}.ip;
+  pgadminPkg = pkgs.pgadmin4;
 in
 {
   sops.secrets.pgadmin_password = {
@@ -34,12 +35,20 @@ in
   # Disable the NixOS pgadmin module
   services.pgadmin.enable = false;
   
-  # Create wrapper script using pgadmin4's actual entry point
+  # Create wrapper script
   environment.etc."pgadmin4-wrapper.py".text = ''
     #!/usr/bin/env python3
     import os
+    import sys
+    
+    # Set SERVER_ADDRESS before importing
     os.environ['SERVER_ADDRESS'] = '${bindAddr}'
-    os.environ['PGADMIN_PORT'] = '5050'
+    
+    # Find and add pgadmin4 to path
+    import glob
+    for path in glob.glob('/nix/store/*pgadmin*/lib/python*/site-packages'):
+        if path not in sys.path:
+            sys.path.insert(0, path)
     
     # Import pgadmin4's app and run it
     from pgadmin4 import create_app
@@ -58,7 +67,7 @@ in
       User = "postgres";
       Group = "postgres";
       WorkingDirectory = "/var/lib/pgadmin";
-      ExecStart = "${pkgs.python3.withPackages (p: [p.pgadmin4])}/bin/python3 /etc/pgadmin4-wrapper.py";
+      ExecStart = "${pkgs.python3}/bin/python3 /etc/pgadmin4-wrapper.py";
       Restart = "always";
     };
     
