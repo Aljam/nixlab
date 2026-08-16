@@ -3,10 +3,11 @@
 let
   hostname = config.networking.hostName;
   bindAddr = config.networking.fleet.${hostname}.ip;
+  pgadminPkg = pkgs.pgadmin4;
 in
 {
   sops.secrets.pgadmin_password = {
-    owner = "pgadmin";
+    owner = "postgres";
   };
 
   services.postgresql = {
@@ -31,11 +32,30 @@ in
     ];
   };
 
-  services.pgadmin = {
-    enable = true;
-    initialEmail = "admin@derezzed.info";
-    initialPasswordFile = config.sops.secrets.pgadmin_password.path;
-    port = 5050;
+  # Disable the NixOS pgadmin module service
+  services.pgadmin.enable = false;
+  
+  # Create custom pgadmin service that binds to network IP
+  systemd.services.pgadmin = {
+    description = "pgAdmin4";
+    after = [ "network.target" "postgresql.service" ];
+    wants = [ "network.target" "postgresql.service" ];
+    wantedBy = [ "multi-user.target" ];
+    
+    serviceConfig = {
+      Type = "simple";
+      User = "postgres";
+      Group = "postgres";
+      WorkingDirectory = "/var/lib/pgadmin";
+      Environment = "SERVER_ADDRESS=${bindAddr}";
+      ExecStart = "${pgadminPkg}/bin/pgadmin4";
+      Restart = "always";
+    };
+    
+    preStart = ''
+      mkdir -p /var/lib/pgadmin
+      chown postgres:postgres /var/lib/pgadmin
+    '';
   };
 
   # Allow direct access to pgadmin on the network interface
