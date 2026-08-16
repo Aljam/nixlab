@@ -18,7 +18,7 @@ in
     enable = true;
     port = 5050;
     openFirewall = false;               # do NOT open to the world
-    initialEmail = ...;
+    initialEmail = "admin@derezzed.info";
     initialPasswordFile = config.sops.secrets."pgadmin-password".path;
 
     settings = {
