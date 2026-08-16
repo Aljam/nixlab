@@ -3,7 +3,6 @@
 
 let
   bindAddr = config.servicesHostIP or "127.0.0.1";
-  pgadminPkg = pkgs.pgadmin4;
 in
 {
   sops.secrets."pgadmin_password" = {};
@@ -23,28 +22,15 @@ in
     ];
   };
 
-  # Disable built-in pgadmin
-  services.pgadmin.enable = false;
-  
-  systemd.services.pgadmin = {
-    description = "pgAdmin4";
-    after = [ "network.target" "postgresql.service" ];
-    wants = [ "network.target" "postgresql.service" ];
-    wantedBy = [ "multi-user.target" ];
-    
-    serviceConfig = {
-      Type = "simple";
-      User = "postgres";
-      Group = "postgres";
-      WorkingDirectory = "/var/lib/pgadmin";
-      Environment = "SERVER_ADDRESS=${bindAddr}";
-      ExecStart = "${pgadminPkg}/bin/pgadmin4";
-      Restart = "always";
-    };
-    
-    preStart = ''
-      mkdir -p /var/lib/pgadmin
-      chown postgres:postgres /var/lib/pgadmin
-    '';
+  services.pgadmin = {
+    enable = true;
+    port = 5050;
+    initialEmail = "admin@derezzed.info";
+    initialPasswordFile = config.sops.secrets."pgadmin_password".path;
   };
+
+  # Set SERVER_ADDRESS via config file
+  environment.etc."pgadmin/config_local.py".text = ''
+    SERVER_ADDRESS = '${bindAddr}'
+  '';
 }
