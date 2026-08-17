@@ -32,7 +32,7 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak";
 
     hyprland = { url = "github:hyprwm/Hyprland"; inputs.nixpkgs.follows = "nixpkgs"; };
-    
+
     millennium = {
       url = "github:SteamClientHomebrew/Millennium?dir=packages/nix";
     };
@@ -81,7 +81,7 @@
                 inputs.millennium.overlays.default
               ];
             }
-          )       
+          )
 
           home-manager.nixosModules.home-manager
           {
@@ -98,6 +98,8 @@
       flatpakModule = inputs.nix-flatpak.nixosModules.nix-flatpak;
 
     in {
+      formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixpkgs-fmt;
+
       nixosConfigurations = {
 
         navi = mkHost {
