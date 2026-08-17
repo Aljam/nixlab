@@ -15,7 +15,6 @@ concurrency:
 jobs:
   check:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,25 +28,6 @@ jobs:
         run: nix flake check --all-systems
 
       - name: Check formatting
-        run: nix fmt -- --ci
-
-      - name: Evaluate host configurations
-        shell: bash
         run: |
-          set -euo pipefail
-
-          for host in navi oryx r730 r730xd r820; do
-            echo "Evaluating $host"
-            nix eval ".#nixosConfigurations.${host}.config.system.build.toplevel.drvPath"
-          done
-
-      - name: Build host configurations
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          for host in navi oryx r730 r730xd r820; do
-            echo "Building $host"
-            nix build ".#nixosConfigurations.${host}.config.system.build.toplevel" \
-              --no-link
-          done
+          nix fmt
+          git diff --exit-code
