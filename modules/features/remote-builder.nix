@@ -10,7 +10,7 @@
     buildMachines = [{
       hostName = "${config.networking.subnets.lan}.4";
       system = "x86_64-linux";
-      protocol = "ssh-ng"; # The modern, faster Nix SSH protocol
+      protocol = "ssh"; # The modern, faster Nix SSH protocol
       
       # The user on the R820 that will execute the build
       sshUser = "aljam"; 
