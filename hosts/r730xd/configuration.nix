@@ -14,15 +14,8 @@
   ];
 
   boot.kernelPackages = pkgs.linuxPackages_6_1;  
-  boot.zfs.forceImportRoot = false;
+
   boot.kernelParams = [ "zfs.zfs_arc_max=68719476736" ];
 
   networking.hostId = "d2083fdc"; # Required for ZFS
-
-  networking.interfaces.eno1.ipv4.addresses = [
-    {
-      address = config.networking.fleet.r730xd.ip;
-      prefixLength = 24;
-    }
-  ];
 }
