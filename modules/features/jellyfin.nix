@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  networking.proxyBackendPorts = [ 8096 ];
+
   services.jellyfin = {
     enable = true;
     group = "media";
