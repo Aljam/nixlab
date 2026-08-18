@@ -1,7 +1,4 @@
 { config, lib, ... }: {
-  imports = [
-    ../roles/service.nix
-  ];
 
   config = {
     services.grafana = {
