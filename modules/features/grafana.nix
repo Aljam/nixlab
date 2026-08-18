@@ -1,10 +1,11 @@
-# modules/features/grafana.nix
 { config, lib, pkgs, ... }:
 
 let
   bindAddr = config.servicesHostIP or "127.0.0.1";
 in
 {
+  networking.proxyBackendPorts = [ 3000 ];
+
   sops.secrets."grafana-admin-password" = {
     owner = "grafana";
     group = "grafana";
