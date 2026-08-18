@@ -13,13 +13,6 @@
 
   networking.hostId = "acccc16e"; # Required for ZFS
 
-  networking.interfaces.eno1.ipv4.addresses = [
-    {
-      address = config.networking.fleet.r730.ip;
-      prefixLength = 24;
-    }
-  ];
-
   boot.kernelPackages = pkgs.linuxPackages_6_1;  
 
   # hardware.nvidia-container-toolkit.enable = true; # Passes the P40s into Docker
