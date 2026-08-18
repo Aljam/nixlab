@@ -30,7 +30,6 @@ in
       };
     };
   };
-}
 
   networking.proxyBackendPorts = [ 3000 ];
 }
