@@ -31,3 +31,32 @@ jobs:
         run: |
           nix fmt
           git diff --exit-code
+
+  build-hosts:
+    name: Build ${{ matrix.host }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        host:
+          - navi
+          - oryx
+          - r730
+          - r730xd
+          - r820
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v31
+        with:
+          github_access_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build host
+        run: |
+          nix build \
+            ".#nixosConfigurations.${{ matrix.host }}.config.system.build.toplevel" \
+            --no-link \
+            --print-build-logs
