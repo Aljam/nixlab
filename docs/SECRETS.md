@@ -1,381 +1,220 @@
 # Secrets Management
 
-This document describes how to manage secrets (passwords, API keys, certificates) in nixlab using SOPS and GPG.
+This document describes how to manage passwords, API keys, certificates, and other sensitive values in nixlab using SOPS, age, and sops-nix.
 
 ## Overview
 
-nixlab uses **SOPS** (Secrets OPerationS) for encrypting secrets, integrated with NixOS via **sops-nix**.
+nixlab stores encrypted secret files in Git. SOPS encrypts the data key to configured age recipients, while sops-nix decrypts declared secrets on the target host during activation.
 
-### Why SOPS?
+Encrypted files are safe to version-control only when they contain no plaintext secrets and the corresponding private keys remain outside the repository.
 
-- **Git-friendly**: Encrypted files can be safely committed
-- **Multi-key**: Multiple GPG keys can decrypt the same secret
-- **Host-specific**: Different hosts can access different secrets
-- **Audit trail**: Version control shows what secrets exist (not their values)
-- **NixOS integration**: Secrets are automatically decrypted at build time
+## Repository layout
 
-## Architecture
-
-```
+```text
 secrets/
-├── secrets.yaml          # Encrypted secrets file
-└── .sops.yaml           # SOPS encryption policy
+└── secrets.yaml       # Encrypted SOPS file
 
-GPG Keys:
-├── User keys (for decryption)
-└── Host keys (for machine-specific access)
+.sops.yaml             # SOPS creation rules and age recipients
 ```
 
-### Secret Flow
+The repository's `.sops.yaml` is the source of truth for which age recipients can decrypt newly encrypted files. Review it before adding or rotating secrets.
 
-```
-1. Create/edit secret in secrets/secrets.yaml
-2. SOPS encrypts with configured GPG keys
-3. Commit encrypted file to Git
-4. NixOS build references secret
-5. sops-nix decrypts at activation time
-6. Secret available in /run/secrets/
-```
+## Key model
+
+The repository uses age recipients rather than GPG key IDs.
+
+- The operator's age identity allows an administrator to edit and recover secrets.
+- Host age recipients allow selected NixOS machines to decrypt secrets during activation.
+- On hosts, sops-nix can use the SSH host Ed25519 private key configured by `sops.age.sshKeyPaths` as a decryption identity.
+- Age recipient strings and SSH public keys are not secret; private age identities and SSH host private keys are.
+
+Treating an SSH host key as an age identity is convenient, but it means rotating or losing that host key affects both SSH host identity and secret recovery. Document and test the recovery path before rotating host keys.
 
 ## Prerequisites
 
-### Install Required Tools
+Install SOPS and age through a temporary Nix shell or your preferred package configuration:
 
 ```bash
-# On NixOS
-nix-env -iA nixpkgs.sops
-nix-env -iA nixpkgs.gnupg
-
-# Or via Nix
-nix-shell -p sops gnupg
+nix-shell -p sops age
 ```
 
-### Generate GPG Key
+The repository may also provide these tools through its development shell or system packages.
 
-If you don't have a GPG key:
+Verify the tools:
 
 ```bash
-# Generate new key
-gpg --full-generate-key
-
-# Choose:
-# - Key type: RSA and RSA (default)
-# - Key size: 4096
-# - Expiration: 1y (or 0 for no expiration)
-# - Real name: Your Name
-# - Email: your@email.com
-# - Comment: nixlab secrets
-# - Passphrase: (choose a strong one)
+sops --version
+age --version
 ```
 
-### Export GPG Key ID
+## Editing secrets
+
+Edit the encrypted file with SOPS:
 
 ```bash
-# List secret keys
-gpg --list-secret-keys --keyid-format LONG
-
-# Copy the key ID (e.g., ABCD1234EF567890)
-```
-
-## Initial Setup
-
-### 1. Configure SOPS
-
-Create `.sops.yaml` in repository root:
-
-```yaml
-creation_rules:
-  - path_regex: secrets/.*\.yaml$
-    key_groups:
-    - gpg:
-      # Add your GPG key ID
-      - ABCD1234EF567890
-      
-      # Add host keys for machine-specific access
-      # - HOST_KEY_ID_1
-      # - HOST_KEY_ID_2
-```
-
-### 2. Create Secrets File
-
-```bash
-# Create initial secrets file
-touch secrets/secrets.yaml
-
-# Encrypt with SOPS
 sops secrets/secrets.yaml
 ```
 
-This opens your editor to add secrets.
-
-### 3. Add Secrets
-
-In the editor, add secrets in YAML format:
+SOPS decrypts the file into the editor and re-encrypts it when the editor exits. Add only the values required by the configuration, for example:
 
 ```yaml
-# Database passwords
-database_password: "super-secret-password"
-
-# API keys
-api_key: "sk-1234567890abcdef"
-
-# Certificates
+database_password: "replace-me"
+api_key: "replace-me"
 cert_pem: |
   -----BEGIN CERTIFICATE-----
-  MIID...
+  replace-me
   -----END CERTIFICATE-----
-
-# Host-specific secrets
-host_navi_password: "navi-secret"
-host_oryx_password: "oryx-secret"
 ```
 
-Save and exit - SOPS encrypts automatically.
+Inspect a decrypted copy only when necessary:
 
-## Using Secrets in NixOS
+```bash
+sops -d secrets/secrets.yaml
+```
 
-### Basic Usage
+Do not redirect decrypted output into a tracked file, shell history, CI log, or chat transcript.
+
+## Adding a new secret
+
+1. Confirm the secret belongs in the existing file and that all current recipients should have access.
+2. Edit the encrypted file with `sops secrets/secrets.yaml`.
+3. Declare the secret in the relevant NixOS module with `sops.secrets.<name>`.
+4. Reference the generated `/run/secrets/<name>` path from the service configuration.
+5. Build the affected host and deploy it.
+6. Verify the service without printing the secret value.
+
+Example:
 
 ```nix
-# In your host configuration
-{ config, pkgs, ... }:
-
 {
-  # Import sops-nix module
-  imports = [
-    # ... your other imports
-  ];
-  
-  # Configure sops
-  sops = {
-    # Enable sops
-    defaultSopsFile = ../secrets/secrets.yaml;
-    
-    # Define secrets
-    secrets = {
-      database_password = {};
-      api_key = {};
-    };
-  };
-  
-  # Use secrets in services
-  services.postgresql = {
-    enable = true;
-    initialScript = ''
-      CREATE USER myuser WITH PASSWORD '${config.sops.secrets.database_password.path}';
-    '';
-  };
-  
-  # Or use in environment
+  sops.secrets.api_key = {};
+
   environment.variables.API_KEY_FILE = config.sops.secrets.api_key.path;
 }
 ```
 
-## Common Operations
+Secret values should be consumed through files or service-specific secret-file options. Avoid interpolating plaintext secret values into Nix expressions or command lines.
 
-### Add New Secret
+## Recipient changes
+
+When adding or removing a recipient, update `.sops.yaml` and re-encrypt the file so its data key is wrapped for the new recipient set.
+
+Before changing recipients, ensure you still have a working administrator identity and a tested recovery path. A recipient listed in `.sops.yaml` does not automatically rewrite existing encrypted files.
+
+After changing the policy:
 
 ```bash
-# Edit secrets file (automatically decrypts)
+sops updatekeys secrets/secrets.yaml
+```
+
+Review the resulting diff. It should change encrypted metadata, not expose plaintext.
+
+## Backups and recovery
+
+Back up the administrator age identity outside Git. Store it in an encrypted password manager, offline encrypted storage, or another protected recovery location.
+
+Never commit an age identity file, SSH host private key, decrypted secrets file, or plaintext backup.
+
+If a host loses its SSH host key or cannot decrypt secrets:
+
+1. Confirm an administrator identity can still decrypt the file.
+2. Restore or replace the host key using your documented host recovery procedure.
+3. Ensure the replacement host recipient is present in `.sops.yaml`.
+4. Run `sops updatekeys secrets/secrets.yaml` if the encrypted file needs updated recipient metadata.
+5. Rebuild and activate the host.
+6. Verify only the intended secret paths are present under `/run/secrets`.
+
+If all administrator identities and all authorized host identities are lost, the encrypted file cannot be recovered. Maintain at least one protected administrator backup.
+
+## Deployment
+
+Build before switching when practical:
+
+```bash
+nix flake check --show-trace
+nix build ".#nixosConfigurations.r820.config.system.build.toplevel" --no-link --print-build-logs
+```
+
+Deploy the affected host using the repository's normal procedure. After activation, check the secret service and paths without displaying values:
+
+```bash
+systemctl status sops-nix
+sudo find /run/secrets -maxdepth 1 -type f -printf '%f\n'
+```
+
+## Rotation
+
+Rotate the underlying service credential first, then update the encrypted value and redeploy the affected hosts:
+
+```bash
 sops secrets/secrets.yaml
-
-# Add new secret in editor:
-# new_secret: "secret-value"
-
-# Save and exit (automatically encrypts)
+nix flake check --show-trace
 ```
 
-### Update Existing Secret
-
-```bash
-# Edit secrets file
-sops secrets/secrets.yaml
-
-# Modify secret value
-# existing_secret: "new-value"
-
-# Save and exit
-```
-
-### View Secrets
-
-```bash
-# Decrypt and view
-sops -d secrets/secrets.yaml
-
-# Or edit to view
-sops secrets/secrets.yaml
-```
-
-### Remove Secret
-
-```bash
-# Edit secrets file
-sops secrets/secrets.yaml
-
-# Remove secret line
-# old_secret: "value"  # Delete this line
-
-# Save and exit
-```
-
-## Best Practices
-
-### 1. Use Strong GPG Keys
-
-```bash
-# Generate 4096-bit RSA key
-gpg --full-generate-key
-
-# Set expiration (recommended)
-gpg --edit-key YOUR_KEY_ID
-> expire
-> 1y  # or 2y, 5y, etc.
-> save
-```
-
-### 2. Backup GPG Keys
-
-```bash
-# Export secret key
-gpg --export-secret-keys --armor YOUR_KEY_ID > backup-key.asc
-
-# Store securely (encrypted USB, password manager, etc.)
-# NEVER commit this to Git!
-```
-
-### 3. Use Host-Specific Secrets
-
-```yaml
-# In secrets.yaml
-# General secrets
-database_password: "shared-password"
-
-# Host-specific secrets
-host_navi_token: "navi-only-token"
-host_oryx_token: "oryx-only-token"
-```
-
-### 4. Rotate Secrets Regularly
-
-```bash
-# Schedule: Every 3-6 months
-
-# Rotate secret
-sops secrets/secrets.yaml
-# Update: old_secret: "new-rotated-value"
-
-# Deploy to all hosts
-for host in navi oryx r730; do
-  nixos-rebuild switch --flake .#$host
-done
-```
-
-### 5. Limit Secret Access
-
-Use host-specific secrets when possible
-
-### 6. Document Secret Usage
-
-```nix
-# In configuration
-sops.secrets = {
-  # Jellyfin admin password
-  # Used by: services.jellyfin.settings.admin_password_file
-  # Rotated: 2026-01-15
-  # Next rotation: 2026-07-15
-  jellyfin_admin_password = {};
-};
-```
+Rotate immediately if a secret was committed in plaintext, exposed in logs, copied into an insecure backup, or accessible to an unauthorized host. Encryption in Git does not make a previously exposed plaintext value safe.
 
 ## Troubleshooting
 
-### Problem: "No matching keys found"
+### No matching age identity
 
-**Cause**: GPG key not available or not in .sops.yaml
+Check that the administrator identity is available locally or that the host's configured SSH private key exists and is readable by the expected activation path. Do not paste the private key into the repository or a support request.
 
-**Solution**:
+### Recipient or key mismatch
+
+Inspect the public recipient policy:
 
 ```bash
-# Check available keys
-gpg --list-secret-keys
-
-# Verify .sops.yaml includes your key
 cat .sops.yaml
-
-# Add key if missing
-# Edit .sops.yaml and add key ID
 ```
 
-### Problem: "Decryption failed"
-
-**Cause**: Wrong passphrase or corrupted file
-
-**Solution**:
+Then verify the encrypted file has been updated after recipient changes:
 
 ```bash
-# Try manual decryption
-sops -d secrets/secrets.yaml
-
-# Check GPG agent
-gpg-agent --daemon
-
-# Clear cache and retry
-gpg-connect-agent reload
+sops updatekeys secrets/secrets.yaml
 ```
 
-### Problem: Secret not available in NixOS
+### Secret missing after activation
 
-**Cause**: sops-nix not configured correctly
-
-**Solution**:
+Check the NixOS configuration declares the secret and the activation service ran:
 
 ```bash
-# Check sops status
-systemctl status sops-*
-
-# Check secret path
-ls -la /run/secrets/
-
-# Verify configuration
-nixos-option sops.secrets
+systemctl status sops-nix
+sudo ls -la /run/secrets
 ```
 
-## Security Considerations
-
-### 1. Protect GPG Keys
-
-- **Never commit** GPG private keys to Git
-- Use strong passphrases
-- Store backups securely
-- Consider using hardware keys (YubiKey)
-
-### 2. Limit Access
-
-- Use host-specific secrets when possible
-- Rotate keys if someone leaves the project
-- Audit who has access to keys
-
-### 3. Monitor Access
+Inspect service logs without printing secret contents:
 
 ```bash
-# Check Git history for secret changes
-git log -- secrets/secrets.yaml
-
-# Review who accessed secrets
-git log --all --format='%H %an %ad' -- secrets/secrets.yaml
+journalctl -u sops-nix -b
 ```
 
-### 4. Incident Response
+### Service cannot read a secret
 
-If a secret is compromised:
+Check the declared owner, group, and mode in `sops.secrets.<name>`. The service account must be able to read the generated file, but the file should not be world-readable.
 
-1. **Rotate immediately**: Change the secret value
-2. **Revoke GPG key** if key is compromised
-3. **Audit access**: Check who had access
-4. **Update all hosts**: Deploy new secret
-5. **Document incident**: Record what happened
+## Security checklist
+
+- Commit encrypted SOPS files only.
+- Never commit plaintext secrets, age identities, SSH host private keys, or decrypted backups.
+- Keep at least one protected administrator identity backup.
+- Give host recipients only the access they need; split secret files when trust boundaries differ.
+- Review `.sops.yaml` before adding recipients.
+- Rotate service credentials after exposure.
+- Avoid printing decrypted output in CI logs, shells, or chat.
+- Test host-key-loss recovery before relying on SSH host keys as age identities.
+
+## Incident response
+
+If a secret may be compromised:
+
+1. Rotate the underlying service credential immediately.
+2. Re-encrypt and deploy the replacement value.
+3. Remove plaintext copies from working directories, logs, and backups where possible.
+4. Review Git history and access logs.
+5. Remove or replace compromised age or SSH identities.
+6. Update `.sops.yaml` and run `sops updatekeys`.
+7. Rebuild affected hosts and document the incident.
 
 ---
 
-**Last Updated**: August 2026
+**Last updated:** August 2026
