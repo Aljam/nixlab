@@ -10,9 +10,6 @@
     #../../modules/roles/mail-node.nix
   ];
   
-  # Set servicesHostIP from fleet for HAProxy backend access
-  servicesHostIP = config.networking.fleet.r820.ip;
-  
   networking.interfaces.eno1.ipv4.addresses = [{
     address = config.networking.fleet.r820.ip;
     prefixLength = 24;
