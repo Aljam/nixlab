@@ -6,7 +6,7 @@
   imports = [
     # Hardware-specific imports handled by host configurations
     ../features/boot.nix
-    ./networking-options.nix
+    ../features/networking-options.nix
   ];
 
   options.servicesHostIP = lib.mkOption {
