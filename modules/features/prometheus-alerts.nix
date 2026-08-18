@@ -1,6 +1,8 @@
 { config, lib, ... }:
 
 {
+  networking.proxyBackendPorts = [ 9093 ];
+
   services.prometheus.alertmanager = {
     enable = true;
 
