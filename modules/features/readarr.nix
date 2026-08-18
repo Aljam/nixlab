@@ -1,10 +1,11 @@
-# modules/features/readarr.nix
 { config, lib, pkgs, ... }:
 
 let
   bindAddr = config.servicesHostIP or "127.0.0.1";
 in
 {
+  networking.proxyBackendPorts = [ 8787 ];
+
   services.readarr = {
     enable = true;
     group = "media";
