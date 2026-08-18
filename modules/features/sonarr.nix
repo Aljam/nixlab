@@ -1,9 +1,10 @@
-# modules/features/sonarr.nix
 # Security: Sonarr should NOT be exposed to LAN
 # Only accessible via HAProxy gateway (192.168.1.1)
 { config, lib, pkgs, ... }:
 
 {
+  networking.proxyBackendPorts = [ 8989 ];
+
   services.sonarr = {
     enable = true;
   };
