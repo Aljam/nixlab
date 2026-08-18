@@ -1,6 +1,6 @@
 # nixlab
 
-[![CI](https://github.com/Aljam/nixlab/actions/workflows/ci.yml/badge.svg)](https://github.com/Aljam/nixlab/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/Aljam/nixlab?label=license)](LICENSE.md) [![Nix](https://img.shields.io/badge/Nix-2.18%2B-5277C3?logo=nixos&logoColor=white)](https://nixos.org/) [![Flake](https://img.shields.io/badge/Nix-Flake-5277C3?logo=nixos&logoColor=white)](flake.nix) [![SOPS](https://img.shields.io/badge/secrets-SOPS-2F855A?logo=gnuprivacyguard&logoColor=white)](https://github.com/getsops/sops) [![Home%20Manager](https://img.shields.io/badge/Home%20Manager-7EBB4B?logo=nixos&logoColor=white)](https://github.com/nix-community/home-manager)
+[![CI](https://github.com/Aljam/nixlab/actions/workflows/ci.yml/badge.svg)](https://github.com/Aljam/nixlab/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/Aljam/nixlab?label=license)](LICENSE.md) [![Nix](https://img.shields.io/badge/Nix-2.18%2B-5277C3?logo=nixos&logoColor=white)](https://nixos.org/) [![Flake](https://img.shields.io/badge/Nix-Flake-5277C3?logo=nixos&logoColor=white)](flake.nix) [![SOPS](https://img.shields.io/badge/secrets-SOPS-2F855A?logo=gnuprivacyguard&logoColor=white)](https://github.com/getsops/sops) [![Home%20Manager](https://img.shields.io/badge/Home-Manager-7EBB4B?logo=nixos&logoColor=white)](https://github.com/nix-community/home-manager)
 
 Declarative NixOS infrastructure for a homelab.
 
@@ -18,7 +18,7 @@ This repository manages multiple NixOS hosts from a shared flake. Configuration 
 - `users/` — user and home configuration.
 - `secrets/` — encrypted secret material; never commit plaintext secrets.
 - `tests/` — NixOS tests covering backup, firewall, security, and services.
-- `docs/` — operational and contributor documentation.
+- `docs/` — operational, networking, and contributor documentation.
 
 ## Quick start
 
@@ -72,6 +72,7 @@ Secrets are managed as encrypted files. Do not place credentials, private keys, 
 - [Architecture](docs/ARCHITECTURE.md)
 - [Roles and modules](docs/ROLES.md)
 - [Secrets](docs/SECRETS.md)
+- [Networking](docs/NETWORKING.md)
 - [Deployment checklist](docs/DEPLOYMENT-CHECKLIST.md)
 - [Backup and recovery](docs/BACKUP-RECOVERY.md)
 - [Alerts](docs/ALERTS.md)
