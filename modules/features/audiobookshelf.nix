@@ -1,4 +1,3 @@
-# nixlab/modules/features/audiobookshelf.nix
 # Audiobookshelf audiobook and podcast server
 
 { config, lib, pkgs, ... }:
@@ -14,6 +13,8 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    networking.proxyBackendPorts = [ 13378 ];
+
     services.audiobookshelf = {
       enable = true;
       host = "0.0.0.0";
