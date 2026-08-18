@@ -1,13 +1,9 @@
-{ config, lib, ... }: {
-  imports = [
-    ../roles/service.nix
-  ];
+{ config, lib, ... }:
 
-  config = {
-    services.jellyfin = {
-      enable = true;
-    };
-
-    networking.proxyBackendPorts = [ 8096 ];
+{
+  services.jellyfin = {
+    enable = true;
   };
+
+  networking.proxyBackendPorts = [ 8096 ];
 }
