@@ -9,11 +9,6 @@
     ../../modules/features/postgres.nix
     #../../modules/roles/mail-node.nix
   ];
-  
-  networking.interfaces.eno1.ipv4.addresses = [{
-    address = config.networking.fleet.r820.ip;
-    prefixLength = 24;
-  }];
 
   # Remote builder configuration
   nix.settings.trusted-users = [ "root" "aljam" ];
