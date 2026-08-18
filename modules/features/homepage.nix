@@ -1,6 +1,8 @@
 { config, pkgs, ... }:
 
 {
+  networking.proxyBackendPorts = [ 8082 ];
+
   services.homepage-dashboard = {
     enable = true;
     # Binds to localhost to prevent HAProxy Host header validation errors
