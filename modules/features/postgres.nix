@@ -4,6 +4,8 @@ let
   bindAddr = config.servicesHostIP;
 in
 {
+  networking.proxyBackendPorts = [ 5050 ];
+
   sops.secrets.pgadmin_password = {
     owner = "pgadmin";
   };
