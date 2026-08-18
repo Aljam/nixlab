@@ -30,7 +30,7 @@ jobs:
         host: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.host)) || fromJSON('["r730", "r730xd", "r820"]') }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install Nix
         uses: cachix/install-nix-action@v31
