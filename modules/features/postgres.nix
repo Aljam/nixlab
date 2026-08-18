@@ -1,8 +1,7 @@
 { config, pkgs, lib, ... }:
 
 let
-  hostname = config.networking.hostName;
-  bindAddr = config.networking.fleet.${hostname}.ip;
+  bindAddr = config.servicesHostIP;
 in
 {
   sops.secrets.pgadmin_password = {
