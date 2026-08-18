@@ -1,4 +1,3 @@
-# modules/features/torrents.nix
 # Security: Torrent service should NOT be exposed to LAN
 # Only accessible via HAProxy gateway (192.168.1.1)
 { config, lib, pkgs, ... }:
@@ -8,6 +7,8 @@ let
   bindAddr = config.servicesHostIP or "127.0.0.1";
 in
 {
+  networking.proxyBackendPorts = [ 8080 ];
+
   # qBittorrent service
   services.qbittorrent = {
     enable = true;
