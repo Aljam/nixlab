@@ -1,22 +1,13 @@
-{ config, pkgs, ... }:
+{ config, lib, ... }: {
+  imports = [
+    ../roles/service.nix
+  ];
 
-{
-  networking.proxyBackendPorts = [ 8096 ];
+  config = {
+    services.jellyfin = {
+      enable = true;
+    };
 
-  services.jellyfin = {
-    enable = true;
-    group = "media";
-  };
-
-  # Hardware acceleration passthrough for Jellyfin
-  systemd.services.jellyfin.serviceConfig = {
-    SupplementaryGroups = [ "media" "video" "render" ];
-    DeviceAllow = [
-      "/dev/nvidia0 rwm"
-      "/dev/nvidiactl rwm"
-      "/dev/nvidia-uvm rwm"
-      "/dev/nvidia-uvm-tools rwm"
-      "char-drm rwm"
-    ];
+    networking.proxyBackendPorts = [ 8096 ];
   };
 }
