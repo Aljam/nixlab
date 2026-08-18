@@ -27,6 +27,15 @@ in
     # Rename to avoid conflict with NixOS's networking.domain
     myDomain = lib.mkOption { type = lib.types.str; };
     domains = lib.mkOption { type = lib.types.attrsOf lib.types.str; };
+    proxyBackendPorts = lib.mkOption {
+      type = lib.types.listOf lib.types.port;
+      default = [
+        3000 5050 5055 6767 7474 8082 8111 9090 9093
+        9100 13378 8222 8989 8686 8787 7878 9696 8080
+        8081 8096
+      ];
+      description = "TCP ports reachable from the pfSense HAProxy backend.";
+    };
   };
   config.networking = {
     fleet = fleet;
