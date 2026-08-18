@@ -3,6 +3,7 @@ name: Cachix
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
     inputs:
       host:
@@ -18,11 +19,13 @@ on:
           - r820
 
 env:
-  NIX_EXPERIMENTAL_FEATURES: nix-command flakes
+  NIX_CONFIG: |
+    experimental-features = nix-command flakes
 
 jobs:
-  cachix:
+  build:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,14 +35,22 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Cachix
+      - name: Configure Cachix
         uses: cachix/cachix-action@v16
         with:
           name: aljam
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extraPullNames: nix-community
 
-      - name: Build selected system closure
+      - name: Select host
+        id: host
+        env:
+          INPUT_HOST: ${{ inputs.host }}
+        run: echo "name=${INPUT_HOST:-navi}" >> "$GITHUB_OUTPUT"
+
+      - name: Build system closure
         run: |
           nix build \
-            ".#nixosConfigurations.${{ inputs.host || 'navi' }}.config.system.build.toplevel" \
-            --no-link
+            ".#nixosConfigurations.${{ steps.host.outputs.name }}.config.system.build.toplevel" \
+            --no-link \
+            --print-build-logs
