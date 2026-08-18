@@ -9,4 +9,6 @@
     ../../modules/features/nvidia-headless.nix
     ../../modules/features/prometheus-server.nix
   ];
+
+  networking.hostId = "<existing-r730xd-host-id>";
 }
