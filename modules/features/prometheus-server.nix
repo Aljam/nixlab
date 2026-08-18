@@ -8,7 +8,7 @@
     enable = true;
     port = 9090;
     # Bind to localhost - reverse proxy provides external access
-    listenAddress = "127.0.0.1";
+    listenAddress = config.servicesHostIP;
     globalConfig = {
       scrape_interval = "15s";
       evaluation_interval = "15s";
