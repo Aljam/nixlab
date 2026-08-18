@@ -1,14 +1,15 @@
-{ config, lib, ... }:
+{ config, lib, ... }: {
+  options = {
+    networking.proxyBackendPorts = lib.mkOption {
+      type = lib.types.listOf lib.types.port;
+      default = [];
+      description = "Ports that HAProxy/proxy IP is allowed to access on backend services.";
+    };
+  };
 
-let
-  proxyIP = config.networking.fleet.proxy.ip or "192.168.1.1";
-  backendPorts = lib.concatStringsSep ", " (map toString config.networking.proxyBackendPorts);
-in
-{
-  networking.firewall = {
-    extraInputRules = ''
-      ip saddr ${proxyIP} tcp dport { ${backendPorts} }
-        accept comment "HAProxy backend access"
+  config = {
+    networking.firewall.extraInputRules = lib.mkIf (config.networking.proxyBackendPorts != []) ''
+      ip saddr ${config.fleet.proxy.ip} tcp dport { ${lib.concatStringsSep ", " (map toString config.networking.proxyBackendPorts)} } accept comment "HAProxy backend access"
     '';
   };
 }

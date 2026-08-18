@@ -1,34 +1,19 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }: {
+  imports = [
+    ../roles/service.nix
+  ];
 
-let
-  bindAddr = config.servicesHostIP or "127.0.0.1";
-in
-{
-  networking.proxyBackendPorts = [ 3000 ];
-
-  sops.secrets."grafana-admin-password" = {
-    owner = "grafana";
-    group = "grafana";
-    mode = "0640";
-  };
-
-  sops.secrets."grafana-secret-key" = {
-    owner = "grafana";
-    group = "grafana";
-    mode = "0640";
-  };
-
-  services.grafana = {
-    enable = true;
-    settings = {
-      server = {
-        http_addr = bindAddr;
-        http_port = 3000;
-      };
-      security = {
-        admin_password = "$__file{/run/secrets/grafana-admin-password}";
-        secret_key = "$__file{/run/secrets/grafana-secret-key}";
+  config = {
+    services.grafana = {
+      enable = true;
+      settings = {
+        server = {
+          domain = "grafana.${config.networking.domain}";
+          root_url = "https://%(domain)s";
+        };
       };
     };
+
+    networking.proxyBackendPorts = [ 3000 ];
   };
 }
