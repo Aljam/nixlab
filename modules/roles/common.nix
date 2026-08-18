@@ -3,6 +3,12 @@
 { config, lib, pkgs, hostname, ... }:
 
 {
+  imports = [
+    # Hardware-specific imports handled by host configurations
+    ../features/boot.nix
+    ./networking-options.nix
+  ];
+
   options.servicesHostIP = lib.mkOption {
     type = lib.types.str;
     # Prefer the host’s fleet IP; fall back to localhost for desktop machines
@@ -13,12 +19,6 @@
       fleet.<hostname>.ip when present.
     '';
   };
-
-  imports = [
-    # Hardware-specific imports handled by host configurations
-    ../features/boot.nix
-    ./networking-options.nix
-  ];
 
   # Configuration
   config = {
