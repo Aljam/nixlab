@@ -58,7 +58,7 @@ Run the repository checks before deployment:
 nix flake check
 ```
 
-The NixOS test definitions are in `tests/`. They cover backup behavior, firewall rules, security expectations, and services. Run the project’s documented test workflow from [`docs/TESTING-CHECKLIST.md`](docs/TESTING-CHECKLIST.md) and [`tests/README.md`](tests/README.md).
+The NixOS test definitions are in `tests/`. They cover backup behavior, firewall rules, security expectations, and services. Follow the deployment and validation guidance in [`docs/DEPLOYMENT-CHECKLIST.md`](docs/DEPLOYMENT-CHECKLIST.md), and inspect [`tests/`](tests/) for the available test definitions.
 
 ## Secrets
 
@@ -75,9 +75,7 @@ Secrets are managed as encrypted files. Do not place credentials, private keys, 
 - [Deployment checklist](docs/DEPLOYMENT-CHECKLIST.md)
 - [Backup and recovery](docs/BACKUP-RECOVERY.md)
 - [Alerts](docs/ALERTS.md)
-- [Testing checklist](docs/TESTING-CHECKLIST.md)
 - [Cachix](CACHIX.md)
-- [Final status](FINAL-STATUS.md)
 
 ## Contributing
 
