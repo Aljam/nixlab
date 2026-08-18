@@ -15,10 +15,11 @@ in
     enableTCPIP = true;
 
     settings = {
-      listen_addresses = lib.concatStringsSep "," [
+      listen_addresses = lib.mkForce (lib.concatStringsSep "," [
         "127.0.0.1"
         bindAddr
-      ];
+      ]);
+
       password_encryption = "scram-sha-256";
     };
 
@@ -26,7 +27,6 @@ in
       local all all peer
       host all all 127.0.0.1/32 scram-sha-256
       host all all ${bindAddr}/32 scram-sha-256
-      # Add narrower /32 rules for approved remote application clients.
     '';
 
     ensureDatabases = [ "webscraper" "admin" ];
