@@ -25,12 +25,12 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check flake
-        run: nix flake check --all-systems
+        run: nix flake check --all-systems --show-trace
 
       - name: Check formatting
         run: |
           nix fmt
-          git diff --exit-code
+          git diff --exit-code -- .
 
   build-hosts:
     name: Build ${{ matrix.host }}
