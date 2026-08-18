@@ -3,7 +3,7 @@
 {
   hardware.steam-hardware.enable = true;
   environment.sessionVariables = {
-    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "\${HOME}/.steam/root/compatibilitytools.d";
+    STEAM_EXTRA_COMPAT_TOOLS_PATHS = "${HOME}/.steam/root/compatibilitytools.d";
   };
   programs.gamemode = {
     enable = true;
@@ -11,21 +11,25 @@
   programs.gamescope.enable = true;
   programs.steam = {
     enable = true;
-    package = pkgs.millennium-steam.override {
-      extraPkgs = (pkgs: with pkgs; [
-        gamemode
-        libxi
-        libxcursor
-        libxinerama
-        libxscrnsaver
-        libpulseaudio
-        libvorbis
-        libkrb5
-        keyutils
-        at-spi2-atk
-        libpng
-      ]);
-    };
+    package =
+      let
+        millenniumPkgs = pkgs.appendOverlays [ inputs.millennium.overlays.default ];
+      in
+      millenniumPkgs.millennium-steam.override {
+        extraPkgs = (pkgs: with pkgs; [
+          gamemode
+          libxi
+          libxcursor
+          libxinerama
+          libxscrnsaver
+          libpulseaudio
+          libvorbis
+          libkrb5
+          keyutils
+          at-spi2-atk
+          libpng
+        ]);
+      };
     remotePlay.openFirewall = true;
     dedicatedServer.openFirewall = true;
     localNetworkGameTransfers.openFirewall = true;
