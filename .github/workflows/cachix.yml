@@ -2,8 +2,7 @@ name: Cachix
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
     inputs:
       host:
@@ -38,14 +37,9 @@ jobs:
         with:
           name: aljam
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          extraPullNames: nix-community
 
       - name: Build selected system closure
         run: |
           nix build \
-            ".#nixosConfigurations.${{ github.event.inputs.host || 'navi' }}.config.system.build.toplevel" \
-            --no-link \
-            --print-out-paths > store-paths.txt
-
-      - name: Push selected system closure
-        run: cachix push aljam $(cat store-paths.txt)
+            ".#nixosConfigurations.${{ inputs.host || 'navi' }}.config.system.build.toplevel" \
+            --no-link
