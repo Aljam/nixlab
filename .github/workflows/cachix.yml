@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        host: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.host)) || fromJSON('["navi", "oryx", "r730", "r730xd", "r820"]') }}
+        host: ${{ github.event_name == 'workflow_dispatch' && fromJSON(format('["{0}"]', inputs.host)) || fromJSON('["r730", "r730xd", "r820"]') }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
