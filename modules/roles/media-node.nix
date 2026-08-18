@@ -1,4 +1,6 @@
-{ config, pkgs, domains, fleet, ... }: {
+{ config, pkgs, ... }: 
+
+{
   imports = [
     ../features/homepage.nix
     ../features/radarr.nix
