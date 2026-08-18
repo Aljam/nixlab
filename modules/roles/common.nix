@@ -1,6 +1,6 @@
 # modules/roles/common.nix
 # Common configuration for all machines
-{ config, lib, pkgs, hostname, fleet, domains, subnets, ... }:
+{ config, lib, pkgs, hostname, ... }:
 
 {
   options.servicesHostIP = lib.mkOption {
