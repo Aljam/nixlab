@@ -42,7 +42,7 @@ jobs:
         with:
           name: aljam
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
-          extraPullNames: nix-community
+          extraPullNames: nix-community,nix-gaming,hyprland,cuda-maintainers
 
       - name: Build selected system closure
         run: |
