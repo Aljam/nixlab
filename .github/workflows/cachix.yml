@@ -19,7 +19,7 @@ on:
           - r820
 
 env:
-  HOST: ${{ github.event.inputs.host || 'navi' }}
+  NIX_EXPERIMENTAL_FEATURES: nix-command flakes
 
 jobs:
   cachix:
@@ -38,13 +38,14 @@ jobs:
         with:
           name: aljam
           authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+          extraPullNames: nix-community
 
       - name: Build selected system closure
-        run: >-
-          nix build
-          .#nixosConfigurations.${HOST}.config.system.build.toplevel
-          --no-link
-          --print-out-paths > result
+        run: |
+          nix build \
+            ".#nixosConfigurations.${{ github.event.inputs.host || 'navi' }}.config.system.build.toplevel" \
+            --no-link \
+            --print-out-paths > store-paths.txt
 
       - name: Push selected system closure
-        run: cachix push aljam < result
+        run: cachix push aljam $(cat store-paths.txt)
