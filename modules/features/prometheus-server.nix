@@ -1,8 +1,9 @@
-# modules/features/prometheus-server.nix
 # DRY: Use shared proxy IP from flake.nix
 { config, lib, pkgs, ... }:
 
 {
+  networking.proxyBackendPorts = [ 9090 ];
+
   services.prometheus = {
     enable = true;
     port = 9090;
