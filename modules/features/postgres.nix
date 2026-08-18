@@ -16,7 +16,8 @@ in
     authentication = lib.mkOverride 10 ''
       local all all peer
       host all all 127.0.0.1/32 scram-sha-256
-      host all all ${config.networking.subnets.lan}.0/24 scram-sha-256
+      # Add explicit /32 rules for approved remote application clients.
+      # Do not restore a broad LAN-wide rule here.
     '';
     ensureDatabases = [ "webscraper" "admin" ];
     ensureUsers = [
