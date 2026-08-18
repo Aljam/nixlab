@@ -1,12 +1,7 @@
 # modules/roles/server-core.nix
 # Core server configuration: networking, monitoring, and essential services
 # Applied to: r730, r730xd, and other servers
-{
-  config,
-  lib,
-  pkgs,
-  ...  # fleet, subnets, domains wired via common.nix
-}:
+{ config, lib, pkgs, ... }:
 
 let
   # Use proxy IP from fleet config as gateway
@@ -56,8 +51,6 @@ in
 
   # System packages for servers
   environment.systemPackages = [
-    pkgs.htop
-    pkgs.btop
     pkgs.lsof
     pkgs.tcpdump
     pkgs.wireguard-tools
