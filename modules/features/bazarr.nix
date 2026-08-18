@@ -1,4 +1,3 @@
-# nixlab/modules/features/bazarr.nix
 # Bazarr - Subtitle management
 
 { config, lib, pkgs, ... }:
@@ -9,6 +8,8 @@
   };
 
   config = lib.mkIf config.modules.features.bazarr.enable {
+    networking.proxyBackendPorts = [ 6767 ];
+
     services.bazarr = {
       enable = true;
     };
