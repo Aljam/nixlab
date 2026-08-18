@@ -6,7 +6,7 @@
   nodes = {
     proxy = { ... }: {
       imports = [
-        ../modules/roles/networking-options.nix
+        ../modules/features/networking-options.nix
       ];
 
       networking.firewall.enable = true;
@@ -18,7 +18,7 @@
 
     backend = { ... }: {
       imports = [
-        ../modules/roles/networking-options.nix
+        ../modules/features/networking-options.nix
         ../modules/features/reverse-proxy-backends.nix
       ];
 
@@ -36,7 +36,7 @@
 
     attacker = { ... }: {
       imports = [
-        ../modules/roles/networking-options.nix
+        ../modules/features/networking-options.nix
       ];
 
       networking.firewall.enable = true;
