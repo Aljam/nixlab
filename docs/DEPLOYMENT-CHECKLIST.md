@@ -1,84 +1,241 @@
 # Deployment Checklist
 
-Use this checklist when deploying or changing a nixlab host.
+Use this checklist before deploying changes to production hosts in nixlab.
 
-## Before changing configuration
+## Pre-Deployment
 
-- [ ] Confirm the target host and flake output.
-- [ ] Review the target host's hardware profile, roles, and enabled features.
-- [ ] Confirm shared values such as `DEFAULT_SERVER` come from host settings.
-- [ ] Identify new persistent data, database requirements, ports, firewall rules, and reverse-proxy exposure.
-- [ ] Confirm credentials and bootstrap files are encrypted or supplied out-of-band.
-- [ ] Check whether the change requires documentation, backup, or alerting updates.
+### Code Review
 
-## Validate the configuration
+- [ ] Changes reviewed in Git
+- [ ] All CI checks passing
+- [ ] No secrets accidentally committed (gitleaks scan)
+- [ ] `nix flake check` passes locally
+- [ ] `nixos-rebuild build --flake .#hostname` succeeds
 
-- [ ] Run `nix flake check`.
-- [ ] Test the target host:
+### Backup Verification
 
-  ```bash
-  sudo nixos-rebuild test --flake .#<host>
-  ```
+- [ ] Recent backup exists (within 24 hours)
+- [ ] Backup integrity verified (`restic check`)
+- [ ] Offsite sync completed
+- [ ] SOPS keys backed up securely
 
-- [ ] Review the evaluated configuration for service enablement, ports, firewall rules, and proxy exposure.
-- [ ] Confirm no plaintext secret, private key, token, password, or generated credential appears in the diff.
-- [ ] Confirm service settings and host settings agree.
-- [ ] Confirm persistent data paths are covered by the backup plan.
+### Environment Check
 
-## Service checks
+- [ ] Target host reachable via SSH
+- [ ] Host has sufficient disk space
+- [ ] No critical operations running on target
+- [ ] Maintenance window scheduled (if required)
 
-### PostgreSQL and Grafana
+## Deployment
 
-- [ ] Confirm PostgreSQL is enabled where required.
-- [ ] Confirm required databases, roles, ownership, and credentials are declared.
-- [ ] Confirm Grafana's database connection settings match PostgreSQL.
-- [ ] Verify PostgreSQL storage and application data are included in backups.
+### Build Phase
 
-### pgAdmin
+```bash
+# 1. Pull latest changes
+git pull
 
-- [ ] Confirm the initial email uses `initialEmail`.
-- [ ] Confirm the initial password is supplied through `initialPasswordFile` and is not plaintext.
-- [ ] Confirm pgAdmin uses port `5050`.
-- [ ] Confirm the firewall allows port `5050` only on the intended network boundary.
-- [ ] Confirm the systemd listen override is required for the chosen access path.
-- [ ] Log in once, change the bootstrap password, and verify remote access only if explicitly intended.
+# 2. Build configuration
+nixos-rebuild build --flake .#r730
 
-### Vaultwarden
+# 3. Verify build output
+```
 
-- [ ] Confirm Vaultwarden uses port `8222`.
-- [ ] Confirm it is reachable only through the intended trusted network or reverse proxy.
-- [ ] Confirm TLS, proxy headers, secret values, and backup coverage before production use.
+- [ ] Build completed without errors
+- [ ] No unexpected warnings
+- [ ] Expected services in build closure
 
-### Monitoring and media services
+### Test Phase
 
-- [ ] Confirm changed services are enabled through the intended role or feature module.
-- [ ] Verify Grafana, Prometheus, node exporter, alerting, and media services as applicable.
-- [ ] Confirm service data directories are persistent and backed up where required.
+```bash
+# 1. Dry-run activation
+nixos-rebuild test --flake .#r730
 
-## Rollout
+# 2. Verify services
+systemctl list-units --state=failed
 
-- [ ] Apply a temporary test activation first:
+# 3. Check critical services
+systemctl status postgresql
+systemctl status haproxy
+```
 
-  ```bash
-  sudo nixos-rebuild test --flake .#<host>
-  ```
+- [ ] Test activation successful
+- [ ] No failed services
+- [ ] Critical services running
 
-- [ ] Check `systemctl --failed` and the status of changed services.
-- [ ] Verify listening sockets and firewall behavior from an approved client.
-- [ ] Verify reverse-proxy routes and TLS if proxy exposure changed.
-- [ ] Confirm monitoring and alerts remain healthy.
-- [ ] Apply the persistent configuration only after validation:
+### Deploy Phase
 
-  ```bash
-  sudo nixos-rebuild switch --flake .#<host>
-  ```
+```bash
+# 1. Switch to new configuration
+nixos-rebuild switch --flake .#r730
 
-- [ ] Record the deployed revision and any host-specific follow-up.
+# 2. Verify activation
+nixos-version
+```
 
-## After deployment
+- [ ] Switch completed successfully
+- [ ] New generation active
+- [ ] All expected services running
 
-- [ ] Confirm backups complete successfully.
-- [ ] Confirm monitoring and alerting remain healthy.
-- [ ] Confirm new ports are documented and not unintentionally Internet-facing.
-- [ ] Confirm secrets and bootstrap credentials are not exposed in logs or process arguments.
-- [ ] Update the README or relevant guide if the operational behavior changed.
+## Post-Deployment
+
+### Service Verification
+
+- [ ] PostgreSQL accepting connections
+- [ ] HAProxy routing correctly
+- [ ] Media services accessible
+- [ ] Monitoring dashboards updating
+- [ ] Backup jobs scheduled
+
+### Health Checks
+
+```bash
+# Check system health
+nixos-version
+uname -r
+df -h
+free -h
+
+# Check service health
+systemctl status postgresql
+systemctl status haproxy
+
+# Check logs
+journalctl -p 3 -xb
+```
+
+- [ ] System resources normal (CPU, memory, disk)
+- [ ] No critical errors in logs
+- [ ] All services healthy
+
+### Rollback Plan
+
+```bash
+# If issues occur, rollback:
+nixos-rebuild switch --rollback
+
+# Or switch to specific generation
+nix-store --list-generations /nix/var/nix/profiles/system
+nixos-rebuild switch --switch-generation 42
+```
+
+- [ ] Rollback procedure documented
+- [ ] Previous generation available
+- [ ] Team notified of rollback capability
+
+## Service-Specific Checks
+
+### Database (PostgreSQL)
+
+```bash
+# Check PostgreSQL status
+sudo -u postgres psql -c "SELECT version();"
+
+# Verify connections
+sudo -u postgres psql -c "SELECT count(*) FROM pg_stat_activity;"
+```
+
+- [ ] PostgreSQL running
+- [ ] Connections accepted
+- [ ] Backups running
+
+### Media Services
+
+```bash
+# Check Jellyfin
+curl -I http://localhost:8096/health
+
+# Check Sonarr
+curl -I http://localhost:8989/api/v3/system/status?apiKey=YOUR_KEY
+```
+
+- [ ] Jellyfin accessible
+- [ ] Sonarr accessible
+- [ ] Radarr accessible
+
+### Reverse Proxy (HAProxy)
+
+```bash
+# Check HAProxy status
+sudo systemctl status haproxy
+
+# Test routing
+curl -I https://jellyfin.example.com
+curl -I https://sonarr.example.com
+```
+
+- [ ] HAProxy running
+- [ ] All backends healthy
+- [ ] SSL certificates valid
+
+### Monitoring
+
+```bash
+# Check Prometheus
+curl http://localhost:9090/api/v1/targets
+
+# Check Grafana
+curl http://localhost:3000/api/health
+```
+
+- [ ] Prometheus scraping targets
+- [ ] Grafana accessible
+- [ ] Metrics flowing
+
+## Security Checks
+
+### Firewall
+
+```bash
+# Check firewall status
+sudo nft list ruleset
+
+# Verify allowed ports
+sudo ss -tulpn | grep LISTEN
+```
+
+- [ ] Only expected ports open
+- [ ] Firewall rules applied
+
+### SSH
+
+```bash
+# Check SSH status
+sudo systemctl status sshd
+
+# Verify key-based auth
+ssh -o PreferredAuthentications=publickey user@hostname
+```
+
+- [ ] SSH running
+- [ ] Key-based auth working
+
+## Quick Reference
+
+### Common Commands
+
+```bash
+# Build
+nixos-rebuild build --flake .#hostname
+
+# Test
+nixos-rebuild test --flake .#hostname
+
+# Deploy
+nixos-rebuild switch --flake .#hostname
+
+# Rollback
+nixos-rebuild switch --rollback
+
+# Check generation
+nix-store --list-generations /nix/var/nix/profiles/system
+
+# View logs
+journalctl -u service-name -f
+
+# Check services
+systemctl list-units --state=failed
+```
+
+---
+
+**Last Updated**: August 2026
