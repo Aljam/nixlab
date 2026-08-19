@@ -1,6 +1,6 @@
 # nixlab
 
-[![CI](https://github.com/Aljam/nixlab/actions/workflows/ci.yml/badge.svg)](https://github.com/Aljam/nixlab/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/Aljam/nixlab?label=license)](LICENSE.md) [![Nix](https://img.shields.io/badge/Nix-26.058%2B-5277C3?logo=nixos&logoColor=white)](https://nixos.org/) [![Flake](https://img.shields.io/badge/Nix-Flake-5277C3?logo=nixos&logoColor=white)](flake.nix) [![SOPS](https://img.shields.io/badge/secrets-SOPS-2F855A?logo=gnuprivacyguard&logoColor=white)](https://github.com/getsops/sops) [![Home%20Manager](https://img.shields.io/badge/Home-Manager-7EBB4B?logo=nixos&logoColor=white)](https://github.com/nix-community/home-manager)
+[![CI](https://github.com/Aljam/nixlab/actions/workflows/ci.yml/badge.svg)](https://github.com/Aljam/nixlab/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/Aljam/nixlab?label=license)](LICENSE.md) [![Nix](https://img.shields.io/badge/Nix-26.05%2B-5277C3?logo=nixos&logoColor=white)](https://nixos.org/) [![Flake](https://img.shields.io/badge/Nix-Flake-5277C3?logo=nixos&logoColor=white)](flake.nix) [![SOPS](https://img.shields.io/badge/secrets-SOPS-2F855A?logo=gnuprivacyguard&logoColor=white)](https://github.com/getsops/sops) [![Home%20Manager](https://img.shields.io/badge/Home-Manager-7EBB4B?logo=nixos&logoColor=white)](https://github.com/nix-community/home-manager)
 
 Declarative NixOS infrastructure for a homelab.
 
