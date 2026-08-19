@@ -122,20 +122,6 @@ nixlab/
 | `navi`  | Custom                | Reverse proxy / edge services     | Production  |
 | `oryx`  | Custom                | Development / staging             | Development |
 
-## Key Technologies
-
-| Technology | Purpose |
-|------------|---------|
-| **NixOS** | Declarative, reproducible OS configuration |
-| **Nix Flakes** | Versioned, composable Nix expressions |
-| **SOPS** | Secret encryption with age/GPG keys |
-| **Cachix** | Binary cache for fast Nix builds |
-| **systemd** | Service orchestration and monitoring |
-| **nftables** | Firewall and network security |
-| **HAProxy** | Reverse proxy and load balancing |
-| **PostgreSQL** | Primary database engine |
-| **Docker/Podman** | Containerized service deployment |
-
 ## Documentation
 
 Comprehensive documentation is available in the [`docs/`](docs/) directory:
