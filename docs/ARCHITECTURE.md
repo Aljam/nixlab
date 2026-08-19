@@ -1,115 +1,165 @@
-# nixlab Architecture
+# Architecture
 
-## Overview
+This document describes the system architecture, module organization, and design principles of the nixlab infrastructure.
 
-nixlab is a flake-based NixOS homelab configuration. It models hosts, hardware, roles, services, networking, storage, monitoring, users, and secrets as reviewable code.
+## System Overview
 
-The configuration is deliberately layered: machine-specific details live with hosts, reusable behavior lives in modules, and sensitive values stay encrypted. This keeps deployments reproducible without forcing every host to run the same workload.
+nixlab follows a **layered, role-based architecture** that separates concerns across hardware abstraction, service roles, and optional features. This design enables DRY (Don't Repeat Yourself) configuration while maintaining flexibility for host-specific customizations.
 
-## Configuration layers
-
-### Flake
-
-`flake.nix` defines the inputs and produces the NixOS configuration outputs. `flake.lock` pins input revisions so evaluations are reproducible.
-
-Common commands are:
-
-```bash
-nix flake check
-sudo nixos-rebuild test --flake .#<host>
-sudo nixos-rebuild switch --flake .#<host>
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Host Configuration                    │
+│              (hosts/{navi,oryx,r730,r820})               │
+├─────────────────────────────────────────────────────────┤
+│                      User Configuration                   │
+│                    (users/{aljam,...})                    │
+├─────────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────┐  │
+│  │   Roles     │  │  Features   │  │    Hardware     │  │
+│  │  (modules)  │  │  (modules)  │  │    (modules)    │  │
+│  │             │  │             │  │                 │  │
+│  │ - database  │  │ - monitoring│  │ - dell-r820     │  │
+│  │ - media     │  │ - backup    │  │ - dell-r730     │  │
+│  │ - proxy     │  │ - logging   │  │ - custom        │  │
+│  │ - app       │  │ - alerting  │  │                 │  │
+│  └─────────────┘  └─────────────┘  └─────────────────┘  │
+├─────────────────────────────────────────────────────────┤
+│                    NixOS Base System                     │
+│              (nixpkgs, nixos-hardware, etc.)             │
+└─────────────────────────────────────────────────────────┘
 ```
 
-### Hosts
+## Flake Structure
 
-`hosts/` contains machine-specific configuration. A host selects its hardware profile, roles, feature modules, networking, storage, and host settings.
+### Inputs
 
-Current host profiles include:
+```nix
+# flake.nix
+inputs = {
+  nixpkgs;          # Nix package collection
+  nixos-hardware;   # Hardware-specific configurations
+  sops-nix;         # SOPS integration for NixOS
+  home-manager;     # User environment management
+  agenix;           # Alternative secret management (optional)
+};
+```
 
-- `navi`
-- `oryx`
-- `r730`
-- `r730xd`
-- `r820`
+### Outputs
 
-Review the target host directory before deploying; hardware assumptions and enabled workloads are host-specific.
+```nix
+outputs = { self, nixpkgs, ... }: {
+  nixosConfigurations = {
+    r820 = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        ./hosts/r820
+        ./users/aljam
+        # ... other modules
+      ];
+    };
+    # ... other hosts
+  };
+  
+  checks = {
+    tests = import ./tests;
+  };
+};
+```
 
-### Modules
+## Module Organization
 
-- `modules/hardware/` contains hardware and platform integration.
-- `modules/roles/` groups related capabilities into reusable system compositions.
-- `modules/features/` contains opt-in services and capabilities.
+### `modules/roles/`
 
-Feature modules should expose clear options, use standard NixOS service modules where possible, and avoid embedding values that belong in host settings.
+Service roles define **what a host does**. Each role is a self-contained NixOS module that can be composed into host configurations.
 
-### Users and secrets
+```
+modules/roles/
+├── database/          # PostgreSQL, MariaDB, Redis
+├── media/             # Jellyfin, Sonarr, Radarr, Lidarr
+├── proxy/             # HAProxy, Nginx, Traefik
+├── app/               # Application server (Node.js, Python, etc.)
+├── storage/           # NFS, Samba, ZFS management
+├── monitoring/        # Prometheus, Grafana, Node Exporter
+└── ci/                # GitHub Actions runners, CI infrastructure
+```
 
-- `users/` contains user and Home Manager configuration.
-- `secrets/` contains encrypted sops-nix data.
-- `.sops.yaml` defines encryption rules and recipients.
+### `modules/features/`
 
-Secrets should be referenced through files or module options, never copied into plaintext configuration or committed directly.
+Features are **optional capabilities** that can be added to any host, independent of roles.
 
-## Service architecture
+```
+modules/features/
+├── backup/            # rsync, restic, borgbackup
+├── logging/           # journald, rsyslog, loki
+├── alerting/          # systemd alerts, email notifications
+├── hardening/         # Security hardening (fail2ban, auditd)
+└── virtualization/    # Docker, Podman, libvirt
+```
 
-### PostgreSQL
+### `modules/hardware/`
 
-PostgreSQL provides the shared database layer for configured applications, including Grafana. Database declarations belong in the PostgreSQL feature, while application-specific connection settings belong with the consuming service or host role.
+Hardware modules provide **vendor-specific configurations** for supported server platforms.
 
-Persistent database storage must be included in the backup plan. Credentials and bootstrap values must remain encrypted.
+```
+modules/hardware/
+├── dell-r820/         # Dell PowerEdge R820 specifics
+├── dell-r730/         # Dell PowerEdge R730 specifics
+├── dell-r730xd/       # Dell PowerEdge R730XD specifics
+└── custom/            # Generic x86_64 hardware
+```
 
-### pgAdmin
+## Configuration Layers
 
-pgAdmin is configured through the NixOS `services.pgadmin` module. The current deployment uses:
+### Layer 1: NixOS Base
 
-- `initialEmail` for the initial administrator address.
-- `initialPasswordFile` for the bootstrap password.
-- `settings.port` with port `5050`.
-- A systemd override to listen on `0.0.0.0` when remote access is required.
-- Firewall exposure for the configured pgAdmin port.
+The foundation is vanilla NixOS from `nixpkgs`, providing:
+- System packages and services
+- Kernel and bootloader
+- User management
+- Network configuration
 
-Remote access should be limited by network policy or placed behind an authenticated TLS reverse proxy. Change the bootstrap password after first login.
+### Layer 2: Hardware Abstraction
 
-### Vaultwarden
+Hardware modules customize the base for specific platforms.
 
-Vaultwarden is exposed on port `8222`. Its feature module manages service configuration and host exposure. Use TLS, a trusted proxy boundary, and the repository's secret-management process before making it available outside the trusted network.
+### Layer 3: Roles and Features
 
-### Monitoring and media
+Roles and features compose into functional service definitions.
 
-The feature set includes Grafana, Prometheus, node exporter, alerting, Jellyfin, the Arr applications, Audiobookshelf, Seerr, Shoko, Autobrr, Recyclarr, torrents, and related tooling. Enable workloads through the appropriate role or host rather than adding ad-hoc service configuration to a machine.
+### Layer 4: Host Configuration
 
-## Ports, firewall, and proxy
+Host configurations tie everything together with site-specific settings.
 
-Service exposure is part of the architecture, not an afterthought.
+### Layer 5: User Configuration
 
-- Shared values such as `DEFAULT_SERVER` come from host settings.
-- Service ports are kept in settings or feature configuration rather than scattered literals.
-- Public service ports are collected into the host's backend-port configuration when needed.
-- Firewall additions use the NixOS firewall integration and nftables-compatible rule content.
-- Reverse-proxy backends are optional and should be defined only for services that need proxy exposure.
+User modules define SSH keys, home-manager configurations, and development environments.
 
-When adding or changing a service, update its port, firewall policy, public backend exposure, proxy configuration, and documentation together. An enabled service is not automatically safe for public Internet exposure.
+## Design Principles
 
-## Data and recovery
+### 1. Declarative Over Imperative
 
-Persistent application data, PostgreSQL data, encrypted secrets, and host-specific state require explicit backup decisions. See [Backup and Recovery](BACKUP-RECOVERY.md) for the recovery process and [Secrets](SECRETS.md) for encrypted values.
+All system state is defined in Nix expressions. No manual configuration outside the repository.
 
-## Design principles
+### 2. Composition Over Inheritance
 
-1. Prefer declarative NixOS service options over ad-hoc systemd units.
-2. Keep host-specific values in settings or host configuration.
-3. Use feature modules for reusable service behavior.
-4. Keep secrets encrypted and reference files rather than inline values.
-5. Treat firewall and proxy exposure as part of service design.
-6. Include persistent data in backup and recovery planning.
-7. Validate changes with `nix flake check` and a host-specific rebuild test.
+Modules compose via imports rather than deep inheritance hierarchies.
 
-## Adding or changing a feature
+### 3. Separation of Concerns
 
-1. Add or update a focused module under `modules/features/`.
-2. Define options for values that vary by host, such as ports, paths, and enablement.
-3. Add the feature to the appropriate role or host.
-4. Add required firewall and public backend ports in the same change.
-5. Add or update secrets using the encrypted workflow.
-6. Update the README and operational documentation when behavior changes.
-7. Run checks before deployment and record the deployed revision.
+- Hardware modules know nothing about services
+- Roles are independent of specific hosts
+- Secrets are isolated from configuration logic
+
+### 4. Reproducibility
+
+Every build is reproducible from `flake.lock`. No floating versions.
+
+### 5. Security by Default
+
+- All secrets encrypted before commit
+- Minimal service exposure via firewall
+- Regular security updates via flake updates
+
+---
+
+**Last Updated**: August 2026
