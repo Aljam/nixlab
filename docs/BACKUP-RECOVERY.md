@@ -1,392 +1,241 @@
 # Backup & Recovery
 
-This document describes backup strategies and disaster recovery procedures for nixlab.
+This document outlines backup strategies, disaster recovery procedures, and business continuity planning for nixlab infrastructure.
 
-## Overview
+## Backup Architecture
 
-A robust backup strategy protects against:
-- Hardware failures
-- Accidental deletions
-- Ransomware/malware
-- Natural disasters
-- Human error
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│  Production     │     │  Backup Agent    │     │  Backup Storage │
+│  Hosts          │────▶│  (restic/borg)   │────▶│  (local/remote) │
+│  (r820, r730)   │     │  (scheduled)     │     │  (tank/offsite) │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+```
 
-## Backup Philosophy
+## Backup Strategy
 
 ### 3-2-1 Rule
 
-- **3** copies of your data
-- **2** different media types
-- **1** offsite backup
+- **3 copies** of data (production + 2 backups)
+- **2 different media** (local disk + offsite)
+- **1 offsite copy** (remote location or cloud)
 
-### What to Backup
+### Backup Tiers
 
-1. **Configuration** (nixlab repository)
-2. **User data** (documents, photos, etc.)
-3. **Database contents** (PostgreSQL, etc.)
-4. **Service data** (Jellyfin metadata, etc.)
-5. **Secrets** (GPG keys, SOPS files)
+| Tier | Data Type              | Frequency | Retention | Method      |
+|------|------------------------|-----------|-----------|-------------|
+| 1    | NixOS configuration    | Every commit | Indefinite | Git (GitHub) |
+| 2    | Database (PostgreSQL)  | Hourly    | 7 days    | pg_dump + restic |
+| 3    | Media files            | Daily     | 30 days   | restic + hardlinks |
+| 4    | User home directories  | Daily     | 14 days   | restic |
+| 5    | Secrets (SOPS keys)    | On change | Indefinite | Encrypted backup |
 
-## Configuration Backup
+## Backup Tools
 
-### Git Repository
+### restic
 
-The nixlab repository itself is your configuration backup:
-
-```bash
-# Ensure all changes are committed
-git status
-git add .
-git commit -m "Latest configuration"
-
-# Push to remote
-git push origin main
-```
-
-**Best practices**:
-- Commit frequently
-- Use meaningful commit messages
-- Push to remote immediately after changes
-- Consider multiple remotes (GitHub, GitLab, self-hosted)
-
-### Secrets Backup
-
-```bash
-# Backup GPG keys (CRITICAL)
-gpg --export-secret-keys --armor YOUR_KEY_ID > gpg-backup-$(date +%Y%m%d).asc
-
-# Store securely:
-# - Encrypted USB drive
-# - Password manager
-# - Paper backup (gpg2paper)
-# - Secure cloud storage (encrypted)
-
-# NEVER commit GPG private keys to Git!
-```
-
-## System Backup Solutions
-
-### Option 1: BorgBackup (Recommended)
-
-Borg provides efficient, deduplicated backups.
-
-#### Installation
+**Primary backup tool** for file-level backups with deduplication and encryption.
 
 ```nix
-# In your host configuration
-services.borgbackup = {
-  enable = true;
-  jobs = {
+# modules/features/backup/default.nix
+{
+  services.restic.backups = {
     daily = {
-      paths = [
-        "/home"
-        "/var/lib/postgresql"
-        "/var/lib/jellyfin"
-        "/etc"
+      enable = true;
+      paths = [ "/home" "/var/lib/postgresql" "/srv/media" ];
+      repository = "/mnt/backup/restic";
+      passwordFile = "/run/secrets/restic-password";
+      timerConfig.OnCalendar = "daily";
+      pruneOpts = [
+        "--keep-daily 7"
+        "--keep-weekly 4"
+        "--keep-monthly 6"
       ];
-      exclude = [
-        "/home/*/.cache"
-        "/home/*/.local/share/Trash"
-      ];
-      repo = "user@backup-server:/backups/${config.networking.hostName}";
-      encryption = {
-        mode = "repokey";
-        passwordFile = "/run/secrets/borg_password";
-      };
-      compression = "auto,zstd";
-      startAt = "02:00:00";
-      prune = {
-        keepDaily = 7;
-        keepWeekly = 4;
-        keepMonthly = 6;
-      };
     };
   };
-};
+}
 ```
-
-#### Manual Backup
-
-```bash
-# Initialize repository (first time)
-borg init --encryption=repokey /path/to/backup
-
-# Create backup
-borg create --verbose --stats \
-  /path/to/backup::{now} \
-  /home \
-  /var/lib/postgresql \
-  --exclude '/home/*/.cache'
-
-# List backups
-borg list /path/to/backup
-
-# Restore backup
-borg extract /path/to/backup::2026-08-15 /home
-```
-
-### Option 2: Restic
-
-Restic is simpler than Borg, with cloud storage support.
-
-### Option 3: Sanoid (ZFS Snapshots)
-
-For ZFS-based systems, Sanoid provides automated snapshot management.
-
-## Database Backup
 
 ### PostgreSQL Backup
 
-#### Automated Backup Script
-
-```bash
-#!/bin/bash
-# /usr/local/bin/pg-backup.sh
-
-BACKUP_DIR="/var/backups/postgresql"
-DATE=$(date +%Y%m%d-%H%M%S)
-
-# Create backup
-pg_dumpall -U postgres | gzip > ${BACKUP_DIR}/full-backup-${DATE}.sql.gz
-
-# Keep only last 7 days
-find ${BACKUP_DIR} -name "*.sql.gz" -mtime +7 -delete
+```nix
+# modules/roles/database/default.nix
+{
+  services.postgresql = {
+    enable = true;
+    backup = {
+      enable = true;
+      compression = "gzip";
+      directory = "/var/backup/postgresql";
+    };
+  };
+  
+  systemd.services.pg-backup = {
+    enable = true;
+    startAt = "hourly";
+    serviceConfig.ExecStart = "''
+      #!/bin/sh
+      TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+      pg_dumpall | gzip > /var/backup/postgresql/full-$TIMESTAMP.sql.gz
+    ''";
+  };
+}
 ```
 
-#### Manual Backup
+### ZFS Snapshots
 
-```bash
-# Full backup
-pg_dumpall -U postgres > backup-$(date +%Y%m%d).sql
-
-# Single database
-pg_dump -U postgres mydb > mydb-$(date +%Y%m%d).sql
-
-# Restore
-psql -U postgres -f backup-2026-08-15.sql
+```nix
+# modules/roles/storage/default.nix
+{
+  services.zfs = {
+    autoSnapshot = {
+      enable = true;
+      frequent = 4;
+      hourly = 24;
+      daily = 7;
+      weekly = 4;
+      monthly = 12;
+    };
+  };
+}
 ```
 
-## Service-Specific Backup
-
-### Jellyfin
-
-```bash
-# Backup Jellyfin configuration
-tar -czf jellyfin-backup-$(date +%Y%m%d).tar.gz \
-  /var/lib/jellyfin \
-  /var/cache/jellyfin
-
-# Restore
-tar -xzf jellyfin-backup-2026-08-15.tar.gz -C /
-```
-
-### Vaultwarden
-
-```bash
-# Backup Vaultwarden data
-tar -czf vaultwarden-backup-$(date +%Y%m%d).tar.gz \
-  /var/lib/vaultwarden
-
-# Restore
-tar -xzf vaultwarden-backup-2026-08-15.tar.gz -C /
-```
-
-## Disaster Recovery
+## Recovery Procedures
 
 ### Scenario 1: Single File Recovery
 
 ```bash
-# From Borg backup
-borg extract /path/to/backup::2026-08-15 /home/user/important-file.txt
+# 1. List available snapshots
+sudo restic -r /mnt/backup/restic snapshots
 
-# From ZFS snapshot
-zfs rollback rpool/home@before-deletion
+# 2. Restore file
+sudo restic -r /mnt/backup/restic restore latest \
+  --target /tmp/restore \
+  --include "path/to/file"
+
+# 3. Move to original location
+sudo mv /tmp/restore/path/to/file /original/location
 ```
 
-### Scenario 2: System Recovery
-
-#### Full System Restore
-
-```bash
-# 1. Boot from NixOS installer
-
-# 2. Restore from backup
-borg extract /path/to/backup::latest /
-
-# 3. Restore NixOS configuration
-cd /etc/nixos
-git clone https://github.com/Aljam/nixlab.git
-cd nixlab
-
-# 4. Rebuild system
-nixos-rebuild switch --flake .#hostname
-
-# 5. Verify services
-systemctl status
-```
-
-#### Database Recovery
+### Scenario 2: Database Recovery
 
 ```bash
 # 1. Stop PostgreSQL
-systemctl stop postgresql
+sudo systemctl stop postgresql
 
 # 2. Restore from backup
-gunzip -c /var/backups/postgresql/full-backup-2026-08-15.sql.gz | psql -U postgres
+sudo restic -r /mnt/backup/restic-db restore latest \
+  --target /var/lib/postgresql
 
-# 3. Start PostgreSQL
-systemctl start postgresql
+# 3. Or restore from pg_dump
+gunzip -c /var/backup/postgresql/full-20260818_020000.sql.gz | \
+  sudo -u postgres psql
 
-# 4. Verify
-psql -U postgres -c "SELECT version();"
+# 4. Start PostgreSQL
+sudo systemctl start postgresql
 ```
 
-### Scenario 3: Complete Hardware Failure
-
-#### Recovery Steps
-
-1. **Provision new hardware**
-   ```bash
-   # Install NixOS on new machine
-   # Generate hardware configuration
-   nixos-generate-config --show-hardware-config > hosts/new-host/hardware-configuration.nix
-   ```
-
-2. **Clone repository**
-   ```bash
-   git clone https://github.com/Aljam/nixlab.git
-   cd nixlab
-   ```
-
-3. **Update configuration**
-   ```nix
-   # Edit hosts/new-host/configuration.nix
-   # Update hostname, network settings, etc.
-   ```
-
-4. **Restore secrets**
-   ```bash
-   # Import GPG key
-   gpg --import gpg-backup-20260815.asc
-   
-   # Verify secrets decrypt
-   sops -d secrets/secrets.yaml
-   ```
-
-5. **Build and deploy**
-   ```bash
-   nixos-rebuild switch --flake .#new-host
-   ```
-
-6. **Restore data**
-   ```bash
-   # From backup server
-   borg extract /backup/path::latest /home
-   borg extract /backup/path::latest /var/lib/postgresql
-   ```
-
-7. **Verify services**
-   ```bash
-   systemctl status
-   # Check all critical services
-   ```
-
-### Scenario 4: Ransomware Attack
-
-#### Immediate Response
-
-1. **Isolate affected systems**
-2. **Assess damage**
-3. **Restore from clean backup**
-4. **Rebuild system**
-
-## Monitoring Backups
-
-### Backup Health Check Script
+### Scenario 3: Full System Recovery
 
 ```bash
-#!/bin/bash
-# /usr/local/bin/backup-check.sh
+# 1. Boot from NixOS installer USB
+# 2. Partition and format disks
+# 3. Mount filesystems
+mount /dev/disk/by-label/nixos /mnt
+mount /dev/disk/by-label/boot /mnt/boot
 
-# Check Borg backup
-borg list /backup/path > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-  echo "Borg backup failed" | mail -s "Backup Alert" admin@example.com
-fi
+# 4. Clone configuration
+git clone https://github.com/Aljam/nixlab.git /mnt/etc/nixos
 
-# Check last backup age
-LAST_BACKUP=$(borg list /backup/path --last 1 --format '{time}' | head -1)
-if [ -n "$LAST_BACKUP" ]; then
-  AGE=$(( ($(date +%s) - $(date -d "$LAST_BACKUP" +%s)) / 86400 ))
-  if [ $AGE -gt 2 ]; then
-    echo "Backup is $AGE days old" | mail -s "Backup Warning" admin@example.com
-  fi
-fi
+# 5. Restore secrets
+sops decrypt secrets/hosts/r730.yaml > /mnt/var/lib/sops/age/keys.txt
+
+# 6. Install NixOS
+cd /mnt/etc/nixos
+nixos-install --flake .#r730
+
+# 7. Reboot
+reboot
+
+# 8. Restore data from backup
+sudo restic -r /mnt/backup/restic restore latest --target /
 ```
 
-## Testing Backups
+## Offsite Backup
 
-### Monthly Restore Test
+### rclone Configuration
+
+```ini
+# ~/.config/rclone/rclone.conf
+[remote]
+type = s3
+provider = Backblaze
+access_key_id = YOUR_KEY
+secret_access_key = YOUR_SECRET
+endpoint = s3.us-west-001.backblazeb2.com
+bucket = nixlab-backup
+```
+
+### Automated Offsite Sync
+
+```nix
+# modules/features/backup/default.nix
+{
+  systemd.services.offsite-sync = {
+    enable = true;
+    startAt = "03:00";
+    serviceConfig.ExecStart = "''
+      #!/bin/sh
+      rclone sync /mnt/backup remote:nixlab-backup \
+        --progress --transfers=4 --checkers=8
+    ''";
+  };
+}
+```
+
+## Best Practices
+
+### 1. Encrypt All Backups
 
 ```bash
-#!/bin/bash
-# Create test directory
-TEST_DIR="/tmp/backup-test-$(date +%Y%m%d)"
-mkdir -p $TEST_DIR
-
-# Restore random file
-borg extract /backup/path::latest /home/user/test-file.txt --target $TEST_DIR
-
-# Verify
-if [ -f "$TEST_DIR/home/user/test-file.txt" ]; then
-  echo "Backup test passed"
-else
-  echo "Backup test FAILED" | mail -s "Backup Test Failed" admin@example.com
-fi
-
-# Cleanup
-rm -rf $TEST_DIR
+# restic encrypts by default
+# Verify encryption
+restic -r /mnt/backup/restic key list
 ```
 
-## Backup Schedule
+### 2. Test Restores Regularly
 
-### Recommended Schedule
+```bash
+# Monthly test restore
+restic -r /mnt/backup/restic restore latest \
+  --target /tmp/test-restore \
+  --include "critical-file.txt"
+```
 
-| Backup Type | Frequency | Retention |
-|-------------|-----------|-----------|
-| Borg/Restic | Daily | 7 daily, 4 weekly, 6 monthly |
-| ZFS Snapshots | Hourly | 4 hourly, 7 daily, 4 weekly |
-| PostgreSQL | Daily | 7 days |
-| Offsite | Weekly | 4 weeks |
-| Full System | Monthly | 3 months |
+### 3. Monitor Backup Health
 
-## Checklist
+```bash
+# Check backup status daily
+systemctl status restic-backups-daily
+journalctl -u restic-backups-daily --since "24 hours ago"
+```
 
-### Daily
+### 4. Document Everything
 
-- [ ] Automated backup runs successfully
-- [ ] Backup logs show no errors
-- [ ] Disk space adequate
+- Backup procedures
+- Recovery steps
+- Contact information
+- Escalation paths
 
-### Weekly
+### 5. Keep Secrets Secure
 
-- [ ] Verify backup integrity
-- [ ] Test restore of random file
-- [ ] Review backup logs
+```bash
+# Backup SOPS keys separately
+cp ~/.config/sops/age/keys.txt /secure/backup/sops-keys.txt
 
-### Monthly
-
-- [ ] Full restore test
-- [ ] Database restore test
-- [ ] Review retention policy
-- [ ] Update backup documentation
-
-### Quarterly
-
-- [ ] Offsite backup verification
-- [ ] Disaster recovery drill
-- [ ] Update backup procedures
-- [ ] Review and rotate secrets
+# Encrypt the backup
+age -r age1admin /secure/backup/sops-keys.txt > sops-keys.txt.age
+```
 
 ---
 
