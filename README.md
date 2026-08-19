@@ -1,9 +1,7 @@
 # nixlab
+[![CI](https://github.com/Aljam/nixlab/actions/workflows/ci.yml/badge.svg)](https://github.com/Aljam/nixlab/actions/workflows/ci.yml) [![License](https://img.shields.io/github/license/Aljam/nixlab?label=license)](LICENSE.md) [![Nix](https://img.shields.io/badge/Nix-26.05%2B-5277C3?logo=nixos&logoColor=white)](https://nixos.org/) [![Flake](https://img.shields.io/badge/Nix-Flake-5277C3?logo=nixos&logoColor=white)](flake.nix) [![SOPS](https://img.shields.io/badge/secrets-SOPS-2F855A?logo=gnuprivacyguard&logoColor=white)](https://github.com/getsops/sops) [![Home%20Manager](https://img.shields.io/badge/Home-Manager-7EBB4B?logo=nixos&logoColor=white)](https://github.com/nix-community/home-manager)
 
 A production-grade, declarative NixOS homelab infrastructure managed with flakes, SOPS-encrypted secrets, and Cachix binary caching.
-
-![GitHub](https://img.shields.io/github/license/Aljam/nixlab)
-![Nix](https://img.shields.io/badge/NixOS-unstable-blue?logo=nixos)
 
 ## Overview
 
