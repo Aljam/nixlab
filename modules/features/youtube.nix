@@ -1,8 +1,6 @@
 { config, pkgs, inputs, ... }:
 
 {
-  virtualisation.docker.enable = true;
-
   environment.systemPackages = with pkgs; [
     ytdl-sub
     yt-dlp
@@ -10,17 +8,19 @@
     python314Packages.bgutil-ytdlp-pot-provider
   ];
 
-  virtualisation.oci-containers.backend = "docker";
+  virtualisation.oci-containers = {
+    backend = "podman";
 
-  virtualisation.oci-containers.containers.bgutil-pot = {
-    image = "brainicism/bgutil-ytdlp-pot-provider:1.3.1";
-    ports = [
-      "127.0.0.1:4416:4416"
-    ];
-    autoStart = true;
-    extraOptions = [
-      "--init"
-    ];
+    containers.bgutil-pot = {
+      image = "brainicism/bgutil-ytdlp-pot-provider:1.3.1";
+      ports = [
+        "127.0.0.1:4416:4416"
+      ];
+      autoStart = true;
+      extraOptions = [
+        "--init"
+      ];
+    };
   };
 
   systemd.tmpfiles.rules = [
@@ -74,13 +74,13 @@
     description = "ytdl-sub YouTube automation";
     wants = [
       "network-online.target"
-      "docker-bgutil-pot.service"
+      "podman-bgutil-pot.service"
     ];
     after = [
       "network-online.target"
-      "docker-bgutil-pot.service"
+      "podman-bgutil-pot.service"
     ];
-
+  
     serviceConfig = {
       Type = "oneshot";
       User = "media";
