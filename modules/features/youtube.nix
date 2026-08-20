@@ -1,12 +1,27 @@
 { config, pkgs, inputs, ... }:
 
 {
+  virtualisation.docker.enable = true;
+
   environment.systemPackages = with pkgs; [
     ytdl-sub
     yt-dlp
     deno
     python314Packages.bgutil-ytdlp-pot-provider
   ];
+
+  virtualisation.oci-containers.backend = "docker";
+
+  virtualisation.oci-containers.containers.bgutil-pot = {
+    image = "brainicism/bgutil-ytdlp-pot-provider:1.3.1";
+    ports = [
+      "127.0.0.1:4416:4416"
+    ];
+    autoStart = true;
+    extraOptions = [
+      "--init"
+    ];
+  };
 
   systemd.tmpfiles.rules = [
     "d /mnt/media/youtube 0770 media media -"
@@ -22,10 +37,13 @@
         ytdl_options:
           format: "bv*+ba/b"
           live_from_start: true
+
           js_runtimes:
             deno: {}
+
           remote_components:
             - "ejs:github"
+
           extractor_args:
             youtube:
               player_client:
@@ -34,6 +52,7 @@
             youtubepot-bgutilhttp:
               base_url:
                 - "http://127.0.0.1:4416"
+
           retries: 3
           fragment_retries: 3
           ignoreerrors: true
@@ -53,8 +72,14 @@
 
   systemd.services.ytdl-sub = {
     description = "ytdl-sub YouTube automation";
-    wants = [ "network-online.target" ];
-    after = [ "network-online.target" ];
+    wants = [
+      "network-online.target"
+      "docker-bgutil-pot.service"
+    ];
+    after = [
+      "network-online.target"
+      "docker-bgutil-pot.service"
+    ];
 
     serviceConfig = {
       Type = "oneshot";
