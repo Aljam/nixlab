@@ -40,10 +40,10 @@
   '';
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
-    __preset__:
-      default:
-        - "https://www.youtube.com/@igotno_username"
-        - "https://www.youtube.com/@igotno_username/streams"
+    igotno_username:
+      preset: default
+      overrides:
+        url: "https://www.youtube.com/@igotno_username"
   '';
 
   systemd.services.ytdl-sub = {
