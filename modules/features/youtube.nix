@@ -5,7 +5,7 @@
     ytdl-sub
     yt-dlp
     deno
-    bgutil
+    python314Packages.bgutil-ytdlp-pot-provider
   ];
 
   systemd.tmpfiles.rules = [
