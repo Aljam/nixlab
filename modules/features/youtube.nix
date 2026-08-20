@@ -12,7 +12,7 @@
     backend = "podman";
 
     containers.bgutil-pot = {
-      image = "brainicism/bgutil-ytdlp-pot-provider:1.3.1";
+      image = "brainicism/bgutil-ytdlp-pot-provider:latest";
       ports = [
         "127.0.0.1:4416:4416"
       ];
