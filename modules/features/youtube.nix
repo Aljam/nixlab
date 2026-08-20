@@ -1,16 +1,5 @@
 { config, pkgs, inputs, ... }:
 
-let
-  unstable = import inputs.nixpkgs {
-    system = pkgs.stdenv.hostPlatform.system;
-    config = pkgs.config;
-  };
-
-  ytdl-sub = unstable.ytdl-sub;
-  yt-dlp = unstable.yt-dlp;
-  deno = unstable.deno;
-  bgutil = unstable.python314Packages.bgutil-ytdlp-pot-provider;
-in
 {
   environment.systemPackages = [
     ytdl-sub
