@@ -34,6 +34,8 @@
     presets:
       default:
         ytdl_options:
+          no_continue: true
+
           plugin_dirs:
             - "/etc/yt-dlp/plugins"
 
