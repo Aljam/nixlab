@@ -1,7 +1,7 @@
 { config, pkgs, inputs, ... }:
 
 {
-  environment.systemPackages =  with pkgs; [
+  environment.systemPackages = with pkgs; [
     ytdl-sub
     yt-dlp
     deno
@@ -12,23 +12,6 @@
     "d /mnt/media/youtube 0770 media media -"
     "d /var/lib/ytdl-sub 0700 media media -"
   ];
-
-  systemd.services.bgutil-pot = {
-    description = "bgutil YouTube Proof-of-Origin token provider";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network-online.target" ];
-    wants = [ "network-online.target" ];
-
-    serviceConfig = {
-      Type = "simple";
-      DynamicUser = true;
-      ExecStart =
-        "${bgutil}/bin/bgutil-ytdlp-pot-provider "
-        + "server --host 127.0.0.1 --port 4416";
-      Restart = "always";
-      RestartSec = 5;
-    };
-  };
 
   environment.etc."ytdl-sub/config.yaml".text = ''
     configuration:
@@ -70,8 +53,8 @@
 
   systemd.services.ytdl-sub = {
     description = "ytdl-sub YouTube automation";
-    wants = [ "network-online.target" "bgutil-pot.service" ];
-    after = [ "network-online.target" "bgutil-pot.service" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
 
     serviceConfig = {
       Type = "oneshot";
@@ -79,7 +62,10 @@
       Group = "media";
       WorkingDirectory = "/var/lib/ytdl-sub";
       StateDirectory = "ytdl-sub";
-      ExecStart = "${ytdl-sub}/bin/ytdl-sub --config /etc/ytdl-sub/config.yaml sub /etc/ytdl-sub/subscriptions.yaml";
+      ExecStart =
+        "${pkgs.ytdl-sub}/bin/ytdl-sub "
+        + "--config /etc/ytdl-sub/config.yaml "
+        + "sub /etc/ytdl-sub/subscriptions.yaml";
       ReadWritePaths = [
         "/var/lib/ytdl-sub"
         "/mnt/media/youtube"
