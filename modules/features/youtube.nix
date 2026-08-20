@@ -74,7 +74,7 @@
 
     timerConfig = {
       OnBootSec = "2min";
-      OnUnitActiveSec = "15min";
+      OnUnitActiveSec = "30min";
       Persistent = true;
     };
   };
