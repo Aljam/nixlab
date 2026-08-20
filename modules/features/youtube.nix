@@ -25,7 +25,7 @@ in
     presets:
       default:
         ytdl_options:
-          format: "best"
+          format: "bv*+ba/b"
           live_from_start: true
           js_runtimes:
             deno: {}
