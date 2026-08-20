@@ -25,7 +25,7 @@ in
     presets:
       default:
         ytdl_options:
-          format: "best[ext=mp4]/best"
+          format: "best"
           live_from_start: true
           js_runtimes:
             deno: {}
