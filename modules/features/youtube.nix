@@ -69,34 +69,40 @@
       download:
         url: "https://www.youtube.com/@igotno_username"
   '';
-
-  systemd.services.ytdl-sub = {
-    description = "ytdl-sub YouTube automation";
-    wants = [
-      "network-online.target"
-      "podman-bgutil-pot.service"
-    ];
-    after = [
-      "network-online.target"
-      "podman-bgutil-pot.service"
-    ];
   
-    serviceConfig = {
+    systemd.services.ytdl-sub = {
+      description = "ytdl-sub YouTube automation";
+      wants = [
+        "network-online.target"
+        "podman-bgutil-pot.service"
+      ];
+      after = [
+        "network-online.target"
+        "podman-bgutil-pot.service"
+      ];
+    
+     serviceConfig = {
       Type = "oneshot";
       User = "media";
       Group = "media";
       WorkingDirectory = "/var/lib/ytdl-sub";
       StateDirectory = "ytdl-sub";
+  
+      Environment = [
+        "YTDLP_PLUGINS_DIR=${pkgs.python314Packages.bgutil-ytdlp-pot-provider}/lib/python3.14/site-packages"
+      ];
+  
       ExecStart =
         "${pkgs.ytdl-sub}/bin/ytdl-sub "
         + "--config /etc/ytdl-sub/config.yaml "
         + "sub /etc/ytdl-sub/subscriptions.yaml";
+  
       ReadWritePaths = [
         "/var/lib/ytdl-sub"
         "/mnt/media/youtube"
       ];
+  
       TimeoutStartSec = "infinity";
-      environment.YTDLP_PLUGINS_DIR = "${pkgs.python314Packages.bgutil-ytdlp-pot-provider}/lib/python3.14/site-packages";
     };
   };
 
