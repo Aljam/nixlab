@@ -3,6 +3,7 @@
 {
   environment.systemPackages = [
     pkgs.ytdl-sub
+    pkgs.deno
   ];
 
   users.groups.media = {};
@@ -26,6 +27,8 @@
         ytdl_options:
           live_from_start: true
           cookiefile: "/var/lib/ytdl-sub/cookies.txt"
+          js_runtimes:
+            deno: {}
           sleep_requests: 5
           sleep_interval: 60
           max_sleep_interval: 180
