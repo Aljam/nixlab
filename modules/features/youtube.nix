@@ -41,8 +41,9 @@
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
     igotno_username:
-      preset: default
-      overrides:
+      preset:
+        - default
+      download:
         url: "https://www.youtube.com/@igotno_username"
   '';
 
