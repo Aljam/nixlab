@@ -28,6 +28,8 @@
           live_from_start: true
           js_runtimes:
             deno: {}
+          remote_components:
+            - "ejs:github"
           sleep_requests: 5
           sleep_interval: 60
           max_sleep_interval: 180
