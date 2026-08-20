@@ -1,12 +1,9 @@
 { config, pkgs, ... }:
 
 {
-  environment.systemPackages = [
-    pkgs.ytdl-sub
-  ];
+  environment.systemPackages = [ pkgs.ytdl-sub ];
 
   users.groups.media = {};
-
   users.users.media = {
     isSystemUser = true;
     group = "media";
@@ -28,17 +25,16 @@
           sleep_requests: 1.5
           sleep_interval: 10
           max_sleep_interval: 20
-
         output_options:
           output_directory: "/mnt/media/youtube"
           file_name: "{channel}/{upload_date}_{title}.{ext}"
   '';
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
-    default:
-      "igotno_username":
-        channel:
-          - "https://www.youtube.com/@igotno_username/streams"
+    igotno_username:
+      preset: default
+      download:
+        url: "https://www.youtube.com/@igotno_username/streams"
   '';
 
   systemd.services.ytdl-sub = {
@@ -50,27 +46,16 @@
       Type = "oneshot";
       User = "media";
       Group = "media";
-
       StateDirectory = "ytdl-sub";
       WorkingDirectory = "/var/lib/ytdl-sub";
-
-      ExecStart =
-        "${pkgs.ytdl-sub}/bin/ytdl-sub "
-        + "--config /etc/ytdl-sub/config.yaml "
-        + "sub /etc/ytdl-sub/subscriptions.yaml";
-
-      ReadWritePaths = [
-        "/mnt/media/youtube"
-      ];
-
+      ExecStart = "${pkgs.ytdl-sub}/bin/ytdl-sub --config /etc/ytdl-sub/config.yaml sub /etc/ytdl-sub/subscriptions.yaml";
+      ReadWritePaths = [ "/mnt/media/youtube" ];
       TimeoutStartSec = "infinity";
     };
   };
 
   systemd.timers.ytdl-sub = {
-    description = "Poll YouTube for new videos and livestreams";
     wantedBy = [ "timers.target" ];
-
     timerConfig = {
       OnBootSec = "2min";
       OnUnitActiveSec = "5min";
