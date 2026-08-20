@@ -9,6 +9,7 @@ in
 {
   environment.systemPackages = [
     unstable.ytdl-sub
+    unstable.yt-dlp
     unstable.deno
   ];
 
