@@ -36,8 +36,9 @@
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
     default:
-      igotno_username:
-        - "https://www.youtube.com/@igotno_username/streams"
+      "igotno_username":
+        channel:
+          - "https://www.youtube.com/@igotno_username/streams"
   '';
 
   systemd.services.ytdl-sub = {
@@ -49,15 +50,25 @@
       Type = "oneshot";
       User = "media";
       Group = "media";
+
       StateDirectory = "ytdl-sub";
       WorkingDirectory = "/var/lib/ytdl-sub";
-      ExecStart = "${pkgs.ytdl-sub}/bin/ytdl-sub sub /etc/ytdl-sub/subscriptions.yaml";
-      ReadWritePaths = [ "/mnt/media/youtube" ];
+
+      ExecStart =
+        "${pkgs.ytdl-sub}/bin/ytdl-sub "
+        + "--config /etc/ytdl-sub/config.yaml "
+        + "sub /etc/ytdl-sub/subscriptions.yaml";
+
+      ReadWritePaths = [
+        "/mnt/media/youtube"
+      ];
+
       TimeoutStartSec = "infinity";
     };
   };
 
   systemd.timers.ytdl-sub = {
+    description = "Poll YouTube for new videos and livestreams";
     wantedBy = [ "timers.target" ];
 
     timerConfig = {
