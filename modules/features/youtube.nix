@@ -5,13 +5,56 @@ let
     system = pkgs.stdenv.hostPlatform.system;
     config = pkgs.config;
   };
+
+  bgutil-pot = pkgs.stdenv.mkDerivation {
+    pname = "bgutil-pot";
+    version = "1.3.1";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "brainicism";
+      repo = "bgutil-ytdlp-pot-provider";
+      rev = "v1.3.1";
+      hash = pkgs.lib.fakeHash;
+    };
+
+    nativeBuildInputs = [ pkgs.nodejs pkgs.pnpm ];
+
+    buildPhase = ''
+      pnpm install --frozen-lockfile
+      pnpm build
+    '';
+
+    installPhase = ''
+      mkdir -p $out/share/bgutil-pot
+      cp -r . $out/share/bgutil-pot
+    '';
+  };
+
+  ytdl-sub = unstable.ytdl-sub;
+  yt-dlp = unstable.yt-dlp;
+  deno = unstable.deno;
 in
 {
   environment.systemPackages = [
-    unstable.ytdl-sub
-    unstable.yt-dlp
-    unstable.deno
+    ytdl-sub
+    yt-dlp
+    deno
   ];
+
+  systemd.services.bgutil-pot = {
+    description = "bgutil YouTube Proof-of-Origin token provider";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+
+    serviceConfig = {
+      Type = "simple";
+      DynamicUser = true;
+      ExecStart = "${bgutil-pot}/bin/bgutil-pot --host 127.0.0.1 --port 4416";
+      Restart = "always";
+      RestartSec = 5;
+    };
+  };
 
   systemd.tmpfiles.rules = [
     "d /mnt/media/youtube 0770 media media -"
@@ -26,14 +69,18 @@ in
       default:
         ytdl_options:
           format: "bv*+ba/b"
-          live_from_start: true
           js_runtimes:
             deno: {}
           remote_components:
             - "ejs:github"
-          sleep_requests: 5
-          sleep_interval: 60
-          max_sleep_interval: 180
+          extractor_args:
+            youtube:
+              player_client:
+                - "ios"
+                - "tv"
+            youtubepot-bgutilhttp:
+              base_url:
+                - "http://127.0.0.1:4416"
           retries: 3
           fragment_retries: 3
           ignoreerrors: true
@@ -53,8 +100,8 @@ in
 
   systemd.services.ytdl-sub = {
     description = "ytdl-sub YouTube automation";
-    wants = [ "network-online.target" ];
-    after = [ "network-online.target" ];
+    wants = [ "network-online.target" bgutil-pot.service ];
+    after = [ "network-online.target" bgutil-pot.service ];
 
     serviceConfig = {
       Type = "oneshot";
@@ -62,10 +109,7 @@ in
       Group = "media";
       WorkingDirectory = "/var/lib/ytdl-sub";
       StateDirectory = "ytdl-sub";
-      ExecStart =
-        "${unstable.ytdl-sub}/bin/ytdl-sub "
-        + "--config /etc/ytdl-sub/config.yaml "
-        + "sub /etc/ytdl-sub/subscriptions.yaml";
+      ExecStart = "${ytdl-sub}/bin/ytdl-sub --config /etc/ytdl-sub/config.yaml sub /etc/ytdl-sub/subscriptions.yaml";
       ReadWritePaths = [
         "/var/lib/ytdl-sub"
         "/mnt/media/youtube"
@@ -76,7 +120,6 @@ in
 
   systemd.timers.ytdl-sub = {
     wantedBy = [ "timers.target" ];
-
     timerConfig = {
       OnBootSec = "2min";
       OnUnitActiveSec = "30min";
@@ -84,4 +127,3 @@ in
     };
   };
 }
-
