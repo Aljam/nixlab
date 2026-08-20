@@ -34,6 +34,9 @@
     presets:
       default:
         ytdl_options:
+          plugin_dirs:
+            - "/etc/yt-dlp/plugins"
+        
           format: "bv*+ba/b"
           live_from_start: true
 
