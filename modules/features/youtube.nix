@@ -24,10 +24,10 @@
       default:
         ytdl_options:
           live_from_start: true
+          cookiefile: "/var/lib/ytdl-sub/cookies.txt"
           sleep_requests: 1.5
           sleep_interval: 10
           max_sleep_interval: 20
-          cookiefile: "/var/lib/ytdl-sub/cookies.txt"
 
         output_options:
           output_directory: "/mnt/media/youtube"
@@ -35,17 +35,15 @@
   '';
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
-    igotno_username:
-      preset:
-        - default
-      download:
-        url: "https://www.youtube.com/@igotno_username/streams"
+    default:
+      igotno_username:
+        - "https://www.youtube.com/@igotno_username/streams"
   '';
 
   systemd.services.ytdl-sub = {
     description = "ytdl-sub YouTube automation";
-    after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
 
     serviceConfig = {
       Type = "oneshot";
@@ -53,10 +51,7 @@
       Group = "media";
       StateDirectory = "ytdl-sub";
       WorkingDirectory = "/var/lib/ytdl-sub";
-      ExecStart =
-        "${pkgs.ytdl-sub}/bin/ytdl-sub "
-        + "--config /etc/ytdl-sub/config.yaml "
-        + "sub /etc/ytdl-sub/subscriptions.yaml";
+      ExecStart = "${pkgs.ytdl-sub}/bin/ytdl-sub sub /etc/ytdl-sub/subscriptions.yaml";
       ReadWritePaths = [ "/mnt/media/youtube" ];
       TimeoutStartSec = "infinity";
     };
