@@ -1,19 +1,16 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
+let
+  unstable = import inputs.nixpkgs-unstable {
+    system = pkgs.system;
+    config.allowUnfree = true;
+  };
+in
 {
   environment.systemPackages = [
-    pkgs.ytdl-sub
-    pkgs.deno
+    unstable.ytdl-sub
+    unstable.deno
   ];
-
-  users.groups.media = {};
-
-  users.users.media = {
-    isSystemUser = true;
-    group = "media";
-    home = "/var/lib/ytdl-sub";
-    createHome = true;
-  };
 
   systemd.tmpfiles.rules = [
     "d /mnt/media/youtube 0770 media media -"
