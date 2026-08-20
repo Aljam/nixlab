@@ -28,6 +28,8 @@
     "d /var/lib/ytdl-sub 0700 media media -"
   ];
 
+  environment.etc."yt-dlp/plugins/yt_dlp_plugins".source = "${pkgs.python314Packages.bgutil-ytdlp-pot-provider}/lib/python3.14/site-packages/yt_dlp_plugins";
+
   environment.etc."ytdl-sub/config.yaml".text = ''
     configuration:
       working_directory: "/var/lib/ytdl-sub"
@@ -60,6 +62,9 @@
         output_options:
           output_directory: "/mnt/media/youtube"
           file_name: "{channel}/{upload_date}_{title}.{ext}"
+        
+        plugin_dirs:
+          - "/etc/yt-dlp/plugins"
   '';
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
