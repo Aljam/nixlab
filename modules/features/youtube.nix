@@ -32,7 +32,12 @@ in
           remote_components:
             - "ejs:github"
           extractor_args:
-            youtube: "player_client=default,-android_vr,-android_sdkless"
+            youtube:
+              player_client:
+                - "ios"
+                - "tv"
+              player_skip:
+                - "webpage"
           sleep_requests: 5
           sleep_interval: 60
           max_sleep_interval: 180
