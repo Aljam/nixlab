@@ -18,6 +18,7 @@
     ../features/prowlarr.nix
     ../features/vaultwarden.nix
     ../features/grafana.nix
+    ../features/youtube.nix
     #../features/nas-mount.nix
   ];
 
