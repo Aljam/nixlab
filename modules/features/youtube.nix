@@ -26,7 +26,6 @@
       default:
         ytdl_options:
           live_from_start: true
-          cookiefile: "/var/lib/ytdl-sub/cookies.txt"
           js_runtimes:
             deno: {}
           sleep_requests: 5
