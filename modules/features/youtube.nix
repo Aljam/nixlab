@@ -25,20 +25,21 @@ in
     presets:
       default:
         ytdl_options:
+          format: "best[ext=mp4]/best"
           live_from_start: true
           js_runtimes:
             deno: {}
           remote_components:
             - "ejs:github"
           extractor_args:
-            youtube: "player_client=default,-android_vr,-android_sdkless"
+            youtube: "player_client=web"
           sleep_requests: 5
           sleep_interval: 60
           max_sleep_interval: 180
           retries: 3
           fragment_retries: 3
           ignoreerrors: true
-        
+
         output_options:
           output_directory: "/mnt/media/youtube"
           file_name: "{channel}/{upload_date}_{title}.{ext}"
