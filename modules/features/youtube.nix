@@ -47,10 +47,6 @@
             - "ejs:github"
 
           extractor_args:
-            youtube:
-              player_client:
-                - "ios"
-                - "tv"
             youtubepot-bgutilhttp:
               base_url:
                 - "http://127.0.0.1:4416"
