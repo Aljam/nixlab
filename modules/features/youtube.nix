@@ -8,19 +8,19 @@
     python314Packages.bgutil-ytdlp-pot-provider
   ];
 
-  virtualisation.oci-containers = {
-    backend = "podman";
-
-    containers.bgutil-pot = {
-      image = "brainicism/bgutil-ytdlp-pot-provider:latest";
-      ports = [
-        "127.0.0.1:4416:4416"
-      ];
-      autoStart = true;
-      extraOptions = [
-        "--init"
-      ];
-    };
+  virtualisation.oci-containers.containers.bgutil-pot = {
+    image =
+      "docker.io/brainicism/bgutil-ytdlp-pot-provider:latest";
+  
+    ports = [
+      "127.0.0.1:4416:4416"
+    ];
+  
+    autoStart = true;
+  
+    extraOptions = [
+      "--init"
+    ];
   };
 
   systemd.tmpfiles.rules = [
