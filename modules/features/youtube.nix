@@ -22,19 +22,21 @@
         ytdl_options:
           live_from_start: true
           cookiefile: "/var/lib/ytdl-sub/cookies.txt"
-          sleep_requests: 1.5
-          sleep_interval: 10
-          max_sleep_interval: 20
+          sleep_requests: 5
+          sleep_interval: 60
+          max_sleep_interval: 180
+          retries: 3
+          fragment_retries: 3
+          ignoreerrors: true
+
         output_options:
           output_directory: "/mnt/media/youtube"
           file_name: "{channel}/{upload_date}_{title}.{ext}"
   '';
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
-    igotno_username:
-      preset: default
-      download:
-        url: "https://www.youtube.com/@igotno_username/streams"
+    default:
+      "igotno_username": "https://www.youtube.com/@igotno_username/streams"
   '';
 
   systemd.services.ytdl-sub = {
@@ -58,7 +60,7 @@
     wantedBy = [ "timers.target" ];
     timerConfig = {
       OnBootSec = "2min";
-      OnUnitActiveSec = "5min";
+      OnUnitActiveSec = "15min";
       Persistent = true;
     };
   };
