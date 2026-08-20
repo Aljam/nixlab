@@ -29,11 +29,13 @@ in
             deno: {}
           remote_components:
             - "ejs:github"
+
           extractor_args:
             youtube:
               player_client:
                 - "default"
                 - "-android_sdkless"
+
           sleep_requests: 5
           sleep_interval: 60
           max_sleep_interval: 180
