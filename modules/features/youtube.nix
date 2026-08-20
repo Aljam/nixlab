@@ -34,9 +34,9 @@
     presets:
       default:
         ytdl_options:
-          plugin_directories:
+          plugin_dirs:
             - "/etc/yt-dlp/plugins"
-        
+
           format: "bv*+ba/b"
           live_from_start: true
 
@@ -48,7 +48,7 @@
 
           extractor_args:
             youtubepot-bgutilhttp:
-              base_url:
+              baseurl:
                 - "http://127.0.0.1:4416"
 
           retries: 3
@@ -70,10 +70,12 @@
 
   systemd.services.ytdl-sub = {
     description = "ytdl-sub YouTube automation";
+
     wants = [
       "network-online.target"
       "podman-bgutil-pot.service"
     ];
+
     after = [
       "network-online.target"
       "podman-bgutil-pot.service"
