@@ -49,6 +49,9 @@
             - "ejs:github"
 
           extractor_args:
+              youtube:
+                player_client:
+                  - "default,-android_vr"
             youtubepot-bgutilhttp:
               baseurl:
                 - "http://127.0.0.1:4416"
