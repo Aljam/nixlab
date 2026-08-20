@@ -32,6 +32,7 @@
           retries: 3
           fragment_retries: 3
           ignoreerrors: true
+          limit_rate: "2M"
 
         output_options:
           output_directory: "/mnt/media/youtube"
