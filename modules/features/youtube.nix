@@ -6,39 +6,22 @@ let
     config = pkgs.config;
   };
 
-  bgutil-pot = pkgs.stdenv.mkDerivation {
-    pname = "bgutil-pot";
-    version = "1.3.1";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "brainicism";
-      repo = "bgutil-ytdlp-pot-provider";
-      rev = "v1.3.1";
-      hash = pkgs.lib.fakeHash;
-    };
-
-    nativeBuildInputs = [ pkgs.nodejs pkgs.pnpm ];
-
-    buildPhase = ''
-      pnpm install --frozen-lockfile
-      pnpm build
-    '';
-
-    installPhase = ''
-      mkdir -p $out/share/bgutil-pot
-      cp -r . $out/share/bgutil-pot
-    '';
-  };
-
   ytdl-sub = unstable.ytdl-sub;
   yt-dlp = unstable.yt-dlp;
   deno = unstable.deno;
+  bgutil = unstable.python314Packages.bgutil-ytdlp-pot-provider;
 in
 {
   environment.systemPackages = [
     ytdl-sub
     yt-dlp
     deno
+    bgutil
+  ];
+
+  systemd.tmpfiles.rules = [
+    "d /mnt/media/youtube 0770 media media -"
+    "d /var/lib/ytdl-sub 0700 media media -"
   ];
 
   systemd.services.bgutil-pot = {
@@ -50,16 +33,11 @@ in
     serviceConfig = {
       Type = "simple";
       DynamicUser = true;
-      ExecStart = "${bgutil-pot}/bin/bgutil-pot --host 127.0.0.1 --port 4416";
+      ExecStart = "${bgutil}/bin/bgutil-ytdlp-pot-provider --host 127.0.0.1 --port 4416";
       Restart = "always";
       RestartSec = 5;
     };
   };
-
-  systemd.tmpfiles.rules = [
-    "d /mnt/media/youtube 0770 media media -"
-    "d /var/lib/ytdl-sub 0700 media media -"
-  ];
 
   environment.etc."ytdl-sub/config.yaml".text = ''
     configuration:
@@ -69,6 +47,7 @@ in
       default:
         ytdl_options:
           format: "bv*+ba/b"
+          live_from_start: true
           js_runtimes:
             deno: {}
           remote_components:
@@ -100,8 +79,8 @@ in
 
   systemd.services.ytdl-sub = {
     description = "ytdl-sub YouTube automation";
-    wants = [ "network-online.target" bgutil-pot.service ];
-    after = [ "network-online.target" bgutil-pot.service ];
+    wants = [ "network-online.target" "bgutil-pot.service" ];
+    after = [ "network-online.target" "bgutil-pot.service" ];
 
     serviceConfig = {
       Type = "oneshot";
@@ -120,6 +99,7 @@ in
 
   systemd.timers.ytdl-sub = {
     wantedBy = [ "timers.target" ];
+
     timerConfig = {
       OnBootSec = "2min";
       OnUnitActiveSec = "30min";
