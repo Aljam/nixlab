@@ -1,9 +1,12 @@
 { config, pkgs, ... }:
 
 {
-  environment.systemPackages = [ pkgs.ytdl-sub ];
+  environment.systemPackages = [
+    pkgs.ytdl-sub
+  ];
 
   users.groups.media = {};
+
   users.users.media = {
     isSystemUser = true;
     group = "media";
@@ -11,6 +14,7 @@
 
   systemd.tmpfiles.rules = [
     "d /mnt/media/youtube 0770 media media -"
+    "d /var/lib/ytdl-sub 0700 media media -"
   ];
 
   environment.etc."ytdl-sub/config.yaml".text = ''
@@ -35,8 +39,9 @@
   '';
 
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
-    default:
-      "igotno_username": "https://www.youtube.com/@igotno_username/streams"
+    __preset__:
+      default:
+        - "https://www.youtube.com/@igotno_username/streams"
   '';
 
   systemd.services.ytdl-sub = {
@@ -48,16 +53,22 @@
       Type = "oneshot";
       User = "media";
       Group = "media";
-      StateDirectory = "ytdl-sub";
       WorkingDirectory = "/var/lib/ytdl-sub";
-      ExecStart = "${pkgs.ytdl-sub}/bin/ytdl-sub --config /etc/ytdl-sub/config.yaml sub /etc/ytdl-sub/subscriptions.yaml";
-      ReadWritePaths = [ "/mnt/media/youtube" ];
+      ExecStart =
+        "${pkgs.ytdl-sub}/bin/ytdl-sub "
+        + "--config /etc/ytdl-sub/config.yaml "
+        + "sub /etc/ytdl-sub/subscriptions.yaml";
+      ReadWritePaths = [
+        "/var/lib/ytdl-sub"
+        "/mnt/media/youtube"
+      ];
       TimeoutStartSec = "infinity";
     };
   };
 
   systemd.timers.ytdl-sub = {
     wantedBy = [ "timers.target" ];
+
     timerConfig = {
       OnBootSec = "2min";
       OnUnitActiveSec = "15min";
