@@ -46,9 +46,6 @@
           remote_components:
             - "ejs:github"
 
-          plugin_dirs:
-            - "/etc/yt-dlp/plugins"
-
           extractor_args:
             youtube:
               player_client:
