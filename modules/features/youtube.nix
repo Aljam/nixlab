@@ -1,9 +1,9 @@
 { config, pkgs, inputs, ... }:
 
 let
-  unstable = import inputs.nixpkgs-unstable {
-    system = pkgs.system;
-    config.allowUnfree = true;
+  unstable = import inputs.nixpkgs {
+    system = pkgs.stdenv.hostPlatform.system;
+    config = pkgs.config;
   };
 in
 {
@@ -60,7 +60,10 @@ in
       Group = "media";
       WorkingDirectory = "/var/lib/ytdl-sub";
       StateDirectory = "ytdl-sub";
-      ExecStart = "${pkgs.ytdl-sub}/bin/ytdl-sub --config /etc/ytdl-sub/config.yaml sub /etc/ytdl-sub/subscriptions.yaml";
+      ExecStart =
+        "${unstable.ytdl-sub}/bin/ytdl-sub "
+        + "--config /etc/ytdl-sub/config.yaml "
+        + "sub /etc/ytdl-sub/subscriptions.yaml";
       ReadWritePaths = [
         "/var/lib/ytdl-sub"
         "/mnt/media/youtube"
@@ -79,3 +82,4 @@ in
     };
   };
 }
+
