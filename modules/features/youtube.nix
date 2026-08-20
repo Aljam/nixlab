@@ -89,7 +89,7 @@
       StateDirectory = "ytdl-sub";
   
       Environment = [
-        "YTDLP_PLUGINS_DIR=${pkgs.python314Packages.bgutil-ytdlp-pot-provider}/lib/python3.14/site-packages"
+        "PYTHONPATH=${pkgs.python314Packages.bgutil-ytdlp-pot-provider}/lib/python3.14/site-packages"
       ];
   
       ExecStart =
