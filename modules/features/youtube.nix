@@ -33,7 +33,9 @@ in
     serviceConfig = {
       Type = "simple";
       DynamicUser = true;
-      ExecStart = "${bgutil}/bin/bgutil-ytdlp-pot-provider --host 127.0.0.1 --port 4416";
+      ExecStart =
+        "${bgutil}/bin/bgutil-ytdlp-pot-provider "
+        + "server --host 127.0.0.1 --port 4416";
       Restart = "always";
       RestartSec = 5;
     };
