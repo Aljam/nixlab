@@ -11,6 +11,8 @@
   users.users.media = {
     isSystemUser = true;
     group = "media";
+    home = "/var/lib/ytdl-sub";
+    createHome = true;
   };
 
   systemd.tmpfiles.rules = [
@@ -36,7 +38,6 @@
           retries: 3
           fragment_retries: 3
           ignoreerrors: true
-          limit_rate: "2M"
 
         output_options:
           output_directory: "/mnt/media/youtube"
@@ -61,10 +62,8 @@
       User = "media";
       Group = "media";
       WorkingDirectory = "/var/lib/ytdl-sub";
-      ExecStart =
-        "${pkgs.ytdl-sub}/bin/ytdl-sub "
-        + "--config /etc/ytdl-sub/config.yaml "
-        + "sub /etc/ytdl-sub/subscriptions.yaml";
+      StateDirectory = "ytdl-sub";
+      ExecStart = "${pkgs.ytdl-sub}/bin/ytdl-sub --config /etc/ytdl-sub/config.yaml sub /etc/ytdl-sub/subscriptions.yaml";
       ReadWritePaths = [
         "/var/lib/ytdl-sub"
         "/mnt/media/youtube"
