@@ -1,7 +1,7 @@
 { config, pkgs, inputs, ... }:
 
 {
-  environment.systemPackages = [
+  environment.systemPackages =  with pkgs; [
     ytdl-sub
     yt-dlp
     deno
