@@ -42,6 +42,7 @@
   environment.etc."ytdl-sub/subscriptions.yaml".text = ''
     __preset__:
       default:
+        - "https://www.youtube.com/@igotno_username"
         - "https://www.youtube.com/@igotno_username/streams"
   '';
 
