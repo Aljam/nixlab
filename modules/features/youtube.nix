@@ -34,28 +34,21 @@
     presets:
       default:
         ytdl_options:
-          no_continue: true
-
           plugin_dirs:
             - "/etc/yt-dlp/plugins"
-
           format: "bv*+ba/b"
           live_from_start: true
-
           js_runtimes:
             deno: {}
-
           remote_components:
             - "ejs:github"
-
           extractor_args:
-              youtube:
-                player_client:
-                  - "default,-android_vr"
+            youtube:
+              player_client:
+                - "web_embedded"
             youtubepot-bgutilhttp:
               baseurl:
                 - "http://127.0.0.1:4416"
-
           retries: 3
           fragment_retries: 3
           ignoreerrors: true
