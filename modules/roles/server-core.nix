@@ -26,9 +26,6 @@ in
   networking.defaultGateway = gateway;
   networking.nameservers = [ gateway "1.1.1.1" "8.8.8.8" ];
 
-  # Firewall: Allow HTTP/HTTPS for reverse proxy
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
-
   # Container runtime
   virtualisation.podman = {
     enable = true;
